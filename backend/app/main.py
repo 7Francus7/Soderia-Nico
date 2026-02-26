@@ -35,6 +35,18 @@ app.add_middleware(
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
+# ── Startup: crear tablas y datos iniciales ───────────────────────────────────
+@app.on_event("startup")
+def on_startup():
+    from app.database import create_db_and_tables
+    create_db_and_tables()
+    # Crear usuario admin y datos base si no existen
+    try:
+        from initial_data import init_db
+        init_db()
+    except Exception as e:
+        print(f"[startup] init_db: {e}")
+
 @app.get("/")
 def root():
     return {"message": "Soderia API is running ✅", "version": "1.0.0"}
