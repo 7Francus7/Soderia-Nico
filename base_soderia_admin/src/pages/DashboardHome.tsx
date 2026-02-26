@@ -30,14 +30,10 @@ export default function DashboardHome() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                // Fetch Stats
                 const statsResponse = await api.get('/dashboard/dashboard-stats');
                 setStats(statsResponse.data);
-
-                // Fetch Recent Deliveries
                 const deliveriesResponse = await api.get('/deliveries/?limit=5&sort=-id');
                 setRecentDeliveries(deliveriesResponse.data);
-
             } catch (error: any) {
                 setError("No se pudieron cargar los datos del dashboard. " + (error.message || ""));
                 setStats({
@@ -53,7 +49,6 @@ export default function DashboardHome() {
                 setLoading(false);
             }
         };
-
         fetchStats();
     }, []);
 
@@ -69,10 +64,10 @@ export default function DashboardHome() {
     if (error) {
         return (
             <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 mb-6 flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5" />
-                <div>
+                <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                <div className="min-w-0">
                     <p className="font-bold">Error de conexión</p>
-                    <p className="text-sm">{error}</p>
+                    <p className="text-sm break-words">{error}</p>
                     <button onClick={() => window.location.reload()} className="text-sm underline mt-1">Reintentar</button>
                 </div>
             </div>
@@ -127,35 +122,37 @@ export default function DashboardHome() {
     ];
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6 md:space-y-8">
+            {/* Header */}
             <div>
-                <h2 className="text-3xl font-bold text-slate-800">Dashboard</h2>
-                <p className="text-slate-500 mt-1">Resumen operativo del día.</p>
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-800">Dashboard</h2>
+                <p className="text-slate-500 text-sm mt-1">Resumen operativo del día.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Stats Cards - 2 cols on mobile, 4 on desktop */}
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 {cards.map((card, idx) => (
-                    <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition">
+                    <div key={idx} className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition">
                         <div className="flex justify-between items-start">
-                            <div>
-                                <p className="text-slate-500 text-sm font-medium mb-1">{card.title}</p>
-                                <h3 className="text-2xl font-bold text-slate-800">{card.value}</h3>
+                            <div className="min-w-0 flex-1">
+                                <p className="text-slate-500 text-xs md:text-sm font-medium mb-1 truncate">{card.title}</p>
+                                <h3 className="text-lg md:text-2xl font-bold text-slate-800 truncate">{card.value}</h3>
                                 {card.subtext && <p className="text-xs text-slate-400 mt-1">{card.subtext}</p>}
                             </div>
-                            <div className={`p-3 rounded-xl ${card.bg} ${card.color}`}>
-                                <card.icon className="w-6 h-6" />
+                            <div className={`p-2 md:p-3 rounded-xl ${card.bg} ${card.color} flex-shrink-0 ml-2`}>
+                                <card.icon className="w-4 h-4 md:w-6 md:h-6" />
                             </div>
                         </div>
                         {(card.change || card.badge) && (
-                            <div className="mt-4 flex items-center gap-2">
+                            <div className="mt-3 md:mt-4 flex items-center gap-2 flex-wrap">
                                 {card.change && (
-                                    <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${card.trend === 'up' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'}`}>
+                                    <span className={`text-[10px] md:text-xs font-semibold px-2 py-0.5 md:py-1 rounded-full flex items-center gap-1 ${card.trend === 'up' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'}`}>
                                         {card.trend === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                                         {card.change}
                                     </span>
                                 )}
                                 {card.badge && (
-                                    <span className="text-xs font-bold text-red-600 bg-red-100 px-2 py-1 rounded-full animate-pulse">{card.badge}</span>
+                                    <span className="text-[10px] md:text-xs font-bold text-red-600 bg-red-100 px-2 py-0.5 md:py-1 rounded-full animate-pulse">{card.badge}</span>
                                 )}
                             </div>
                         )}
@@ -163,10 +160,12 @@ export default function DashboardHome() {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 className="text-lg font-bold text-slate-800 mb-6">Tendencia de Ventas (Últimos 7 días)</h3>
-                    <div className="h-64">
+            {/* Chart and Recent Deliveries */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+                {/* Chart */}
+                <div className="lg:col-span-2 bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 className="text-base md:text-lg font-bold text-slate-800 mb-4 md:mb-6">Tendencia de Ventas (Últimos 7 días)</h3>
+                    <div className="h-48 md:h-64">
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={safeStats.sales_history}>
                                 <defs>
@@ -176,8 +175,8 @@ export default function DashboardHome() {
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} dy={10} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} width={40} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                     itemStyle={{ color: '#1e293b', fontWeight: 'bold' }}
@@ -188,21 +187,22 @@ export default function DashboardHome() {
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 className="text-lg font-bold text-slate-800 mb-4">Repartos Recientes</h3>
-                    <div className="space-y-4">
+                {/* Recent Deliveries */}
+                <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 className="text-base md:text-lg font-bold text-slate-800 mb-4">Repartos Recientes</h3>
+                    <div className="space-y-3 md:space-y-4">
                         {recentDeliveries.map((d) => (
-                            <div key={d.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-white p-2 rounded-lg border border-slate-200">
-                                        <Truck className="w-5 h-5 text-slate-500" />
+                            <div key={d.id} className="flex items-center justify-between p-2.5 md:p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                                    <div className="bg-white p-1.5 md:p-2 rounded-lg border border-slate-200 flex-shrink-0">
+                                        <Truck className="w-4 h-4 md:w-5 md:h-5 text-slate-500" />
                                     </div>
-                                    <div>
-                                        <p className="font-semibold text-slate-800 text-sm">Pedido #{d.order_id}</p>
-                                        <p className="text-xs text-slate-500">{d.status.replace('_', ' ').toUpperCase()}</p>
+                                    <div className="min-w-0">
+                                        <p className="font-semibold text-slate-800 text-xs md:text-sm truncate">Pedido #{d.order_id}</p>
+                                        <p className="text-[10px] md:text-xs text-slate-500">{d.status.replace('_', ' ').toUpperCase()}</p>
                                     </div>
                                 </div>
-                                <div className={`w-2 h-2 rounded-full ${d.status === 'pending' ? 'bg-yellow-400' :
+                                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${d.status === 'pending' ? 'bg-yellow-400' :
                                     d.status === 'in_transit' ? 'bg-blue-500' :
                                         d.status === 'delivered' ? 'bg-green-500' : 'bg-red-500'
                                     }`} />
@@ -211,42 +211,48 @@ export default function DashboardHome() {
                         {recentDeliveries.length === 0 && (
                             <div className="text-center text-slate-400 text-sm py-4">No hay actividad reciente.</div>
                         )}
-                        <button className="w-full mt-2 text-blue-600 text-sm font-medium hover:text-blue-800 transition">Ver todos</button>
+                        <button
+                            onClick={() => navigate('/deliveries')}
+                            className="w-full mt-2 text-blue-600 text-sm font-medium hover:text-blue-800 transition"
+                        >
+                            Ver todos
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-2xl p-6">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-bold text-slate-800">Acciones Rápidas</h3>
+            {/* Quick Actions */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 md:p-6">
+                <div className="flex justify-between items-center mb-4 md:mb-6">
+                    <h3 className="text-base md:text-lg font-bold text-slate-800">Acciones Rápidas</h3>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                     <button
                         onClick={() => navigate('/orders')}
-                        className="p-4 bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-xl text-blue-700 font-medium text-sm transition text-center flex flex-col items-center gap-2 group"
+                        className="p-3 md:p-4 bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-xl text-blue-700 font-medium text-xs md:text-sm transition text-center flex flex-col items-center gap-1.5 md:gap-2 group active:scale-95"
                     >
-                        <span className="text-xl">🛒</span>
+                        <span className="text-lg md:text-xl">🛒</span>
                         Nuevo Pedido
                     </button>
                     <button
                         onClick={() => navigate('/current-accounts')}
-                        className="p-4 bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-600 font-medium text-sm transition text-center flex flex-col items-center gap-2"
+                        className="p-3 md:p-4 bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-600 font-medium text-xs md:text-sm transition text-center flex flex-col items-center gap-1.5 md:gap-2 active:scale-95"
                     >
-                        <span className="text-xl">💳</span>
+                        <span className="text-lg md:text-xl">💳</span>
                         Cuentas Cte.
                     </button>
                     <button
                         onClick={() => navigate('/deliveries')}
-                        className="p-4 bg-amber-50 hover:bg-amber-100 border border-amber-100 rounded-xl text-amber-700 font-medium text-sm transition text-center flex flex-col items-center gap-2"
+                        className="p-3 md:p-4 bg-amber-50 hover:bg-amber-100 border border-amber-100 rounded-xl text-amber-700 font-medium text-xs md:text-sm transition text-center flex flex-col items-center gap-1.5 md:gap-2 active:scale-95"
                     >
-                        <span className="text-xl">🚚</span>
+                        <span className="text-lg md:text-xl">🚚</span>
                         Ver Repartos
                     </button>
                     <button
                         onClick={() => navigate('/clients')}
-                        className="p-4 bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-600 font-medium text-sm transition text-center flex flex-col items-center gap-2"
+                        className="p-3 md:p-4 bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-600 font-medium text-xs md:text-sm transition text-center flex flex-col items-center gap-1.5 md:gap-2 active:scale-95"
                     >
-                        <span className="text-xl">👥</span>
+                        <span className="text-lg md:text-xl">👥</span>
                         Clientes
                     </button>
                 </div>

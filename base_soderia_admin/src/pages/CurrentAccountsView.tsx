@@ -31,9 +31,9 @@ import { toast } from "sonner";
 interface Client {
        id: number;
        name: string;
-       address: string;
+       address?: string;
        phone?: string;
-       balance: number; // Positive means debt (moroso)
+       balance: number;
 }
 
 // --- Components ---
@@ -57,7 +57,7 @@ export default function CurrentAccountsView() {
        const [loading, setLoading] = useState(true);
 
        // Table State
-       const [sorting, setSorting] = useState<SortingState>([{ id: 'balance', desc: true }]); // Default sort by highest debt
+       const [sorting, setSorting] = useState<SortingState>([{ id: 'balance', desc: true }]);
        const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
        const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
@@ -81,7 +81,6 @@ export default function CurrentAccountsView() {
               setLoading(true);
               try {
                      const response = await api.get('/clients/');
-                     // Filter only "morosos" (debt > 0)
                      const debtors = response.data.filter((c: Client) => c.balance > 0);
                      setData(debtors);
               } catch (error) {
@@ -169,11 +168,12 @@ export default function CurrentAccountsView() {
        });
 
        return (
-              <div className="p-6 max-w-7xl mx-auto space-y-6">
-                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-4 md:space-y-6">
+                     {/* Header */}
+                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div>
-                                   <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Cuentas Corrientes</h1>
-                                   <p className="text-slate-500 text-sm mt-1">Gestión de morosos y registro de cobros.</p>
+                                   <h1 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">Cuentas Corrientes</h1>
+                                   <p className="text-slate-500 text-sm mt-0.5">Gestión de morosos y registro de cobros.</p>
                             </div>
                             <div className="flex items-center gap-3">
                                    <button
@@ -186,8 +186,8 @@ export default function CurrentAccountsView() {
                      </div>
 
                      {/* Toolbar */}
-                     <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                            <div className="relative max-w-sm">
+                     <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm">
+                            <div className="relative w-full sm:max-w-sm">
                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                    <input
                                           id="search-client-input"
@@ -199,8 +199,55 @@ export default function CurrentAccountsView() {
                             </div>
                      </div>
 
-                     {/* Table */}
-                     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                     {/* MOBILE CARDS */}
+                     <div className="md:hidden space-y-3">
+                            {loading && data.length === 0 ? (
+                                   <div className="text-center py-12 text-slate-400 text-sm">Cargando cuentas...</div>
+                            ) : table.getRowModel().rows.length === 0 ? (
+                                   <div className="text-center py-12 text-slate-400 text-sm">No se encontraron deudores.</div>
+                            ) : (
+                                   table.getRowModel().rows.map(row => {
+                                          const client = row.original;
+                                          return (
+                                                 <div key={client.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
+                                                        <div className="flex items-start justify-between mb-3">
+                                                               <div className="min-w-0 flex-1">
+                                                                      <div className="font-semibold text-slate-800 truncate">{client.name}</div>
+                                                                      <div className="text-xs text-slate-400 mt-0.5 truncate">{client.address}</div>
+                                                                      {client.phone && <div className="text-xs text-slate-400 mt-0.5">{client.phone}</div>}
+                                                               </div>
+                                                               <div className="flex-shrink-0 ml-3">
+                                                                      <BalanceBadge balance={client.balance} />
+                                                               </div>
+                                                        </div>
+                                                        <div className="flex gap-2 pt-2 border-t border-slate-50">
+                                                               <button
+                                                                      onClick={() => setLedgerClient(client)}
+                                                                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg text-xs font-medium transition active:scale-95"
+                                                               >
+                                                                      <Eye className="w-3.5 h-3.5" /> Ver
+                                                               </button>
+                                                               <button
+                                                                      onClick={() => setPaymentClient(client)}
+                                                                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition shadow-sm active:scale-95"
+                                                               >
+                                                                      <DollarSign className="w-3.5 h-3.5" /> Cobrar
+                                                               </button>
+                                                               <button
+                                                                      onClick={() => handleWhatsApp(client)}
+                                                                      className="p-2 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition active:scale-95"
+                                                               >
+                                                                      <MessageCircle className="w-4 h-4" />
+                                                               </button>
+                                                        </div>
+                                                 </div>
+                                          );
+                                   })
+                            )}
+                     </div>
+
+                     {/* DESKTOP TABLE */}
+                     <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                             <div className="overflow-x-auto">
                                    <table className="w-full text-left border-collapse">
                                           <thead className="bg-slate-50 border-b border-slate-200">
@@ -216,15 +263,9 @@ export default function CurrentAccountsView() {
                                           </thead>
                                           <tbody className="divide-y divide-slate-100">
                                                  {loading && data.length === 0 ? (
-                                                        <tr>
-                                                               <td colSpan={columns.length} className="px-6 py-12 text-center text-slate-500 text-sm">Cargando cuentas...</td>
-                                                        </tr>
+                                                        <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-slate-500 text-sm">Cargando cuentas...</td></tr>
                                                  ) : table.getRowModel().rows.length === 0 ? (
-                                                        <tr>
-                                                               <td colSpan={columns.length} className="px-6 py-12 text-center text-slate-500 text-sm">
-                                                                      No se encontraron deudores.
-                                                               </td>
-                                                        </tr>
+                                                        <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-slate-500 text-sm">No se encontraron deudores.</td></tr>
                                                  ) : (
                                                         table.getRowModel().rows.map(row => (
                                                                <tr key={row.id} className="hover:bg-slate-50/80 transition-colors">
@@ -246,21 +287,18 @@ export default function CurrentAccountsView() {
                                           Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
                                    </span>
                                    <div className="flex gap-2">
-                                          <button
-                                                 onClick={() => table.previousPage()}
-                                                 disabled={!table.getCanPreviousPage()}
-                                                 className="p-2 rounded-lg border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                          >
-                                                 <ChevronLeft className="w-4 h-4" />
-                                          </button>
-                                          <button
-                                                 onClick={() => table.nextPage()}
-                                                 disabled={!table.getCanNextPage()}
-                                                 className="p-2 rounded-lg border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                          >
-                                                 <ChevronRight className="w-4 h-4" />
-                                          </button>
+                                          <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()} className="p-2 rounded-lg border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"><ChevronLeft className="w-4 h-4" /></button>
+                                          <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()} className="p-2 rounded-lg border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"><ChevronRight className="w-4 h-4" /></button>
                                    </div>
+                            </div>
+                     </div>
+
+                     {/* Mobile Pagination */}
+                     <div className="md:hidden flex items-center justify-between">
+                            <span className="text-xs text-slate-400">Pág. {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}</span>
+                            <div className="flex gap-2">
+                                   <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()} className="p-2 rounded-lg border bg-white disabled:opacity-50 active:scale-95 transition"><ChevronLeft className="w-4 h-4" /></button>
+                                   <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()} className="p-2 rounded-lg border bg-white disabled:opacity-50 active:scale-95 transition"><ChevronRight className="w-4 h-4" /></button>
                             </div>
                      </div>
 

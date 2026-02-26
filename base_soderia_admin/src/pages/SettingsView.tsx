@@ -157,15 +157,15 @@ export default function SettingsView() {
        };
 
        return (
-              <div className="space-y-8">
-                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-6 md:space-y-8">
+                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                             <div>
-                                   <h1 className="text-2xl font-bold text-slate-900">Configuración</h1>
-                                   <p className="text-slate-500">Gestiona tus credenciales y usuarios del sistema.</p>
+                                   <h1 className="text-xl md:text-2xl font-bold text-slate-900">Configuración</h1>
+                                   <p className="text-slate-500 text-sm">Gestiona tus credenciales y usuarios del sistema.</p>
                             </div>
                      </div>
 
-                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
                             {/* ── CHANGE PASSWORD ─────────────────────────── */}
                             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                                    <div className="p-6 border-b border-slate-100 flex items-center gap-3 bg-slate-50/50">
@@ -266,7 +266,7 @@ export default function SettingsView() {
                                                                                            <p className="text-xs text-slate-500">{user.full_name || 'Sin nombre completo'}</p>
                                                                                     </div>
                                                                              </div>
-                                                                             <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                             <div className="flex items-center gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                                                                     <button
                                                                                            onClick={() => openEditModal(user)}
                                                                                            className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
@@ -373,10 +373,10 @@ export default function SettingsView() {
                      {/* ── CONFIRM DELETE ────────────────────────────── */}
                      <ConfirmDialog
                             isOpen={isConfirmOpen}
-                            onClose={() => setIsConfirmOpen(false)}
+                            onCancel={() => setIsConfirmOpen(false)}
                             onConfirm={handleDeleteUser}
                             title="Eliminar Usuario"
-                            description={`¿Estás seguro que deseas eliminar al usuario ${userToDelete?.username}? Esta acción es permanente y no se puede deshacer.`}
+                            message={`¿Estás seguro que deseas eliminar al usuario ${userToDelete?.username}? Esta acción es permanente y no se puede deshacer.`}
                      />
               </div>
        );

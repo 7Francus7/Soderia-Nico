@@ -21,7 +21,8 @@ import {
        X,
        Calendar,
        Truck,
-       ChevronRight
+       ChevronRight,
+       DollarSign
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../components/ui/button";
@@ -53,7 +54,6 @@ interface Product {
 
 // --- Main Component ---
 
-// Mapa de estados en español
 const STATUS_LABELS: Record<string, string> = {
        draft: 'Borrador',
        confirmed: 'Confirmado',
@@ -110,7 +110,6 @@ export default function OrdersView() {
               if (!selectedClient || cart.length === 0) return;
 
               try {
-                     // 1. Create Order
                      const orderPayload = {
                             client_id: selectedClient.id,
                             items: cart.map(item => ({
@@ -123,12 +122,10 @@ export default function OrdersView() {
 
                      await api.post('/orders/', orderPayload);
 
-                     // 2. Refresh
                      toast.success("Pedido creado correctamente");
                      setIsModalOpen(false);
                      fetchData();
 
-                     // Reset Form
                      setSelectedClient(null);
                      setCart([]);
                      setSearchClient("");
@@ -174,7 +171,6 @@ export default function OrdersView() {
        const cartTotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
        const filteredClients = clients.filter(c => c.name.toLowerCase().includes(searchClient.toLowerCase()));
 
-       // Filtro global por nombre de cliente
        const filteredData = useMemo(() => {
               if (!globalFilter) return data;
               return data.filter(order => {
@@ -267,11 +263,12 @@ export default function OrdersView() {
        });
 
        return (
-              <div className="p-6 max-w-7xl mx-auto space-y-6">
-                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="space-y-4 md:space-y-6">
+                     {/* Header */}
+                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                             <div>
-                                   <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Pedidos</h1>
-                                   <p className="text-slate-500 text-sm mt-1">Gestión y seguimiento de pedidos.</p>
+                                   <h1 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">Pedidos</h1>
+                                   <p className="text-slate-500 text-sm mt-0.5">Gestión y seguimiento de pedidos.</p>
                             </div>
                             <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto shadow-lg shadow-blue-600/20">
                                    <Plus className="w-4 h-4 mr-2" /> Nuevo Pedido
@@ -279,8 +276,8 @@ export default function OrdersView() {
                      </div>
 
                      {/* Toolbar */}
-                     <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                            <div className="relative flex-1 max-w-sm">
+                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm">
+                            <div className="relative flex-1">
                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                    <input
                                           value={globalFilter}
@@ -289,11 +286,63 @@ export default function OrdersView() {
                                           className="pl-9 pr-4 py-2 w-full border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                    />
                             </div>
-                            <span className="text-sm text-slate-400">{filteredData.length} pedido{filteredData.length !== 1 ? 's' : ''}</span>
+                            <span className="text-sm text-slate-400 text-center sm:text-left">{filteredData.length} pedido{filteredData.length !== 1 ? 's' : ''}</span>
                      </div>
 
-                     {/* Table */}
-                     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                     {/* MOBILE CARDS */}
+                     <div className="md:hidden space-y-3">
+                            {loading ? (
+                                   <div className="text-center py-12 text-slate-400 text-sm">Cargando...</div>
+                            ) : filteredData.length === 0 ? (
+                                   <div className="text-center py-12 text-slate-400 text-sm">No hay pedidos.</div>
+                            ) : (
+                                   table.getRowModel().rows.map(row => {
+                                          const order = row.original;
+                                          const client = clients.find(c => c.id === order.client_id);
+                                          const statusColors: Record<string, string> = {
+                                                 draft: "bg-gray-100 text-gray-600",
+                                                 confirmed: "bg-blue-100 text-blue-700",
+                                                 delivered: "bg-green-100 text-green-700",
+                                                 cancelled: "bg-red-100 text-red-700"
+                                          };
+                                          return (
+                                                 <div key={order.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
+                                                        <div className="flex items-start justify-between mb-3">
+                                                               <div className="min-w-0 flex-1">
+                                                                      <div className="flex items-center gap-2 mb-0.5">
+                                                                             <span className="font-mono text-xs text-slate-400">#{order.id}</span>
+                                                                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusColors[order.status] || 'bg-gray-100'}`}>
+                                                                                    {STATUS_LABELS[order.status] || order.status}
+                                                                             </span>
+                                                                      </div>
+                                                                      <div className="font-semibold text-slate-800 truncate">{client?.name || `Cliente #${order.client_id}`}</div>
+                                                                      <div className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+                                                                             <Calendar className="w-3 h-3" />
+                                                                             {new Date(order.created_at).toLocaleDateString()}
+                                                                      </div>
+                                                               </div>
+                                                               <div className="text-right flex-shrink-0 ml-3">
+                                                                      <div className="text-lg font-bold text-slate-800">${order.total_amount.toLocaleString()}</div>
+                                                               </div>
+                                                        </div>
+                                                        <div className="flex gap-2 pt-2 border-t border-slate-50">
+                                                               {order.status !== 'delivered' && order.status !== 'cancelled' && (
+                                                                      <Button size="sm" className="flex-1 bg-slate-800 hover:bg-slate-900 text-white" onClick={() => { setDeliveryOrder(order); setIsDeliverModalOpen(true); }}>
+                                                                             <Truck className="w-3.5 h-3.5 mr-1" /> Entregar
+                                                                      </Button>
+                                                               )}
+                                                               <Button size="sm" variant="ghost" className="text-slate-400 hover:text-red-500" onClick={() => handleDeleteOrder(order.id)}>
+                                                                      <Trash2 className="w-3.5 h-3.5" />
+                                                               </Button>
+                                                        </div>
+                                                 </div>
+                                          );
+                                   })
+                            )}
+                     </div>
+
+                     {/* DESKTOP TABLE */}
+                     <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                             <div className="overflow-x-auto">
                                    <table className="w-full text-left border-collapse">
                                           <thead className="bg-slate-50 border-b border-slate-200">
@@ -339,16 +388,27 @@ export default function OrdersView() {
                             </div>
                      </div>
 
+                     {/* Mobile Pagination */}
+                     <div className="md:hidden flex items-center justify-between">
+                            <span className="text-xs text-slate-400">
+                                   Pág. {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
+                            </span>
+                            <div className="flex gap-2">
+                                   <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()} className="p-2 rounded-lg border bg-white disabled:opacity-50 active:scale-95 transition"><ChevronLeft className="w-4 h-4" /></button>
+                                   <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()} className="p-2 rounded-lg border bg-white disabled:opacity-50 active:scale-95 transition"><ChevronRight className="w-4 h-4" /></button>
+                            </div>
+                     </div>
+
                      {/* Create Order Modal */}
                      {isModalOpen && (
-                            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-                                   <div className="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-                                          <div className="flex justify-between items-center mb-6">
-                                                 <h2 className="text-xl font-bold text-slate-800">Nuevo Pedido</h2>
-                                                 <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+                            <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4 backdrop-blur-sm">
+                                   <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-2xl p-4 sm:p-6 shadow-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh]">
+                                          <div className="flex justify-between items-center mb-4 sm:mb-6">
+                                                 <h2 className="text-lg sm:text-xl font-bold text-slate-800">Nuevo Pedido</h2>
+                                                 <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 p-1"><X className="w-5 h-5" /></button>
                                           </div>
 
-                                          <div className="flex-1 overflow-y-auto space-y-6 pr-2">
+                                          <div className="flex-1 overflow-y-auto space-y-4 sm:space-y-6 pr-1">
                                                  {/* 1. Select Client */}
                                                  <div className="space-y-2">
                                                         <label className="text-sm font-semibold text-slate-700">Cliente</label>
@@ -358,14 +418,14 @@ export default function OrdersView() {
                                                                       <input
                                                                              type="text"
                                                                              placeholder="Buscar cliente..."
-                                                                             className="w-full pl-10 pr-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                                                                             className="w-full pl-10 pr-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
                                                                              value={searchClient}
                                                                              onChange={e => setSearchClient(e.target.value)}
                                                                       />
                                                                       {searchClient && (
                                                                              <div className="absolute top-full left-0 right-0 bg-white border mt-1 rounded-xl shadow-lg max-h-40 overflow-y-auto z-10">
                                                                                     {filteredClients.map(c => (
-                                                                                           <button key={c.id} onClick={() => { setSelectedClient(c); setSearchClient(""); }} className="w-full text-left px-4 py-2 hover:bg-slate-50 text-sm">
+                                                                                           <button key={c.id} onClick={() => { setSelectedClient(c); setSearchClient(""); }} className="w-full text-left px-4 py-2.5 hover:bg-slate-50 text-sm active:bg-slate-100">
                                                                                                   <div className="font-medium">{c.name}</div>
                                                                                                   <div className="text-xs text-slate-500">{c.address}</div>
                                                                                            </button>
@@ -375,11 +435,11 @@ export default function OrdersView() {
                                                                </div>
                                                         ) : (
                                                                <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-100 rounded-xl">
-                                                                      <div>
-                                                                             <div className="font-bold text-blue-900">{selectedClient.name}</div>
-                                                                             <div className="text-xs text-blue-600">{selectedClient.address}</div>
+                                                                      <div className="min-w-0 flex-1">
+                                                                             <div className="font-bold text-blue-900 truncate">{selectedClient.name}</div>
+                                                                             <div className="text-xs text-blue-600 truncate">{selectedClient.address}</div>
                                                                       </div>
-                                                                      <Button size="sm" variant="ghost" onClick={() => setSelectedClient(null)}>Cambiar</Button>
+                                                                      <Button size="sm" variant="ghost" onClick={() => setSelectedClient(null)} className="flex-shrink-0 ml-2">Cambiar</Button>
                                                                </div>
                                                         )}
                                                  </div>
@@ -394,14 +454,14 @@ export default function OrdersView() {
                                                                                     const qty = getQuantity(p.id);
                                                                                     return (
                                                                                            <div key={p.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
-                                                                                                  <div>
-                                                                                                         <div className="font-medium text-slate-800">{p.name}</div>
+                                                                                                  <div className="min-w-0 flex-1">
+                                                                                                         <div className="font-medium text-slate-800 text-sm truncate">{p.name}</div>
                                                                                                          <div className="text-xs text-slate-500">${p.price}</div>
                                                                                                   </div>
-                                                                                                  <div className="flex items-center gap-3">
-                                                                                                         <button onClick={() => removeFromCart(p.id)} disabled={qty === 0} className="p-1 rounded-md border hover:bg-slate-50 disabled:opacity-50"><Minus className="w-3 h-3" /></button>
+                                                                                                  <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-2">
+                                                                                                         <button onClick={() => removeFromCart(p.id)} disabled={qty === 0} className="p-1.5 rounded-md border hover:bg-slate-50 disabled:opacity-50 active:scale-95 transition"><Minus className="w-3 h-3" /></button>
                                                                                                          <span className="w-6 text-center font-medium text-sm">{qty}</span>
-                                                                                                         <button onClick={() => addToCart(p)} className="p-1 rounded-md bg-blue-600 text-white hover:bg-blue-700"><Plus className="w-3 h-3" /></button>
+                                                                                                         <button onClick={() => addToCart(p)} className="p-1.5 rounded-md bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition"><Plus className="w-3 h-3" /></button>
                                                                                                   </div>
                                                                                            </div>
                                                                                     )
@@ -412,10 +472,11 @@ export default function OrdersView() {
                                                  )}
                                           </div>
 
-                                          <div className="pt-6 mt-6 border-t flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                          {/* Footer */}
+                                          <div className="pt-4 sm:pt-6 mt-4 sm:mt-6 border-t flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                                                  <div className="flex justify-between w-full sm:w-auto sm:block">
                                                         <div className="text-xs text-slate-500 uppercase font-bold">Total</div>
-                                                        <div className="text-2xl font-bold text-slate-800">${cartTotal.toLocaleString()}</div>
+                                                        <div className="text-xl sm:text-2xl font-bold text-slate-800">${cartTotal.toLocaleString()}</div>
                                                  </div>
                                                  <div className="flex gap-3 w-full sm:w-auto">
                                                         <Button variant="ghost" onClick={() => setIsModalOpen(false)} className="flex-1 sm:flex-none">Cancelar</Button>
