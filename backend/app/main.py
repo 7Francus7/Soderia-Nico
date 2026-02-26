@@ -17,6 +17,7 @@ _base_origins = [
     "http://localhost",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://soderia-nico.vercel.app"
 ]
 
 frontend_url = os.getenv("FRONTEND_URL", "")
