@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
 
-
 interface ModalProps {
        isOpen: boolean;
        onClose: () => void;
@@ -16,7 +15,6 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
               };
               if (isOpen) {
                      window.addEventListener('keydown', handleEsc);
-                     // Prevent body scroll on mobile when modal is open
                      document.body.style.overflow = 'hidden';
               }
               return () => {
@@ -28,15 +26,21 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
        if (!isOpen) return null;
 
        return (
-              <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm transition-opacity">
-                     <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-lg overflow-hidden border border-slate-100 animate-in fade-in zoom-in duration-200 max-h-[95vh] sm:max-h-[90vh] flex flex-col">
-                            <div className="flex justify-between items-center p-4 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
-                                   <h3 className="text-base sm:text-lg font-bold text-slate-800 truncate pr-2">{title}</h3>
-                                   <button onClick={onClose} className="p-1.5 hover:bg-slate-200 rounded-full transition text-slate-500 flex-shrink-0">
+              <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                     <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] w-full sm:max-w-lg overflow-hidden border border-slate-100 animate-slide-in-up md:animate-scale-in max-h-[95vh] sm:max-h-[90vh] flex flex-col">
+                            {/* Modal Header */}
+                            <div className="flex justify-between items-center px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50/80 to-white/50 flex-shrink-0">
+                                   <h3 className="text-lg font-extrabold text-slate-800 tracking-tight truncate pr-4">{title}</h3>
+                                   <button
+                                          onClick={onClose}
+                                          className="p-2 hover:bg-slate-200/60 rounded-xl transition-all text-slate-400 hover:text-slate-600 flex-shrink-0 active:scale-90"
+                                   >
                                           <X className="w-5 h-5" />
                                    </button>
                             </div>
-                            <div className="p-4 sm:p-6 overflow-y-auto flex-1">
+
+                            {/* Modal Body */}
+                            <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
                                    {children}
                             </div>
                      </div>
