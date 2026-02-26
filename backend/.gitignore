@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Entorno virtual
+venv/
+env/
+.venv/
+
+# Variables de entorno (contienen secretos)
+.env
+.env.local
+.env.production
+
+# Base de datos local (en producción se usa PostgreSQL)
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs y debug
+*.log
+debug_*.py
+check_*.py
+fix_*.py
+test_output.txt
+seed.log
+
+# IDE
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

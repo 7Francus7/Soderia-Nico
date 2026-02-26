@@ -1,0 +1,53 @@
+# ── Patrón global ───────────────────────────────────
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Node
+node_modules/
+dist/
+.next/
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# Variables de entorno (NUNCA subir)
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Base de datos local
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# IDE
+.idea/
+.vscode/
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Scripts de debug temporales del backend
+backend/debug_*.py
+backend/check_*.py
+backend/fix_*.py
+backend/seed.log
+backend/test_output.txt
+backend/update_schema*.py
+backend/dump_*.py
+backend/verify_*.py
+backend/seed_*.py
+
+# Build artifacts
+backend/app/__pycache__/
