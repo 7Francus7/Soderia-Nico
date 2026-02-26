@@ -10,26 +10,11 @@ app = FastAPI(
 )
 
 # ── CORS ─────────────────────────────────────────────────────────────────────
-# En desarrollo: permite localhost.
-# En producción: agrega el dominio de Vercel via variable de entorno FRONTEND_URL.
-#   Ej: FRONTEND_URL=https://soderia-nico.vercel.app
-_base_origins = [
-    "http://localhost",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://soderia-nico.vercel.app"
-]
-
-frontend_url = os.getenv("FRONTEND_URL", "")
-if frontend_url:
-    _base_origins.append(frontend_url)
-    # Permitir también variantes con/sin trailing slash
-    _base_origins.append(frontend_url.rstrip("/"))
-
+# Permitir acceso desde cualquier origen (Totalmente automático, como en Courtops)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_base_origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
