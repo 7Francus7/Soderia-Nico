@@ -44,7 +44,7 @@ Documentación interactiva (Swagger): `http://localhost:8000/docs`
 
 1.  **Login Admin:**
     *   Ve a `/docs` -> `POST /api/v1/auth/access-token`
-    *   User: `admin`, Pass: `adminpassword`
+    *   User: `admin`, Pass: `123456`
     *   Copia el `access_token`.
 
 2.  **Listar Clientes (Protegido):**

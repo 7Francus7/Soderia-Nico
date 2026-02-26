@@ -42,7 +42,7 @@ echo   API Backend:  http://localhost:8000
 echo   Docs API:     http://localhost:8000/docs
 echo.
 echo   Usuario: admin
-echo   Pass:    adminpassword
+echo   Pass:    123456
 echo.
 echo  Podes cerrar esta ventana. El sistema sigue corriendo
 echo  en las otras dos ventanas abiertas.
