@@ -37,6 +37,7 @@ interface Client {
        address?: string;
        phone?: string;
        balance: number;
+       bottles_balance: number;
 }
 
 // --- Components ---
@@ -83,7 +84,7 @@ export default function CurrentAccountsView() {
               setLoading(true);
               try {
                      const response = await api.get('/clients/');
-                     const debtors = response.data.filter((c: Client) => c.balance > 0);
+                     const debtors = response.data.filter((c: Client) => c.balance > 0 || c.bottles_balance > 0);
                      setData(debtors);
               } catch (error) {
                      console.error("Error fetching clients:", error);
@@ -121,6 +122,19 @@ export default function CurrentAccountsView() {
                      accessorKey: "balance",
                      header: "Estado de Cuenta",
                      cell: ({ row }) => <BalanceBadge balance={row.original.balance} />
+              },
+              {
+                     accessorKey: "bottles_balance",
+                     header: "Envases Prestados",
+                     cell: ({ row }) => {
+                            const bb = row.original.bottles_balance;
+                            if (bb === 0) return <span className="text-slate-400 font-medium">-</span>;
+                            return (
+                                   <span className={`font-bold ${bb > 0 ? "text-amber-600" : "text-emerald-600"}`}>
+                                          {bb > 0 ? `${bb} ud. (Debe)` : `${Math.abs(bb)} ud. (Favor)`}
+                                   </span>
+                            );
+                     }
               },
               {
                      id: "actions",
@@ -220,8 +234,13 @@ export default function CurrentAccountsView() {
                                                                       <div className="text-xs text-slate-400 mt-0.5 truncate">{client.address}</div>
                                                                       {client.phone && <div className="text-xs text-slate-400 mt-0.5">{client.phone}</div>}
                                                                </div>
-                                                               <div className="flex-shrink-0 ml-3">
+                                                               <div className="flex-shrink-0 ml-3 text-right">
                                                                       <BalanceBadge balance={client.balance} />
+                                                                      {client.bottles_balance !== 0 && (
+                                                                             <div className={`mt-1 text-xs font-bold ${client.bottles_balance > 0 ? "text-amber-600" : "text-emerald-600"}`}>
+                                                                                    {client.bottles_balance} envases
+                                                                             </div>
+                                                                      )}
                                                                </div>
                                                         </div>
                                                         <div className="flex gap-2 pt-3 border-t border-slate-50">

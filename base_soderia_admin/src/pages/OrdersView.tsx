@@ -91,6 +91,11 @@ export default function OrdersView() {
        const [searchClient, setSearchClient] = useState("");
        const [statusFilter, setStatusFilter] = useState<string>("ALL");
 
+       // Quick Client Creation State
+       const [isCreatingClient, setIsCreatingClient] = useState(false);
+       const [newClientAddress, setNewClientAddress] = useState("");
+       const [newClientPhone, setNewClientPhone] = useState("");
+
        // Delete confirmation
        const [deleteOrderId, setDeleteOrderId] = useState<number | null>(null);
        const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -149,6 +154,30 @@ export default function OrdersView() {
                      setSearchClient("");
               } catch (error) {
                      toast.error("No se pudo crear el pedido");
+              }
+       };
+
+       const handleQuickCreateClient = async () => {
+              if (!searchClient.trim()) {
+                     toast.error("Ingresá el nombre del cliente");
+                     return;
+              }
+              try {
+                     const res = await api.post('/clients/', {
+                            name: searchClient,
+                            address: newClientAddress || "Sin especificar",
+                            phone: newClientPhone || ""
+                     });
+                     toast.success("Cliente creado correctamente");
+                     const newClient = res.data;
+                     setClients(prev => [...prev, newClient]);
+                     setSelectedClient(newClient);
+                     setSearchClient("");
+                     setIsCreatingClient(false);
+                     setNewClientAddress("");
+                     setNewClientPhone("");
+              } catch (error) {
+                     toast.error("Error al crear cliente rápido");
               }
        };
 
@@ -458,7 +487,7 @@ export default function OrdersView() {
                                                         </div>
                                                         <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">Nuevo Pedido</h2>
                                                  </div>
-                                                 <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 p-2 hover:bg-slate-100 rounded-xl transition"><X className="w-5 h-5" /></button>
+                                                 <button onClick={() => { setIsModalOpen(false); setIsCreatingClient(false); }} className="text-slate-400 hover:text-slate-600 p-2 hover:bg-slate-100 rounded-xl transition"><X className="w-5 h-5" /></button>
                                           </div>
 
                                           <div className="flex-1 overflow-y-auto space-y-5 sm:space-y-6 pr-1">
@@ -476,13 +505,45 @@ export default function OrdersView() {
                                                                              onChange={e => setSearchClient(e.target.value)}
                                                                       />
                                                                       {searchClient && (
-                                                                             <div className="absolute top-full left-0 right-0 bg-white border border-slate-200 mt-1 rounded-xl shadow-xl max-h-40 overflow-y-auto z-10">
+                                                                             <div className="absolute top-[80px] left-0 right-0 bg-white border border-slate-200 mt-1 rounded-xl shadow-xl max-h-60 overflow-y-auto z-10 flex flex-col">
                                                                                     {filteredClients.map(c => (
-                                                                                           <button key={c.id} onClick={() => { setSelectedClient(c); setSearchClient(""); }} className="w-full text-left px-4 py-3 hover:bg-slate-50 text-sm active:bg-slate-100 transition border-b border-slate-50 last:border-0">
+                                                                                           <button key={c.id} onClick={() => { setSelectedClient(c); setSearchClient(""); setIsCreatingClient(false); }} className="w-full text-left px-4 py-3 hover:bg-slate-50 text-sm active:bg-slate-100 transition border-b border-slate-50 last:border-0">
                                                                                                   <div className="font-semibold text-slate-800">{c.name}</div>
                                                                                                   <div className="text-xs text-slate-400">{c.address}</div>
                                                                                            </button>
                                                                                     ))}
+                                                                                    {filteredClients.length === 0 && !isCreatingClient && (
+                                                                                           <div className="p-4 text-center">
+                                                                                                  <p className="text-sm text-slate-500 mb-3">No se encontraron clientes.</p>
+                                                                                                  <Button size="sm" onClick={() => setIsCreatingClient(true)} className="bg-emerald-600 hover:bg-emerald-700 text-white w-full">
+                                                                                                         Crear "{searchClient}"
+                                                                                                  </Button>
+                                                                                           </div>
+                                                                                    )}
+                                                                                    {isCreatingClient && (
+                                                                                           <div className="p-4 bg-emerald-50/50 border-t border-emerald-100 flex flex-col gap-3">
+                                                                                                  <div className="text-sm font-bold text-emerald-800">Crear Nuevo Cliente</div>
+                                                                                                  <input
+                                                                                                         type="text"
+                                                                                                         placeholder="Dirección (opcional)"
+                                                                                                         className="input-premium !py-2 !text-sm"
+                                                                                                         value={newClientAddress}
+                                                                                                         onChange={(e) => setNewClientAddress(e.target.value)}
+                                                                                                         autoFocus
+                                                                                                  />
+                                                                                                  <input
+                                                                                                         type="text"
+                                                                                                         placeholder="Teléfono (opcional)"
+                                                                                                         className="input-premium !py-2 !text-sm"
+                                                                                                         value={newClientPhone}
+                                                                                                         onChange={(e) => setNewClientPhone(e.target.value)}
+                                                                                                  />
+                                                                                                  <div className="flex gap-2">
+                                                                                                         <Button size="sm" variant="ghost" onClick={() => setIsCreatingClient(false)} className="flex-1 text-slate-500 hover:bg-slate-200">Cancelar</Button>
+                                                                                                         <Button size="sm" onClick={handleQuickCreateClient} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white">Guardar</Button>
+                                                                                                  </div>
+                                                                                           </div>
+                                                                                    )}
                                                                              </div>
                                                                       )}
                                                                </div>
@@ -492,7 +553,7 @@ export default function OrdersView() {
                                                                              <div className="font-bold text-blue-900 truncate">{selectedClient.name}</div>
                                                                              <div className="text-xs text-blue-600 truncate">{selectedClient.address}</div>
                                                                       </div>
-                                                                      <Button size="sm" variant="ghost" onClick={() => setSelectedClient(null)} className="flex-shrink-0 ml-2 text-blue-600 hover:bg-blue-100">Cambiar</Button>
+                                                                      <Button size="sm" variant="ghost" onClick={() => { setSelectedClient(null); setIsCreatingClient(false); }} className="flex-shrink-0 ml-2 text-blue-600 hover:bg-blue-100">Cambiar</Button>
                                                                </div>
                                                         )}
                                                  </div>
@@ -532,7 +593,7 @@ export default function OrdersView() {
                                                         <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">${cartTotal.toLocaleString('es-AR')}</div>
                                                  </div>
                                                  <div className="flex gap-3 w-full sm:w-auto">
-                                                        <Button variant="ghost" onClick={() => setIsModalOpen(false)} className="flex-1 sm:flex-none">Cancelar</Button>
+                                                        <Button variant="ghost" onClick={() => { setIsModalOpen(false); setIsCreatingClient(false); }} className="flex-1 sm:flex-none">Cancelar</Button>
                                                         <Button onClick={handleCreateOrder} disabled={!selectedClient || cart.length === 0} className="flex-1 sm:flex-none bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-lg shadow-blue-600/20">
                                                                Confirmar Pedido
                                                         </Button>

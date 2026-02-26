@@ -176,6 +176,7 @@ class DeliverOrderRequest(SQLModel):
     payment_method: PaymentMethod
     notes: Optional[str] = None
     transfer_ref: Optional[str] = None
+    returned_bottles: int = 0
 
 @router.post("/{order_id}/deliver", response_model=OrderRead)
 def deliver_order(
@@ -204,13 +205,24 @@ def deliver_order(
     order.delivered_at = datetime.utcnow()
     
     # 2. Process Payment
+    client = session.get(Client, order.client_id)
+    if not client:
+        raise HTTPException(status_code=404, detail="Client not found associated with order")
+
+    # Calculate returnables taken
+    borrowed_bottles = 0
+    items = session.exec(select(OrderItem).where(OrderItem.order_id == order.id)).all()
+    for item in items:
+        product = session.get(Product, item.product_id)
+        if product and product.is_returnable:
+            borrowed_bottles += item.quantity
+            
+    # Update bottles balance (positive means they owe us)
+    client.bottles_balance += borrowed_bottles
+    client.bottles_balance -= deliver_in.returned_bottles
+
     if deliver_in.payment_method == PaymentMethod.CURRENT_ACCOUNT:
         order.payment_status = PaymentStatus.ON_ACCOUNT
-        
-        # Verify Client
-        client = session.get(Client, order.client_id)
-        if not client:
-             raise HTTPException(status_code=404, detail="Client not found associated with order")
         
         # Create Ledger Transaction (DEBIT)
         transaction = ClientTransaction(
@@ -226,7 +238,6 @@ def deliver_order(
         
         # Update Client Balance (Debt increases)
         client.balance += order.total_amount
-        session.add(client)
         
     else:
         # CASH or TRANSFER or MIXED
@@ -245,10 +256,9 @@ def deliver_order(
             reference_id=order.id,
             created_by=current_user.id
         )
-        # Note: Model doesn't have 'description' field in CashMovementBase? 
-        # Using 'concept' for main info. If needed, can add description/notes column later.
-        
         session.add(cash_movement)
+
+    session.add(client)
 
     session.add(order)
     

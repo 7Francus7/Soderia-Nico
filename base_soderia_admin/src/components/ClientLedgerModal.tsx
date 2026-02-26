@@ -8,6 +8,7 @@ interface Client {
        id: number;
        name: string;
        balance: number;
+       bottles_balance: number;
        address?: string;
        phone?: string;
 }

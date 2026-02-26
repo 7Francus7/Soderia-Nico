@@ -62,6 +62,7 @@ class ClientBase(SQLModel):
     phone: Optional[str] = None
     zone: Optional[str] = None
     balance: float = 0.0
+    bottles_balance: int = 0 # Positive means they OWE us bottles
 
 class Client(ClientBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

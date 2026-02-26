@@ -20,6 +20,7 @@ type PaymentMethod = "CASH" | "CURRENT_ACCOUNT" | "TRANSFER"; // MIXED excluded 
 
 export default function DeliverOrderModal({ order, isOpen, onClose, onSuccess }: Props) {
        const [submitting, setSubmitting] = useState(false);
+       const [returnedBottles, setReturnedBottles] = useState(0);
 
        if (!order) return null;
 
@@ -31,7 +32,8 @@ export default function DeliverOrderModal({ order, isOpen, onClose, onSuccess }:
               setSubmitting(true);
               try {
                      await api.post(`/orders/${order.id}/deliver`, {
-                            payment_method: method
+                            payment_method: method,
+                            returned_bottles: returnedBottles
                      });
                      toast.success("Pedido entregado y pago registrado");
                      onSuccess();
@@ -52,8 +54,21 @@ export default function DeliverOrderModal({ order, isOpen, onClose, onSuccess }:
                                    <p className="text-3xl font-bold text-slate-800 mt-1">${order.total_amount.toLocaleString()}</p>
                             </div>
 
+                            <div className="space-y-1.5">
+                                   <label className="text-sm font-bold text-slate-700">Envases Reintegrados por el Cliente</label>
+                                   <input
+                                          type="number"
+                                          min="0"
+                                          placeholder="Ej: 2"
+                                          className="input-premium w-full !py-3 !text-lg"
+                                          value={returnedBottles || ''}
+                                          onChange={(e) => setReturnedBottles(parseInt(e.target.value) || 0)}
+                                   />
+                                   <p className="text-xs text-slate-500">¿Cuántos sifones / bidones vacíos te devolvió?</p>
+                            </div>
+
                             <div>
-                                   <p className="text-sm text-slate-600 mb-3 font-medium">Seleccione Método de Pago:</p>
+                                   <p className="text-sm text-slate-600 mb-3 font-medium">Seleccione Método de Pago y Confirmar:</p>
                                    <div className="grid grid-cols-1 gap-3">
                                           <button
                                                  onClick={() => handleDeliver("CASH")}
