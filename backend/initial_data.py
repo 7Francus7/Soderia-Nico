@@ -17,7 +17,7 @@ def init_db():
             logger.info("Creating admin user...")
             admin_in = UserCreate(
                 username="admin", 
-                password="adminpassword", 
+                password="123456", 
                 role=RoleEnum.ADMIN,
                 full_name="Administrador"
             )

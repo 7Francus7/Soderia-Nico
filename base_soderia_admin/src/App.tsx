@@ -10,6 +10,7 @@ import DeliveriesView from './pages/DeliveriesView';
 import CurrentAccountsView from './pages/CurrentAccountsView';
 import ProductsView from './pages/ProductsView';
 import ClientsView from './pages/ClientsView';
+import SettingsView from './pages/SettingsView';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
        const { isAuthenticated } = useAuth();
@@ -66,6 +67,14 @@ function AppRoutes() {
                             <PrivateRoute>
                                    <DashboardLayout>
                                           <ClientsView />
+                                   </DashboardLayout>
+                            </PrivateRoute>
+                     } />
+
+                     <Route path="/settings" element={
+                            <PrivateRoute>
+                                   <DashboardLayout>
+                                          <SettingsView />
                                    </DashboardLayout>
                             </PrivateRoute>
                      } />

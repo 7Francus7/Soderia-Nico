@@ -3,7 +3,7 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
        LogOut, LayoutDashboard, ShoppingCart, Truck,
-       Package, Users, CreditCard, Wifi, Menu, X
+       Package, Users, CreditCard, Wifi, Menu, X, Settings
 } from "lucide-react";
 
 const navItems = [
@@ -13,6 +13,7 @@ const navItems = [
        { name: "Cta. Cte.", icon: CreditCard, path: "/current-accounts" },
        { name: "Productos", icon: Package, path: "/products" },
        { name: "Clientes", icon: Users, path: "/clients" },
+       { name: "Configuración", icon: Settings, path: "/settings" },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
