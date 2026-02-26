@@ -50,7 +50,7 @@ interface Delivery {
 // --- Components ---
 
 const StatusPill = ({ status }: { status: string }) => {
-       const isCompleted = status === 'completed' || status === 'delivered';
+       const isCompleted = status === 'DELIVERED' || status === 'completed';
        return (
               <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] md:text-xs font-semibold border w-fit shadow-sm ${isCompleted
                      ? "bg-emerald-100 text-emerald-700 border-emerald-200"
@@ -121,7 +121,7 @@ export default function DeliveriesView() {
               try {
                      const res = await api.get('/orders/');
                      const allOrders = res.data;
-                     const ready = allOrders.filter((o: any) => o.status === 'confirmed' && !o.delivery_id);
+                     const ready = allOrders.filter((o: any) => o.status === 'CONFIRMED' && !o.delivery_id);
                      setAvailableOrders(ready);
               } catch (error) {
                      console.error(error);
@@ -462,7 +462,7 @@ function DeliveryDetailModal({ delivery, onClose, onDeliver }: { delivery: Deliv
                                                  <div key={order.id} className="p-3 sm:p-4 border border-slate-100 rounded-xl bg-slate-50 hover:border-blue-100 transition group">
                                                         <div className="flex justify-between items-start mb-2">
                                                                <span className="font-bold text-slate-700 text-sm">Pedido #{order.id}</span>
-                                                               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                                                               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
                                                                       {order.status}
                                                                </span>
                                                         </div>
@@ -471,7 +471,7 @@ function DeliveryDetailModal({ delivery, onClose, onDeliver }: { delivery: Deliv
                                                                <Box className="w-3 h-3 flex-shrink-0" /> {order.client?.address}
                                                         </div>
 
-                                                        {order.status !== 'delivered' && (
+                                                        {order.status !== 'DELIVERED' && (
                                                                <Button onClick={() => onDeliver(order)} className="w-full bg-slate-900 hover:bg-slate-800 text-white h-9 text-xs shadow-lg shadow-slate-900/10 active:scale-[0.98] transition">
                                                                       Entregar
                                                                </Button>

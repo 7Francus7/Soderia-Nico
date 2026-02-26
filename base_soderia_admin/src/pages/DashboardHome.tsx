@@ -16,8 +16,10 @@ interface DashboardStats {
 
 interface Delivery {
     id: number;
-    order_id: number;
     status: string;
+    created_at: string;
+    orders_count: number;
+    delivered_count: number;
 }
 
 export default function DashboardHome() {
@@ -30,9 +32,11 @@ export default function DashboardHome() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const statsResponse = await api.get('/dashboard/dashboard-stats');
+                const [statsResponse, deliveriesResponse] = await Promise.all([
+                    api.get('/dashboard/dashboard-stats'),
+                    api.get('/deliveries/?limit=5')
+                ]);
                 setStats(statsResponse.data);
-                const deliveriesResponse = await api.get('/deliveries/?limit=5&sort=-id');
                 setRecentDeliveries(deliveriesResponse.data);
             } catch (error: any) {
                 setError("No se pudieron cargar los datos del dashboard. " + (error.message || ""));
@@ -191,23 +195,28 @@ export default function DashboardHome() {
                 <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100">
                     <h3 className="text-base md:text-lg font-bold text-slate-800 mb-4">Repartos Recientes</h3>
                     <div className="space-y-3 md:space-y-4">
-                        {recentDeliveries.map((d) => (
-                            <div key={d.id} className="flex items-center justify-between p-2.5 md:p-3 bg-slate-50 rounded-xl border border-slate-100">
-                                <div className="flex items-center gap-2 md:gap-3 min-w-0">
-                                    <div className="bg-white p-1.5 md:p-2 rounded-lg border border-slate-200 flex-shrink-0">
-                                        <Truck className="w-4 h-4 md:w-5 md:h-5 text-slate-500" />
+                        {recentDeliveries.map((d) => {
+                            const isComplete = d.orders_count > 0 && d.delivered_count === d.orders_count;
+                            return (
+                                <div key={d.id} className="flex items-center justify-between p-2.5 md:p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                                        <div className="bg-white p-1.5 md:p-2 rounded-lg border border-slate-200 flex-shrink-0">
+                                            <Truck className="w-4 h-4 md:w-5 md:h-5 text-slate-500" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="font-semibold text-slate-800 text-xs md:text-sm truncate">Reparto #{d.id}</p>
+                                            <p className="text-[10px] md:text-xs text-slate-500">
+                                                {d.delivered_count}/{d.orders_count} entregados · {new Date(d.created_at).toLocaleDateString()}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="min-w-0">
-                                        <p className="font-semibold text-slate-800 text-xs md:text-sm truncate">Pedido #{d.order_id}</p>
-                                        <p className="text-[10px] md:text-xs text-slate-500">{d.status.replace('_', ' ').toUpperCase()}</p>
-                                    </div>
+                                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isComplete ? 'bg-green-500' :
+                                        d.status === 'PENDING' ? 'bg-yellow-400' :
+                                            d.status === 'IN_TRANSIT' ? 'bg-blue-500' : 'bg-slate-400'
+                                        }`} />
                                 </div>
-                                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${d.status === 'pending' ? 'bg-yellow-400' :
-                                    d.status === 'in_transit' ? 'bg-blue-500' :
-                                        d.status === 'delivered' ? 'bg-green-500' : 'bg-red-500'
-                                    }`} />
-                            </div>
-                        ))}
+                            );
+                        })}
                         {recentDeliveries.length === 0 && (
                             <div className="text-center text-slate-400 text-sm py-4">No hay actividad reciente.</div>
                         )}

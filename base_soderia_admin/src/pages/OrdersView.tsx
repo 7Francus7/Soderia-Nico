@@ -55,10 +55,10 @@ interface Product {
 // --- Main Component ---
 
 const STATUS_LABELS: Record<string, string> = {
-       draft: 'Borrador',
-       confirmed: 'Confirmado',
-       delivered: 'Entregado',
-       cancelled: 'Cancelado',
+       DRAFT: 'Borrador',
+       CONFIRMED: 'Confirmado',
+       DELIVERED: 'Entregado',
+       CANCELLED: 'Cancelado',
 };
 
 export default function OrdersView() {
@@ -120,9 +120,14 @@ export default function OrdersView() {
                             notes: "Generado desde Panel Admin"
                      };
 
-                     await api.post('/orders/', orderPayload);
+                     const res = await api.post('/orders/', orderPayload);
 
-                     toast.success("Pedido creado correctamente");
+                     // Auto-confirm the order so it's ready for delivery
+                     try {
+                            await api.put(`/orders/${res.data.id}/confirm`);
+                     } catch (_) { /* If confirm fails, order stays as DRAFT */ }
+
+                     toast.success("Pedido creado y confirmado");
                      setIsModalOpen(false);
                      fetchData();
 
@@ -214,10 +219,10 @@ export default function OrdersView() {
                      cell: ({ getValue }) => {
                             const status = getValue() as string;
                             const colors: Record<string, string> = {
-                                   draft: "bg-gray-100 text-gray-600",
-                                   confirmed: "bg-blue-100 text-blue-700",
-                                   delivered: "bg-green-100 text-green-700",
-                                   cancelled: "bg-red-100 text-red-700"
+                                   DRAFT: "bg-gray-100 text-gray-600",
+                                   CONFIRMED: "bg-blue-100 text-blue-700",
+                                   DELIVERED: "bg-green-100 text-green-700",
+                                   CANCELLED: "bg-red-100 text-red-700"
                             };
                             return (
                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${colors[status] || "bg-gray-100"}`}>
@@ -236,7 +241,7 @@ export default function OrdersView() {
                      header: "Acciones",
                      cell: ({ row }) => (
                             <div className="flex items-center justify-end gap-2">
-                                   {row.original.status !== 'delivered' && row.original.status !== 'cancelled' && (
+                                   {row.original.status !== 'DELIVERED' && row.original.status !== 'CANCELLED' && (
                                           <Button size="sm" className="bg-slate-800 hover:bg-slate-900 text-white" onClick={() => { setDeliveryOrder(row.original); setIsDeliverModalOpen(true); }}>
                                                  <Truck className="w-3 h-3 mr-1.5" /> Entregar
                                           </Button>
@@ -300,10 +305,10 @@ export default function OrdersView() {
                                           const order = row.original;
                                           const client = clients.find(c => c.id === order.client_id);
                                           const statusColors: Record<string, string> = {
-                                                 draft: "bg-gray-100 text-gray-600",
-                                                 confirmed: "bg-blue-100 text-blue-700",
-                                                 delivered: "bg-green-100 text-green-700",
-                                                 cancelled: "bg-red-100 text-red-700"
+                                                 DRAFT: "bg-gray-100 text-gray-600",
+                                                 CONFIRMED: "bg-blue-100 text-blue-700",
+                                                 DELIVERED: "bg-green-100 text-green-700",
+                                                 CANCELLED: "bg-red-100 text-red-700"
                                           };
                                           return (
                                                  <div key={order.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
@@ -326,7 +331,7 @@ export default function OrdersView() {
                                                                </div>
                                                         </div>
                                                         <div className="flex gap-2 pt-2 border-t border-slate-50">
-                                                               {order.status !== 'delivered' && order.status !== 'cancelled' && (
+                                                               {order.status !== 'DELIVERED' && order.status !== 'CANCELLED' && (
                                                                       <Button size="sm" className="flex-1 bg-slate-800 hover:bg-slate-900 text-white" onClick={() => { setDeliveryOrder(order); setIsDeliverModalOpen(true); }}>
                                                                              <Truck className="w-3.5 h-3.5 mr-1" /> Entregar
                                                                       </Button>

@@ -84,7 +84,8 @@ def read_orders(
         query = query.where(Order.client_id == client_id)
     if status:
         query = query.where(Order.status == status)
-        
+    
+    query = query.order_by(Order.created_at.desc())
     orders = session.exec(query.offset(skip).limit(limit)).all()
     return orders
 
@@ -255,6 +256,61 @@ def deliver_order(
     # If order belongs to a delivery, we check if all orders are done? 
     # For now, we leave Delivery status simple or derived.
     
+    session.commit()
+    session.refresh(order)
+    return order
+
+
+@router.delete("/{order_id}", response_model=dict)
+def delete_order(
+    order_id: int,
+    session: Session = Depends(deps.get_session),
+    current_user: User = Depends(deps.get_current_user),
+) -> Any:
+    """
+    Delete an order (only if DRAFT or CONFIRMED, not DELIVERED).
+    """
+    order = session.get(Order, order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if order.status == OrderStatus.DELIVERED:
+        raise HTTPException(status_code=400, detail="No se puede eliminar un pedido ya entregado")
+    
+    # Remove order items first
+    items = session.exec(select(OrderItem).where(OrderItem.order_id == order_id)).all()
+    for item in items:
+        session.delete(item)
+    
+    # Unlink from delivery if applicable
+    if order.delivery_id:
+        order.delivery_id = None
+        session.add(order)
+        session.commit()
+    
+    session.delete(order)
+    session.commit()
+    return {"message": "Pedido eliminado correctamente"}
+
+
+@router.put("/{order_id}/cancel", response_model=OrderRead)
+def cancel_order(
+    order_id: int,
+    session: Session = Depends(deps.get_session),
+    current_user: User = Depends(deps.get_current_user),
+) -> Any:
+    """
+    Cancel an order.
+    """
+    order = session.get(Order, order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if order.status == OrderStatus.DELIVERED:
+        raise HTTPException(status_code=400, detail="No se puede cancelar un pedido ya entregado")
+    
+    order.status = OrderStatus.CANCELLED
+    session.add(order)
     session.commit()
     session.refresh(order)
     return order
