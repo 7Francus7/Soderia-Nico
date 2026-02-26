@@ -268,12 +268,12 @@ export default function OrdersView() {
 
        return (
               <div className="p-6 max-w-7xl mx-auto space-y-6">
-                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <div>
                                    <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Pedidos</h1>
                                    <p className="text-slate-500 text-sm mt-1">Gestión y seguimiento de pedidos.</p>
                             </div>
-                            <Button onClick={() => setIsModalOpen(true)} className="shadow-lg shadow-blue-600/20">
+                            <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto shadow-lg shadow-blue-600/20">
                                    <Plus className="w-4 h-4 mr-2" /> Nuevo Pedido
                             </Button>
                      </div>
@@ -412,14 +412,14 @@ export default function OrdersView() {
                                                  )}
                                           </div>
 
-                                          <div className="pt-6 mt-6 border-t flex justify-between items-center">
-                                                 <div>
+                                          <div className="pt-6 mt-6 border-t flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                                 <div className="flex justify-between w-full sm:w-auto sm:block">
                                                         <div className="text-xs text-slate-500 uppercase font-bold">Total</div>
                                                         <div className="text-2xl font-bold text-slate-800">${cartTotal.toLocaleString()}</div>
                                                  </div>
-                                                 <div className="flex gap-3">
-                                                        <Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
-                                                        <Button onClick={handleCreateOrder} disabled={!selectedClient || cart.length === 0}>
+                                                 <div className="flex gap-3 w-full sm:w-auto">
+                                                        <Button variant="ghost" onClick={() => setIsModalOpen(false)} className="flex-1 sm:flex-none">Cancelar</Button>
+                                                        <Button onClick={handleCreateOrder} disabled={!selectedClient || cart.length === 0} className="flex-1 sm:flex-none">
                                                                Confirmar Pedido
                                                         </Button>
                                                  </div>

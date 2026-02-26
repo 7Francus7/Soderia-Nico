@@ -277,16 +277,16 @@ export default function DeliveriesView() {
 
        return (
               <div className="p-6 max-w-7xl mx-auto space-y-6">
-                     <div className="flex justify-between items-center pb-6 border-b border-slate-100">
+                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
                             <div>
                                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Repartos</h1>
                                    <p className="text-slate-500 text-sm mt-1">Gestión de hojas de ruta y entregas agrupadas.</p>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 w-full sm:w-auto">
                                    <Button variant="outline" onClick={fetchData} className="border-slate-200 text-slate-600 hover:bg-white hover:text-blue-600">
                                           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                                    </Button>
-                                   <Button onClick={() => setIsCreateModalOpen(true)} className="bg-slate-900 hover:bg-slate-800 text-white shadow-xl shadow-slate-900/20">
+                                   <Button onClick={() => setIsCreateModalOpen(true)} className="flex-1 sm:flex-none bg-slate-900 hover:bg-slate-800 text-white shadow-xl shadow-slate-900/20">
                                           <Plus className="w-4 h-4 mr-2" /> Nuevo Reparto
                                    </Button>
                             </div>
@@ -294,34 +294,36 @@ export default function DeliveriesView() {
 
                      {/* Table */}
                      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                            <table className="w-full text-left">
-                                   <thead className="bg-slate-50/50 border-b border-slate-100">
-                                          {table.getHeaderGroups().map(headerGroup => (
-                                                 <tr key={headerGroup.id}>
-                                                        {headerGroup.headers.map(header => (
-                                                               <th key={header.id} className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">
-                                                                      {flexRender(header.column.columnDef.header, header.getContext())}
-                                                               </th>
-                                                        ))}
-                                                 </tr>
-                                          ))}
-                                   </thead>
-                                   <tbody className="divide-y divide-slate-50">
-                                          {data.length === 0 ? (
-                                                 <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-slate-400">No hay repartos creados.</td></tr>
-                                          ) : (
-                                                 table.getRowModel().rows.map(row => (
-                                                        <tr key={row.id} className="hover:bg-slate-50/50 transition">
-                                                               {row.getVisibleCells().map(cell => (
-                                                                      <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
-                                                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                                      </td>
+                            <div className="overflow-x-auto">
+                                   <table className="w-full text-left">
+                                          <thead className="bg-slate-50/50 border-b border-slate-100">
+                                                 {table.getHeaderGroups().map(headerGroup => (
+                                                        <tr key={headerGroup.id}>
+                                                               {headerGroup.headers.map(header => (
+                                                                      <th key={header.id} className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">
+                                                                             {flexRender(header.column.columnDef.header, header.getContext())}
+                                                                      </th>
                                                                ))}
                                                         </tr>
-                                                 ))
-                                          )}
-                                   </tbody>
-                            </table>
+                                                 ))}
+                                          </thead>
+                                          <tbody className="divide-y divide-slate-50">
+                                                 {data.length === 0 ? (
+                                                        <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-slate-400">No hay repartos creados.</td></tr>
+                                                 ) : (
+                                                        table.getRowModel().rows.map(row => (
+                                                               <tr key={row.id} className="hover:bg-slate-50/50 transition">
+                                                                      {row.getVisibleCells().map(cell => (
+                                                                             <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                                                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                                             </td>
+                                                                      ))}
+                                                               </tr>
+                                                        ))
+                                                 )}
+                                          </tbody>
+                                   </table>
+                            </div>
                      </div>
 
                      {/* Create Modal */}

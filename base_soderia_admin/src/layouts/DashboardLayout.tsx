@@ -167,7 +167,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             {/* ── BOTTOM NAV (mobile only) ──────────────── */}
                             <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-slate-200 shadow-lg">
                                    <div className="grid grid-cols-6 h-16">
-                                          {navItems.map((item) => {
+                                          {navItems.filter(item => item.name !== "Configuración").map((item) => {
                                                  const isActive = location.pathname === item.path;
                                                  return (
                                                         <Link
