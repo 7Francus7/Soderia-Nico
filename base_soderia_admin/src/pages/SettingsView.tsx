@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import { Settings as SettingsIcon, Key, UserPlus, Users, Trash2, ShieldCheck, UserCheck } from "lucide-react";
 import api from "../api/axios";
 import { toast } from "sonner";
@@ -15,9 +16,9 @@ interface User {
 }
 
 export default function SettingsView() {
+       const { isAdmin } = useAuth();
        const [users, setUsers] = useState<User[]>([]);
        const [loading, setLoading] = useState(false);
-       const [isAdmin, setIsAdmin] = useState(false);
 
        // Change password state
        const [currentPassword, setCurrentPassword] = useState("");
@@ -37,18 +38,8 @@ export default function SettingsView() {
        const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
        useEffect(() => {
-              fetchCurrentUser();
               fetchUsers();
        }, []);
-
-       const fetchCurrentUser = async () => {
-              try {
-                     const res = await api.get("/users/me");
-                     setIsAdmin(res.data.role === "ADMIN");
-              } catch (error) {
-                     console.error("Error fetching current user", error);
-              }
-       };
 
        const fetchUsers = async () => {
               try {

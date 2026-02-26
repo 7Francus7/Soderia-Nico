@@ -27,6 +27,7 @@ import {
 import { toast } from "sonner";
 import { Button } from "../components/ui/button";
 import DeliverOrderModal from "../components/DeliverOrderModal";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 // --- Types ---
 
@@ -80,6 +81,11 @@ export default function OrdersView() {
        const [deliveryOrder, setDeliveryOrder] = useState<Order | null>(null);
        const [cart, setCart] = useState<{ product: Product; quantity: number }[]>([]);
        const [searchClient, setSearchClient] = useState("");
+       const [statusFilter, setStatusFilter] = useState<string>("ALL");
+
+       // Delete confirmation
+       const [deleteOrderId, setDeleteOrderId] = useState<number | null>(null);
+       const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
        // Fetch Data
        const fetchData = async () => {
@@ -140,13 +146,25 @@ export default function OrdersView() {
        };
 
        const handleDeleteOrder = async (orderId: number) => {
-              if (!confirm("¿Estás seguro de eliminar este pedido?")) return;
               try {
                      await api.delete(`/orders/${orderId}`);
                      toast.success("Pedido eliminado");
                      fetchData();
               } catch (error) {
                      toast.error("No se pudo eliminar el pedido");
+              } finally {
+                     setIsConfirmOpen(false);
+                     setDeleteOrderId(null);
+              }
+       };
+
+       const handleCancelOrder = async (orderId: number) => {
+              try {
+                     await api.put(`/orders/${orderId}/cancel`);
+                     toast.success("Pedido cancelado");
+                     fetchData();
+              } catch (error) {
+                     toast.error("No se pudo cancelar el pedido");
               }
        };
 
@@ -177,12 +195,20 @@ export default function OrdersView() {
        const filteredClients = clients.filter(c => c.name.toLowerCase().includes(searchClient.toLowerCase()));
 
        const filteredData = useMemo(() => {
-              if (!globalFilter) return data;
-              return data.filter(order => {
-                     const clientName = clients.find(c => c.id === order.client_id)?.name?.toLowerCase() || '';
-                     return clientName.includes(globalFilter.toLowerCase());
-              });
-       }, [data, clients, globalFilter]);
+              let result = data;
+              // Filter by status
+              if (statusFilter !== "ALL") {
+                     result = result.filter(order => order.status === statusFilter);
+              }
+              // Filter by client name search
+              if (globalFilter) {
+                     result = result.filter(order => {
+                            const clientName = clients.find(c => c.id === order.client_id)?.name?.toLowerCase() || '';
+                            return clientName.includes(globalFilter.toLowerCase());
+                     });
+              }
+              return result;
+       }, [data, clients, globalFilter, statusFilter]);
 
        // --- Columns ---
        const columns = useMemo<ColumnDef<Order>[]>(() => [
@@ -246,7 +272,7 @@ export default function OrdersView() {
                                                  <Truck className="w-3 h-3 mr-1.5" /> Entregar
                                           </Button>
                                    )}
-                                   <Button size="sm" variant="ghost" className="hover:text-red-600" onClick={() => handleDeleteOrder(row.original.id)}>
+                                   <Button size="sm" variant="ghost" className="hover:text-red-600" onClick={() => { setDeleteOrderId(row.original.id); setIsConfirmOpen(true); }}>
                                           <Trash2 className="w-4 h-4" />
                                    </Button>
                             </div>
@@ -294,6 +320,15 @@ export default function OrdersView() {
                             <span className="text-sm text-slate-400 text-center sm:text-left">{filteredData.length} pedido{filteredData.length !== 1 ? 's' : ''}</span>
                      </div>
 
+                     {/* Status Filter Tabs */}
+                     <div className="flex gap-1.5 overflow-x-auto pb-0.5">
+                            {[{ key: 'ALL', label: 'Todos' }, { key: 'CONFIRMED', label: 'Confirmados' }, { key: 'DELIVERED', label: 'Entregados' }, { key: 'CANCELLED', label: 'Cancelados' }, { key: 'DRAFT', label: 'Borradores' }].map(tab => (
+                                   <button key={tab.key} onClick={() => { setStatusFilter(tab.key); setPagination(p => ({ ...p, pageIndex: 0 })); }} className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${statusFilter === tab.key ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+                                          {tab.label}
+                                   </button>
+                            ))}
+                     </div>
+
                      {/* MOBILE CARDS */}
                      <div className="md:hidden space-y-3">
                             {loading ? (
@@ -336,7 +371,7 @@ export default function OrdersView() {
                                                                              <Truck className="w-3.5 h-3.5 mr-1" /> Entregar
                                                                       </Button>
                                                                )}
-                                                               <Button size="sm" variant="ghost" className="text-slate-400 hover:text-red-500" onClick={() => handleDeleteOrder(order.id)}>
+                                                               <Button size="sm" variant="ghost" className="text-slate-400 hover:text-red-500" onClick={() => { setDeleteOrderId(order.id); setIsConfirmOpen(true); }}>
                                                                       <Trash2 className="w-3.5 h-3.5" />
                                                                </Button>
                                                         </div>
@@ -493,6 +528,15 @@ export default function OrdersView() {
                                    </div>
                             </div>
                      )}
+
+                     {/* Delete Confirmation */}
+                     <ConfirmDialog
+                            isOpen={isConfirmOpen}
+                            onCancel={() => { setIsConfirmOpen(false); setDeleteOrderId(null); }}
+                            onConfirm={() => deleteOrderId && handleDeleteOrder(deleteOrderId)}
+                            title="Eliminar Pedido"
+                            message={`¿Estás seguro de eliminar el pedido #${deleteOrderId}? Esta acción no se puede deshacer.`}
+                     />
 
                      {/* Deliver Order Modal */}
                      <DeliverOrderModal

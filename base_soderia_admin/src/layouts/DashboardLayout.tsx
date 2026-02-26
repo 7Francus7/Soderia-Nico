@@ -17,7 +17,7 @@ const navItems = [
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-       const { logout, username } = useAuth();
+       const { logout, username, userRole } = useAuth();
        const navigate = useNavigate();
        const location = useLocation();
        const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -122,7 +122,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                           </div>
                                           <div className="overflow-hidden flex-1">
                                                  <p className="text-sm font-semibold truncate text-white">{username}</p>
-                                                 <p className="text-xs text-slate-400">Administrador</p>
+                                                 <p className="text-xs text-slate-400">{userRole === "ADMIN" ? "Administrador" : userRole === "CHOFER" ? "Chofer" : userRole === "SECRETARIA" ? "Secretaria" : "Usuario"}</p>
                                           </div>
                                    </div>
                                    <button
