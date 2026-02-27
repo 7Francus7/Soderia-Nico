@@ -132,7 +132,7 @@ function ClientCard({ client, delay }: { client: any; delay: number }) {
                                                  <span className="truncate">{client.address}</span>
                                           </div>
                                    </div>
-                                   <div className="w-12 h-12 rounded-2.5xl bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-500 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-500 shrink-0 shadow-2xl">
+                                   <div className="w-12 h-12 rounded-3xl bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-500 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-500 shrink-0 shadow-2xl">
                                           <ChevronRight className="w-6 h-6" />
                                    </div>
                             </div>

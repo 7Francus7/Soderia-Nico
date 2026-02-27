@@ -47,7 +47,7 @@ export default function Sidebar() {
                                    <motion.div
                                           whileHover={{ rotate: 180 }}
                                           transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                                          className="w-14 h-14 bg-primary/20 rounded-2.5xl flex items-center justify-center text-primary shadow-2xl shadow-primary/20"
+                                          className="w-14 h-14 bg-primary/20 rounded-3xl flex items-center justify-center text-primary shadow-2xl shadow-primary/20"
                                    >
                                           <Droplets className="w-8 h-8" />
                                    </motion.div>
@@ -72,7 +72,7 @@ export default function Sidebar() {
                                                  key={item.href}
                                                  href={item.href}
                                                  className={cn(
-                                                        "group flex items-center gap-4 px-5 py-4 rounded-2.5xl transition-all duration-300 relative overflow-hidden",
+                                                        "group flex items-center gap-4 px-5 py-4 rounded-3xl transition-all duration-300 relative overflow-hidden",
                                                         isActive
                                                                ? "bg-primary text-primary-foreground shadow-2xl shadow-primary/40 font-black italic"
                                                                : "text-slate-400 hover:bg-white/5 hover:text-white font-bold hover:translate-x-1"
@@ -110,7 +110,7 @@ export default function Sidebar() {
 
                             <button
                                    onClick={() => signOut()}
-                                   className="flex items-center gap-4 px-6 py-4 w-full rounded-2.5xl text-rose-500/50 font-black text-xs uppercase tracking-widest hover:bg-rose-500/10 hover:text-rose-500 transition-all group"
+                                   className="flex items-center gap-4 px-6 py-4 w-full rounded-3xl text-rose-500/50 font-black text-xs uppercase tracking-widest hover:bg-rose-500/10 hover:text-rose-500 transition-all group"
                             >
                                    <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                                    <span>Apagar Sistema</span>

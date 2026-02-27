@@ -149,7 +149,7 @@ function MetricCard({ label, value, icon, description, color, href }: any) {
                      <div className="absolute -right-8 -top-8 w-40 h-40 bg-current opacity-[0.03] rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />
 
                      <div className="flex justify-between items-start mb-10">
-                            <div className="p-4 rounded-2.5xl bg-slate-950 border border-white/10 shadow-2xl group-hover:rotate-12 transition-all duration-500">
+                            <div className="p-4 rounded-3xl bg-slate-950 border border-white/10 shadow-2xl group-hover:rotate-12 transition-all duration-500">
                                    {icon}
                             </div>
                             <div className="opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
@@ -179,7 +179,7 @@ function QuickActionCard({ title, subtitle, icon, href, gradient }: any) {
 
                             <div className="flex items-center gap-6 relative z-10">
                                    <div className={cn(
-                                          "w-16 h-16 rounded-2.5xl flex items-center justify-center text-white shadow-2xl bg-gradient-to-br transition-all duration-500 group-hover:-rotate-6 group-hover:scale-110",
+                                          "w-16 h-16 rounded-3xl flex items-center justify-center text-white shadow-2xl bg-gradient-to-br transition-all duration-500 group-hover:-rotate-6 group-hover:scale-110",
                                           gradient
                                    )}>
                                           {icon}
