@@ -28,7 +28,7 @@ export default async function Home() {
                                           <Sparkles className="w-3.5 h-3.5 fill-primary" />
                                           <span className="text-[10px] font-black uppercase tracking-[0.4em]">Sodería Nico OS v2.4.0</span>
                                    </div>
-                                   <h2 className="text-6xl lg:text-8xl font-black tracking-tightest leading-[0.85] text-gradient">
+                                   <h2 className="text-5xl lg:text-8xl font-black tracking-tightest leading-[0.85] text-gradient">
                                           Hola, <br /><span className="italic">{userName.split(' ')[0]}</span>.
                                    </h2>
                                    <p className="text-slate-400 font-bold text-xl max-w-2xl flex items-center gap-3">
@@ -143,24 +143,24 @@ function MetricCard({ label, value, icon, description, color, href }: any) {
 
        const Content = (
               <Card className={cn(
-                     "p-10 rounded-[3rem] border bg-gradient-to-br transition-all duration-700 group relative overflow-hidden h-full flex flex-col justify-between hover-pro glass-card",
+                     "p-6 lg:p-10 rounded-[2.5rem] lg:rounded-[3rem] border bg-gradient-to-br transition-all duration-700 group relative overflow-hidden h-full flex flex-col justify-between hover-pro glass-card",
                      colors[color]
               )}>
                      <div className="absolute -right-8 -top-8 w-40 h-40 bg-current opacity-[0.03] rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />
 
-                     <div className="flex justify-between items-start mb-10">
-                            <div className="p-4 rounded-3xl bg-slate-950 border border-white/10 shadow-2xl group-hover:rotate-12 transition-all duration-500">
+                     <div className="flex justify-between items-start mb-8 lg:mb-10">
+                            <div className="p-3 lg:p-4 rounded-2xl lg:rounded-3xl bg-slate-950 border border-white/10 shadow-2xl group-hover:rotate-12 transition-all duration-500">
                                    {icon}
                             </div>
-                            <div className="opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                   <ChevronRight className="w-8 h-8" />
+                            <div className="opacity-0 lg:group-hover:opacity-100 transition-all translate-x-4 lg:group-hover:translate-x-0">
+                                   <ChevronRight className="w-6 h-6 lg:w-8 lg:h-8" />
                             </div>
                      </div>
 
                      <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-2">{label}</p>
-                            <h4 className="text-5xl lg:text-6xl font-black tracking-tightest mb-3 leading-none">{value}</h4>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">{description}</p>
+                            <p className="text-[9px] lg:text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-2">{label}</p>
+                            <h4 className="text-4xl lg:text-6xl font-black tracking-tightest mb-3 leading-none">{value}</h4>
+                            <p className="text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">{description}</p>
                      </div>
               </Card>
        );

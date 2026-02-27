@@ -42,18 +42,18 @@ export default function AnalyticsDashboard() {
        return (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                      {/* Sales Chart */}
-                     <Card className="p-8 border-white/5 bg-card/40 backdrop-blur-3xl rounded-[2.5rem] overflow-hidden group">
+                     <Card className="p-6 lg:p-10 border-white/5 bg-card/40 backdrop-blur-3xl rounded-[2.5rem] lg:rounded-[3rem] overflow-hidden group shadow-2xl">
                             <div className="flex justify-between items-start mb-8">
                                    <div>
-                                          <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mb-1">Rendimiento Semanal</p>
-                                          <h3 className="text-3xl font-black italic">Ventas <span className="text-primary">Netas</span></h3>
+                                          <p className="text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mb-1">Rendimiento Semanal</p>
+                                          <h3 className="text-2xl lg:text-3xl font-black italic">Ventas <span className="text-primary">Netas</span></h3>
                                    </div>
-                                   <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary">
-                                          <TrendingUp className="w-6 h-6" />
+                                   <div className="w-10 h-10 lg:w-12 lg:h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary shadow-xl">
+                                          <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6" />
                                    </div>
                             </div>
 
-                            <div className="h-[300px] w-full">
+                            <div className="h-[250px] lg:h-[300px] w-full">
                                    <ResponsiveContainer width="100%" height="100%">
                                           <AreaChart data={data}>
                                                  <defs>
@@ -67,13 +67,13 @@ export default function AnalyticsDashboard() {
                                                         dataKey="date"
                                                         axisLine={false}
                                                         tickLine={false}
-                                                        tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 'bold' }}
+                                                        tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 9, fontWeight: 'bold' }}
                                                         tickFormatter={(str) => str.split('-')[2]}
                                                  />
                                                  <YAxis hide />
                                                  <Tooltip
-                                                        contentStyle={{ backgroundColor: '#1e1e1e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px' }}
-                                                        itemStyle={{ color: '#fff', fontWeight: 'bold' }}
+                                                        contentStyle={{ backgroundColor: 'rgba(15,15,20,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', backdropFilter: 'blur(20px)' }}
+                                                        itemStyle={{ color: '#fff', fontWeight: 'bold', fontSize: '12px' }}
                                                  />
                                                  <Area
                                                         type="monotone"
@@ -89,18 +89,18 @@ export default function AnalyticsDashboard() {
                      </Card>
 
                      {/* Collections Chart */}
-                     <Card className="p-8 border-white/5 bg-card/40 backdrop-blur-3xl rounded-[2.5rem] overflow-hidden group">
+                     <Card className="p-6 lg:p-10 border-white/5 bg-card/40 backdrop-blur-3xl rounded-[2.5rem] lg:rounded-[3rem] overflow-hidden group shadow-2xl">
                             <div className="flex justify-between items-start mb-8">
                                    <div>
-                                          <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mb-1">Flujo de Caja</p>
-                                          <h3 className="text-3xl font-black italic">Cobranzas <span className="text-emerald-500">Efectivas</span></h3>
+                                          <p className="text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mb-1">Flujo de Caja</p>
+                                          <h3 className="text-2xl lg:text-3xl font-black italic">Cobranzas <span className="text-emerald-500">Efectivas</span></h3>
                                    </div>
-                                   <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-500">
-                                          <DollarSign className="w-6 h-6" />
+                                   <div className="w-10 h-10 lg:w-12 lg:h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-500 shadow-xl">
+                                          <DollarSign className="w-5 h-5 lg:w-6 lg:h-6" />
                                    </div>
                             </div>
 
-                            <div className="h-[300px] w-full">
+                            <div className="h-[250px] lg:h-[300px] w-full">
                                    <ResponsiveContainer width="100%" height="100%">
                                           <BarChart data={data}>
                                                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
@@ -108,19 +108,19 @@ export default function AnalyticsDashboard() {
                                                         dataKey="date"
                                                         axisLine={false}
                                                         tickLine={false}
-                                                        tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 'bold' }}
+                                                        tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 9, fontWeight: 'bold' }}
                                                         tickFormatter={(str) => str.split('-')[2]}
                                                  />
                                                  <YAxis hide />
                                                  <Tooltip
-                                                        contentStyle={{ backgroundColor: '#1e1e1e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px' }}
+                                                        contentStyle={{ backgroundColor: 'rgba(15,15,20,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', backdropFilter: 'blur(20px)' }}
                                                         cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                                                  />
                                                  <Bar
                                                         dataKey="collections"
                                                         fill="#10b981"
-                                                        radius={[12, 12, 0, 0]}
-                                                        barSize={40}
+                                                        radius={[10, 10, 0, 0]}
+                                                        barSize={30}
                                                  />
                                           </BarChart>
                                    </ResponsiveContainer>

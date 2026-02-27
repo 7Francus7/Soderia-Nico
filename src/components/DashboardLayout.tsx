@@ -37,7 +37,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
                      <main className={cn(
                             "flex-1 relative z-10 transition-all duration-700",
-                            "lg:ml-80 pt-16 lg:pt-0 pb-24 lg:pb-0"
+                            "lg:ml-80 pt-20 lg:pt-0 pb-24 lg:pb-0"
                      )}>
                             <div className="max-w-[1700px] mx-auto min-h-screen p-4 lg:p-8">
                                    <AnimatePresence mode="wait">
