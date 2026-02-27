@@ -14,7 +14,7 @@ import {
        LogOut,
        Settings,
        Droplets,
-       Circle,
+       UserCircle,
        ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -29,7 +29,7 @@ const navItems = [
        { name: "Cuentas", href: "/cuentas", icon: CreditCard },
        { name: "Caja", href: "/caja", icon: Banknote },
        { name: "Productos", href: "/productos", icon: Box },
-       { name: "Sistemas", href: "/usuarios", icon: ShieldCheck },
+       { name: "Ajustes", href: "/usuarios", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -37,34 +37,22 @@ export default function Sidebar() {
        const { data: session } = useSession();
 
        return (
-              <aside className="fixed left-0 top-0 bottom-0 w-80 bg-slate-950/40 backdrop-blur-3xl border-r border-white/5 z-[100] hidden lg:flex flex-col p-8 overflow-hidden transition-all duration-700 font-sans">
-                     {/* UI-UX-PRO-MAX: Organic Glow Backdrop */}
-                     <div className="absolute top-[-20%] left-[-20%] w-[150%] h-[150%] bg-[radial-gradient(circle_at_center,rgba(var(--primary),0.05)_0%,transparent_70%)] pointer-events-none" />
-
+              <aside className="fixed left-0 top-0 bottom-0 w-72 bg-card border-r border-border z-[100] hidden lg:flex flex-col p-6 overflow-hidden">
                      {/* Brand Header */}
-                     <div className="relative group mb-14">
-                            <Link href="/" className="flex items-center gap-4 px-2">
-                                   <motion.div
-                                          whileHover={{ rotate: 180 }}
-                                          transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                                          className="w-14 h-14 bg-primary/20 rounded-3xl flex items-center justify-center text-primary shadow-2xl shadow-primary/20"
-                                   >
-                                          <Droplets className="w-8 h-8" />
-                                   </motion.div>
-                                   <div className="space-y-0.5">
-                                          <h1 className="text-2xl font-black tracking-tightest leading-none">
-                                                 SODERÍA <span className="text-primary italic">NICO</span>
-                                          </h1>
-                                          <div className="flex items-center gap-2">
-                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                                 <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-30">OS v2.4.0</p>
-                                          </div>
-                                   </div>
-                            </Link>
-                     </div>
+                     <Link href="/" className="flex items-center gap-3 px-3 mb-12 mt-2">
+                            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-sm">
+                                   <Droplets className="w-6 h-6" />
+                            </div>
+                            <div className="space-y-0.5">
+                                   <h1 className="text-xl font-bold tracking-tight">
+                                          Sodería <span className="text-muted-foreground font-medium">Nico</span>
+                                   </h1>
+                                   <p className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest">v2.4.0 Estable</p>
+                            </div>
+                     </Link>
 
                      {/* Navigation List */}
-                     <nav className="flex-1 space-y-2 relative z-10 overflow-y-auto no-scrollbar py-4">
+                     <nav className="flex-1 space-y-1 overflow-y-auto no-scrollbar pb-10">
                             {navItems.map((item) => {
                                    const isActive = pathname === item.href;
                                    return (
@@ -72,48 +60,40 @@ export default function Sidebar() {
                                                  key={item.href}
                                                  href={item.href}
                                                  className={cn(
-                                                        "group flex items-center gap-4 px-5 py-4 rounded-3xl transition-all duration-300 relative overflow-hidden",
+                                                        "group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium relative",
                                                         isActive
-                                                               ? "bg-primary text-primary-foreground shadow-2xl shadow-primary/40 font-black italic"
-                                                               : "text-slate-400 hover:bg-white/5 hover:text-white font-bold hover:translate-x-1"
+                                                               ? "bg-primary/5 text-primary"
+                                                               : "text-muted-foreground hover:bg-muted hover:text-foreground"
                                                  )}
                                           >
                                                  {isActive && (
-                                                        <motion.div
-                                                               layoutId="nav-active"
-                                                               className="absolute inset-0 bg-primary z-[-1]"
-                                                               transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                                        />
+                                                        <div className="absolute left-0 w-1 h-5 bg-primary rounded-full" />
                                                  )}
-                                                 <item.icon className={cn("w-5 h-5 transition-transform duration-500", isActive ? "scale-110" : "opacity-30 group-hover:opacity-100")} />
-                                                 <span className="tracking-tight text-[15px]">{item.name}</span>
-                                                 {isActive && (
-                                                        <ChevronRight className="absolute right-5 w-4 h-4 opacity-50" />
-                                                 )}
+                                                 <item.icon className={cn("w-4.5 h-4.5", isActive ? "text-primary" : "text-muted-foreground/50 group-hover:text-foreground")} />
+                                                 <span>{item.name}</span>
                                           </Link>
                                    );
                             })}
                      </nav>
 
-                     {/* User Profile Section */}
-                     <div className="mt-auto pt-8 border-t border-white/5 space-y-6 relative z-10">
-                            <div className="flex items-center gap-4 px-4 py-3 rounded-[2rem] bg-white/5 border border-white/5 group hover:bg-white/10 transition-all cursor-default overflow-hidden shimmer">
-                                   <div className="w-11 h-11 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-400 group-hover:scale-105 transition-transform border border-white/5">
-                                          <Circle className="w-5 h-5 fill-current" />
+                     {/* Profile & Logout */}
+                     <div className="mt-auto space-y-4 pt-6 border-t border-border">
+                            <div className="flex items-center gap-3 px-3">
+                                   <div className="w-10 h-10 rounded-full bg-muted border border-border flex items-center justify-center text-muted-foreground">
+                                          <UserCircle className="w-6 h-6" />
                                    </div>
-                                   <div className="flex-1 overflow-hidden">
-                                          <p className="text-sm font-black tracking-tight truncate">{session?.user?.name || "Administrador"}</p>
-                                          <p className="text-[9px] font-black uppercase tracking-widest opacity-30">Root Access</p>
+                                   <div className="flex-1 min-w-0">
+                                          <p className="text-sm font-semibold text-foreground truncate">{session?.user?.name || "Administrador"}</p>
+                                          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Root Access</p>
                                    </div>
-                                   <Settings className="w-4 h-4 opacity-20 hover:opacity-100 transition-opacity cursor-pointer animate-spin-slow" />
                             </div>
 
                             <button
                                    onClick={() => signOut()}
-                                   className="flex items-center gap-4 px-6 py-4 w-full rounded-3xl text-rose-500/50 font-black text-xs uppercase tracking-widest hover:bg-rose-500/10 hover:text-rose-500 transition-all group"
+                                   className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-muted-foreground hover:bg-rose-500/5 hover:text-rose-600 transition-all text-sm font-medium"
                             >
-                                   <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                                   <span>Apagar Sistema</span>
+                                   <LogOut className="w-4.5 h-4.5" />
+                                   <span>Cerrar Sesión</span>
                             </button>
                      </div>
               </aside>

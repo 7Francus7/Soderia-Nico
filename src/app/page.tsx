@@ -21,23 +21,24 @@ export default async function Home() {
        const userName = session?.user?.name || "Nico";
 
        return (
-              <div className="space-y-12 animate-fade-in-up">
+              <div className="max-w-7xl mx-auto space-y-16 py-8 px-4 sm:px-6 lg:px-8 animate-fade-in-up">
                      {/* Welcome Section */}
-                     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 border-b border-white/5 pb-10">
-                            <div className="space-y-4">
-                                   <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary shadow-[0_0_20px_rgba(var(--primary),0.1)]">
-                                          <Sparkles className="w-3.5 h-3.5 fill-primary" />
-                                          <span className="text-[10px] font-black uppercase tracking-[0.4em]">Sodería Nico OS v2.4.0</span>
+                     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
+                            <div className="space-y-6">
+                                   <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 text-primary">
+                                          <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                                          <span className="text-[11px] font-medium uppercase tracking-wider">v2.4.0 — Estable</span>
                                    </div>
-                                   <h2 className="text-5xl lg:text-8xl font-black tracking-tightest leading-[0.85] text-gradient">
-                                          Hola, <br /><span className="italic">{userName.split(' ')[0]}</span>.
-                                   </h2>
-                                   <p className="text-slate-400 font-bold text-xl max-w-2xl flex items-center gap-3">
-                                          <Calendar className="w-5 h-5 text-primary" />
-                                          {new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}
-                                          <span className="w-1 h-1 rounded-full bg-white/20" />
-                                          <span className="text-foreground">{activeDeliveries} repartos hoy</span>
-                                   </p>
+                                   <div className="space-y-2">
+                                          <h2 className="text-4xl md:text-6xl font-semibold tracking-tight text-foreground">
+                                                 Hola, <span className="text-muted-foreground">{userName.split(' ')[0]}</span>.
+                                          </h2>
+                                          <p className="text-muted-foreground font-medium text-lg flex items-center gap-2">
+                                                 {new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                                                 <span className="text-border">|</span>
+                                                 {activeDeliveries} repartos hoy
+                                          </p>
+                                   </div>
                             </div>
                             <div className="flex items-center gap-4">
                                    <NewOrderButton />
@@ -45,33 +46,29 @@ export default async function Home() {
                      </header>
 
                      {/* Primary Metrics Grid */}
-                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             <MetricCard
-                                   label="Cartera Clientes"
+                                   label="Clientes"
                                    value={clientCount.toString()}
-                                   icon={<Users className="w-6 h-6" />}
-                                   description="Base de datos global"
+                                   icon={<Users className="w-5 h-5" />}
                                    color="blue"
                             />
                             <MetricCard
-                                   label="Ventas Entregadas"
+                                   label="Ventas"
                                    value={orderCount.toString()}
-                                   icon={<Truck className="w-6 h-6" />}
-                                   description="Pedidos exitosos"
+                                   icon={<Truck className="w-5 h-5" />}
                                    color="purple"
                             />
                             <MetricCard
-                                   label="Crédito en Calle"
+                                   label="Crédito"
                                    value={`$${(totalDebt._sum.balance || 0).toLocaleString()}`}
-                                   icon={<CreditCard className="w-6 h-6" />}
-                                   description="Deuda por cobrar"
+                                   icon={<CreditCard className="w-5 h-5" />}
                                    color="rose"
                             />
                             <MetricCard
-                                   label="Status Operativo"
+                                   label="Activos"
                                    value={activeDeliveries.toString()}
-                                   icon={<Activity className="w-6 h-6" />}
-                                   description="Repartos en curso"
+                                   icon={<Activity className="w-5 h-5" />}
                                    color="amber"
                                    href="/repartos"
                             />
@@ -79,61 +76,56 @@ export default async function Home() {
 
                      {/* Strategic Navigation Grid */}
                      <section className="space-y-8">
-                            <div className="flex flex-col gap-1">
-                                   <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-primary/60">Módulos Críticos</h3>
-                                   <h4 className="text-3xl font-black tracking-tighter">Navegación Estratégica</h4>
+                            <div className="space-y-1">
+                                   <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Operaciones</h3>
+                                   <h4 className="text-2xl font-semibold tracking-tight">Acciones Rápidas</h4>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                    <QuickActionCard
                                           title="Repartos"
                                           subtitle="Rutas y Logística"
-                                          icon={<Truck className="w-7 h-7" />}
+                                          icon={<Truck className="w-5 h-5" />}
                                           href="/repartos"
-                                          gradient="from-blue-600 to-indigo-600"
+                                          color="blue"
                                    />
                                    <QuickActionCard
                                           title="Clientes"
                                           subtitle="Fichas y Saldos"
-                                          icon={<Users className="w-7 h-7" />}
+                                          icon={<Users className="w-5 h-5" />}
                                           href="/clientes"
-                                          gradient="from-sky-600 to-blue-600"
+                                          color="sky"
                                    />
                                    <QuickActionCard
                                           title="Cuentas"
                                           subtitle="Cobranzas"
-                                          icon={<CreditCard className="w-7 h-7" />}
+                                          icon={<CreditCard className="w-5 h-5" />}
                                           href="/cuentas"
-                                          gradient="from-rose-600 to-orange-600"
+                                          color="rose"
                                    />
                                    <QuickActionCard
                                           title="Caja"
                                           subtitle="Finanzas"
-                                          icon={<Banknote className="w-7 h-7" />}
+                                          icon={<Banknote className="w-5 h-5" />}
                                           href="/caja"
-                                          gradient="from-emerald-600 to-teal-600"
+                                          color="emerald"
                                    />
                             </div>
                      </section>
 
                      {/* Analytics & Command Center */}
-                     <section className="space-y-10 pt-10">
-                            <div className="flex items-center justify-between border-b border-white/5 pb-8">
-                                   <div className="space-y-1 text-right ml-auto">
-                                          <h3 className="text-3xl font-black tracking-tightest flex items-center gap-3 justify-end italic text-gradient">
-                                                 Centro de COMANDO
-                                                 <Activity className="w-8 h-8 text-primary animate-pulse" />
-                                          </h3>
-                                          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.5em]">Consola de Operaciones en tiempo real</p>
+                     <section className="space-y-8 border-t border-border pt-16">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                   <div className="space-y-1">
+                                          <h3 className="text-2xl font-semibold tracking-tight">Análisis Operativo</h3>
+                                          <p className="text-muted-foreground text-sm font-medium">Panel de control y actividad en tiempo real</p>
                                    </div>
                             </div>
 
-                            <div className="grid grid-cols-1 xl:grid-cols-3 gap-10 items-start">
-                                   <div className="xl:col-span-2 space-y-10">
-                                          <div className="p-1 rounded-[3.5rem] bg-gradient-to-br from-white/5 to-transparent shadow-3xl hover-pro">
-                                                 <AnalyticsDashboard />
-                                          </div>
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                                   <div className="lg:col-span-2 space-y-8">
+                                          <AnalyticsDashboard />
                                    </div>
-                                   <div className="xl:col-span-1">
+                                   <div className="lg:col-span-1">
                                           <LiveActivityMonitor />
                                    </div>
                             </div>
@@ -142,64 +134,63 @@ export default async function Home() {
        );
 }
 
-function MetricCard({ label, value, icon, description, color, href }: any) {
+function MetricCard({ label, value, icon, color, href }: any) {
        const colors: any = {
-              blue: "from-blue-500/20 to-transparent border-blue-500/20 text-blue-500",
-              purple: "from-primary/20 to-transparent border-primary/20 text-primary",
-              rose: "from-rose-500/20 to-transparent border-rose-500/20 text-rose-500",
-              amber: "from-amber-500/20 to-transparent border-amber-500/20 text-amber-500",
+              blue: "border-blue-500/20 text-blue-600 dark:text-blue-400 bg-blue-500/5",
+              purple: "border-purple-500/20 text-purple-600 dark:text-purple-400 bg-purple-500/5",
+              rose: "border-rose-500/20 text-rose-600 dark:text-rose-400 bg-rose-500/5",
+              amber: "border-amber-500/20 text-amber-600 dark:text-amber-400 bg-amber-500/5",
        };
 
        const Content = (
               <Card className={cn(
-                     "p-6 lg:p-10 rounded-[2.5rem] lg:rounded-[3rem] border bg-gradient-to-br transition-all duration-700 group relative overflow-hidden h-full flex flex-col justify-between hover-pro glass-card",
+                     "p-8 rounded-2xl border transition-all duration-300 group relative flex flex-col justify-between hover:shadow-lg hover:border-primary/20 bg-card",
                      colors[color]
               )}>
-                     <div className="absolute -right-8 -top-8 w-40 h-40 bg-current opacity-[0.03] rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />
-
-                     <div className="flex justify-between items-start mb-8 lg:mb-10">
-                            <div className="p-3 lg:p-4 rounded-2xl lg:rounded-3xl bg-slate-950 border border-white/10 shadow-2xl group-hover:rotate-12 transition-all duration-500">
+                     <div className="flex justify-between items-start mb-6">
+                            <div className="p-2.5 rounded-xl bg-background border border-border shadow-sm group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
                                    {icon}
                             </div>
-                            <div className="opacity-0 lg:group-hover:opacity-100 transition-all translate-x-4 lg:group-hover:translate-x-0">
-                                   <ChevronRight className="w-6 h-6 lg:w-8 lg:h-8" />
-                            </div>
+                            {href && (
+                                   <div className="opacity-0 group-hover:opacity-100 transition-all">
+                                          <ArrowRight className="w-4 h-4" />
+                                   </div>
+                            )}
                      </div>
 
                      <div>
-                            <p className="text-[9px] lg:text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-2">{label}</p>
-                            <h4 className="text-4xl lg:text-6xl font-black tracking-tightest mb-3 leading-none">{value}</h4>
-                            <p className="text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">{description}</p>
+                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">{label}</p>
+                            <h4 className="text-3xl font-semibold tracking-tight text-foreground">{value}</h4>
                      </div>
               </Card>
        );
 
-       return href ? <Link href={href} className="block group">{Content}</Link> : Content;
+       return href ? <Link href={href} className="block">{Content}</Link> : Content;
 }
 
-function QuickActionCard({ title, subtitle, icon, href, gradient }: any) {
-       return (
-              <Link href={href} className="group block hover-pro">
-                     <Card className="p-8 rounded-[3rem] border border-white/5 bg-slate-900/40 backdrop-blur-3xl hover:bg-slate-900/60 hover:border-white/20 transition-all duration-500 shadow-2xl overflow-hidden relative shimmer">
-                            <div className={cn(
-                                   "absolute top-0 right-0 w-40 h-40 bg-gradient-to-br opacity-[0.07] rounded-bl-[120px] transition-all duration-700 group-hover:scale-150 group-hover:opacity-20",
-                                   gradient
-                            )} />
+function QuickActionCard({ title, subtitle, icon, href, color }: any) {
+       const colors: any = {
+              blue: "hover:bg-blue-500/5 hover:border-blue-500/20",
+              sky: "hover:bg-sky-500/5 hover:border-sky-500/20",
+              rose: "hover:bg-rose-500/5 hover:border-rose-500/20",
+              emerald: "hover:bg-emerald-500/5 hover:border-emerald-500/20",
+       }
 
-                            <div className="flex items-center gap-6 relative z-10">
-                                   <div className={cn(
-                                          "w-16 h-16 rounded-3xl flex items-center justify-center text-white shadow-2xl bg-gradient-to-br transition-all duration-500 group-hover:-rotate-6 group-hover:scale-110",
-                                          gradient
-                                   )}>
+       return (
+              <Link href={href} className="group block">
+                     <Card className={cn(
+                            "p-6 rounded-2xl border border-border bg-card transition-all duration-300 hover:shadow-md",
+                            colors[color]
+                     )}>
+                            <div className="flex items-center gap-4">
+                                   <div className="w-12 h-12 rounded-xl border border-border bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300 flex-shrink-0">
                                           {icon}
                                    </div>
-                                   <div className="flex-1">
-                                          <div className="flex items-center gap-2">
-                                                 <h4 className="font-black text-2xl tracking-tighter uppercase italic">{title}</h4>
-                                                 <ArrowRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
-                                          </div>
-                                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-tight">{subtitle}</p>
+                                   <div className="flex-1 min-w-0">
+                                          <h4 className="font-semibold text-lg tracking-tight text-foreground">{title}</h4>
+                                          <p className="text-xs text-muted-foreground truncate">{subtitle}</p>
                                    </div>
+                                   <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0" />
                             </div>
                      </Card>
               </Link>
