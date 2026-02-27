@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { toast } from "sonner";
-import QuickPaymentModal from "@/components/QuickPaymentModal";
+import QuickPaymentModal from "./QuickPaymentModal";
 
 export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] }) {
        const [search, setSearch] = useState("");
