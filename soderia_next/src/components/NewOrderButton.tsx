@@ -33,8 +33,8 @@ export default function NewOrderButton() {
 
        const loadData = async () => {
               const [cRes, pRes] = await Promise.all([getClients(), getProducts()]);
-              if (cRes.success) setClients(cRes.data);
-              if (pRes.success) setProducts(pRes.data);
+              if (cRes.success && cRes.data) setClients(cRes.data);
+              if (pRes.success && pRes.data) setProducts(pRes.data);
        };
 
        const addItem = (product: any) => {
