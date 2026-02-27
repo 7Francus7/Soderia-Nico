@@ -5,6 +5,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+       /* UI-UX-PRO-MAX: Midnight Ocean Palette */
        --color-background: hsl(var(--background));
        --color-foreground: hsl(var(--foreground));
 
@@ -43,7 +44,7 @@
        --color-chart-4: hsl(var(--chart-4));
        --color-chart-5: hsl(var(--chart-5));
 
-       /* Custom Animations */
+       /* PRO-MAX Animations */
        --animate-infinite-scroll: infinite-scroll 25s linear infinite;
        --animate-shine: shine 3s ease-in-out infinite;
        --animate-float: float 6s ease-in-out infinite;
@@ -51,6 +52,30 @@
        --animate-marquee: infinite-scroll 30s linear infinite;
        --animate-orbit: orbit 10s linear infinite;
        --animate-blob: blob 7s infinite;
+       --animate-fade-in-up: fade-in-up 0.5s ease-out forwards;
+       --animate-glass-shimmer: glass-shimmer 2s infinite;
+
+       @keyframes fade-in-up {
+              0% {
+                     opacity: 0;
+                     transform: translateY(20px);
+              }
+
+              100% {
+                     opacity: 1;
+                     transform: translateY(0);
+              }
+       }
+
+       @keyframes glass-shimmer {
+              0% {
+                     transform: translateX(-100%);
+              }
+
+              100% {
+                     transform: translateX(100%);
+              }
+       }
 
        @keyframes infinite-scroll {
               from {
@@ -122,74 +147,83 @@
               --card-foreground: 240 10% 10%;
               --popover: 0 0% 100%;
               --popover-foreground: 240 10% 10%;
-              --primary: 262 83% 58%;
+              --primary: 230 100% 60%;
+              /* Vivid Blue */
               --primary-foreground: 0 0% 100%;
               --secondary: 240 5% 94%;
               --secondary-foreground: 240 10% 15%;
               --muted: 240 5% 94%;
               --muted-foreground: 240 5% 45%;
-              --accent: 25 95% 53%;
+              --accent: 250 100% 65%;
+              /* Indigo */
               --accent-foreground: 0 0% 100%;
               --destructive: 0 84% 60%;
               --destructive-foreground: 0 0% 100%;
               --border: 240 6% 90%;
               --input: 240 6% 90%;
-              --ring: 262 83% 58%;
-              --radius: 1rem;
-              --chart-1: 262 83% 58%;
-              --chart-2: 25 95% 53%;
-              --chart-3: 173 58% 39%;
-              --chart-4: 43 74% 66%;
-              --chart-5: 27 87% 67%;
+              --ring: 230 100% 60%;
+              --radius: 1.25rem;
        }
 
        .dark {
               color-scheme: dark;
-              --background: 250 24% 4%;
-              --foreground: 0 0% 98%;
-              --card: 250 24% 7%;
-              --card-foreground: 0 0% 98%;
-              --popover: 250 24% 7%;
-              --popover-foreground: 0 0% 98%;
-              --primary: 263 90% 70%;
-              --primary-foreground: 250 24% 4%;
-              --secondary: 250 20% 12%;
-              --secondary-foreground: 0 0% 98%;
-              --muted: 250 20% 12%;
-              --muted-foreground: 250 10% 65%;
-              --accent: 25 95% 60%;
-              --accent-foreground: 250 24% 4%;
-              --destructive: 0 62.8% 30.6%;
-              --destructive-foreground: 0 0% 98%;
-              --border: 250 20% 14%;
-              --input: 250 20% 14%;
-              --ring: 263 90% 70%;
-              --chart-1: 263 90% 70%;
-              --chart-2: 25 95% 60%;
-              --chart-3: 173 58% 39%;
-              --chart-4: 43 74% 66%;
-              --chart-5: 27 87% 67%;
+              --background: 240 33% 2%;
+              /* Ultra Deep Blue/Black */
+              --foreground: 0 0% 100%;
+              --card: 240 33% 4%;
+              --card-foreground: 0 0% 100%;
+              --popover: 240 33% 4%;
+              --popover-foreground: 0 0% 100%;
+              --primary: 220 100% 65%;
+              /* Neon Blue */
+              --primary-foreground: 240 33% 2%;
+              --secondary: 240 20% 8%;
+              --secondary-foreground: 0 0% 100%;
+              --muted: 240 20% 8%;
+              --muted-foreground: 240 10% 65%;
+              --accent: 260 100% 70%;
+              /* Electric Purple */
+              --accent-foreground: 240 33% 2%;
+              --destructive: 0 84% 60%;
+              --destructive-foreground: 0 0% 100%;
+              --border: 240 20% 10%;
+              --input: 240 20% 10%;
+              --ring: 220 100% 65%;
        }
 
        body {
-              @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
+              @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-primary-foreground;
               font-family: 'Outfit', sans-serif;
               font-feature-settings: "rlig" 1, "calt" 1;
        }
 }
 
 @layer utilities {
+
+       /* UI-UX-PRO-MAX Glass Patters */
        .glass-card {
-              @apply bg-card/40 backdrop-blur-xl border border-white/10;
-              box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+              @apply bg-card/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_0_rgba(0, 0, 0, 0.1)];
        }
 
        .glass-dark {
-              @apply bg-zinc-950/40 backdrop-blur-2xl border border-white/5 shadow-2xl;
+              @apply bg-slate-950/60 backdrop-blur-3xl border border-white/5 shadow-2xl;
+       }
+
+       .glass-morphism {
+              @apply bg-white/5 backdrop-blur-lg border border-white/10 shadow-xl;
        }
 
        .text-gradient {
-              @apply text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-zinc-500;
+              @apply text-transparent bg-clip-text bg-gradient-to-br from-primary to-accent;
+       }
+
+       /* Animation Utilities */
+       .shimmer {
+              @apply relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-glass-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent;
+       }
+
+       .hover-pro {
+              @apply transition-all duration-500 hover:scale-[1.02] hover:-translate-y-1 active:scale-[0.98];
        }
 
        .no-scrollbar::-webkit-scrollbar {
@@ -201,19 +235,7 @@
               scrollbar-width: none;
        }
 
-       .custom-scrollbar::-webkit-scrollbar {
-              width: 6px;
-       }
-
-       .custom-scrollbar::-webkit-scrollbar-track {
-              @apply bg-transparent;
-       }
-
-       .custom-scrollbar::-webkit-scrollbar-thumb {
-              @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40 transition-colors;
-       }
-
        .btn-premium {
-              @apply relative overflow-hidden flex items-center justify-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-black px-8 py-3.5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all hover:scale-[1.03] active:scale-[0.97] shadow-2xl;
+              @apply relative overflow-hidden flex items-center justify-center gap-2 bg-slate-950 dark:bg-white text-white dark:text-black px-8 py-4 rounded-2.5xl font-black text-sm uppercase tracking-[0.2em] transition-all hover:scale-[1.05] active:scale-[0.95] shadow-2xl shadow-primary/20;
        }
 }
