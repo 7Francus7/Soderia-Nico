@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Truck, CheckCircle, X, Banknote, CreditCard, ArrowLeftRight, Loader2 } from "lucide-react";
+import { Truck, CheckCircle, X, Banknote, CreditCard, ArrowLeftRight, Loader2, Droplets } from "lucide-react";
 import { deliverOrder } from "@/actions/deliveries";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -66,8 +66,24 @@ export default function OrderDeliveryActions({ order }: { order: any }) {
                                                  </div>
 
                                                  {/* Bottles Counter */}
-                                                 <div className="space-y-3">
-                                                        <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-2">Envases Retornados</label>
+                                                 <div className="space-y-4">
+                                                        <div className="flex justify-between items-end px-2">
+                                                               <label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Envases Retornados</label>
+                                                               <Button
+                                                                      variant="ghost"
+                                                                      size="sm"
+                                                                      className="h-7 text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500 rounded-lg border border-emerald-500/20"
+                                                                      onClick={() => {
+                                                                             const returnableCount = order.items.reduce((acc: number, item: any) =>
+                                                                                    item.product.isReturnable ? acc + item.quantity : acc
+                                                                                    , 0);
+                                                                             setReturnedBottles(returnableCount);
+                                                                      }}
+                                                               >
+                                                                      <Droplets className="w-3 h-3 mr-1" />
+                                                                      Cargar Mismos
+                                                               </Button>
+                                                        </div>
                                                         <div className="flex items-center gap-4">
                                                                <Button
                                                                       variant="outline"

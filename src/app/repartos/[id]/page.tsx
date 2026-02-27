@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Truck, MapPin, ChevronLeft, Package, User, CheckCircle, Clock } from "lucide-react";
+import { Truck, MapPin, ChevronLeft, Package, User, CheckCircle, Clock, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -104,11 +104,28 @@ export default async function DeliveryDetailPage({ params }: { params: { id: str
                                                  </div>
 
                                                  <div className="space-y-3">
-                                                        <div className="flex items-center gap-3 text-lg font-bold text-foreground/80">
-                                                               <div className="w-10 h-10 rounded-xl bg-muted/30 flex items-center justify-center shrink-0">
-                                                                      <MapPin className="w-5 h-5" />
+                                                        <div className="flex items-center justify-between gap-3 text-lg font-bold text-foreground/80">
+                                                               <div className="flex items-center gap-3">
+                                                                      <div className="w-10 h-10 rounded-xl bg-muted/30 flex items-center justify-center shrink-0">
+                                                                             <MapPin className="w-5 h-5" />
+                                                                      </div>
+                                                                      {order.client.address}
                                                                </div>
-                                                               {order.client.address}
+                                                               <div className="flex gap-2 shrink-0">
+                                                                      <a
+                                                                             href={`https://wa.me/${order.client.phone?.replace(/[^0-9]/g, '')}`}
+                                                                             target="_blank"
+                                                                             className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20 active:scale-95 transition-all"
+                                                                      >
+                                                                             <MessageCircle className="w-5 h-5" />
+                                                                      </a>
+                                                                      <a
+                                                                             href={`tel:${order.client.phone}`}
+                                                                             className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center border border-blue-500/20 active:scale-95 transition-all"
+                                                                      >
+                                                                             <Phone className="w-5 h-5" />
+                                                                      </a>
+                                                               </div>
                                                         </div>
                                                         {order.client.phone && (
                                                                <div className="flex items-center gap-3 text-lg font-bold text-foreground/80">
