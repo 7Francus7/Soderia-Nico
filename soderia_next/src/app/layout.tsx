@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import RootProvider from "@/components/providers/RootProvider";
+import DashboardLayout from "@/components/DashboardLayout";
 import { getServerSession } from "next-auth/next"
 import "./globals.css";
 
@@ -35,7 +36,9 @@ export default async function RootLayout({
                             className={`${font.variable} font-sans antialiased`}
                      >
                             <RootProvider session={session}>
-                                   {children}
+                                   <DashboardLayout>
+                                          {children}
+                                   </DashboardLayout>
                             </RootProvider>
                      </body>
               </html>
