@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  username        String   @unique
+  fullName        String?
+  role            String   @default("CHOFER") // ADMIN, CHOFER, SECRETARIA
+  isActive        Boolean  @default(true)
+  hashedPassword  String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  ordersCreated   Order[]
+  ledgerEntries   ClientTransaction[]
+  cashMovements   CashMovement[]
+
+  @@map("User")
+}
+
+model Client {
+  id              Int      @id @default(autoincrement())
+  name            String
+  address         String
+  phone           String?
+  zone            String?
+  balance         Float    @default(0)
+  bottlesBalance  Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  orders          Order[]
+  transactions    ClientTransaction[]
+
+  @@map("Client")
+}
+
+model Product {
+  id              Int      @id @default(autoincrement())
+  name            String
+  code            String   @unique
+  price           Float
+  isReturnable    Boolean  @default(false)
+  
+  orderItems      OrderItem[]
+  stockEntries    Stock[]
+
+  @@map("Product")
+}
+
+model Warehouse {
+  id              Int      @id @default(autoincrement())
+  name            String
+  
+  stock           Stock[]
+
+  @@map("Warehouse")
+}
+
+model Stock {
+  id              Int      @id @default(autoincrement())
+  warehouseId     Int
+  productId       Int
+  quantity        Int      @default(0)
+  
+  warehouse       Warehouse @relation(fields: [warehouseId], references: [id])
+  product         Product   @relation(fields: [productId], references: [id])
+  
+  @@unique([warehouseId, productId])
+  @@map("Stock")
+}
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  clientId        Int
+  status          String   @default("DRAFT") // DRAFT, CONFIRMED, DELIVERED, CANCELLED
+  paymentMethod   String?                     // CASH, CURRENT_ACCOUNT, TRANSFER, MIXED
+  paymentStatus   String   @default("PENDING") // PENDING, PAID, ON_ACCOUNT
+  paymentAmount   Float    @default(0)
+  paidAt          DateTime?
+  deliveredAt     DateTime?
+  notes           String?
+  totalAmount     Float    @default(0)
+  createdBy       Int
+  deliveryId      Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  client          Client   @relation(fields: [clientId], references: [id])
+  creator         User     @relation(fields: [createdBy], references: [id])
+  delivery        Delivery? @relation(fields: [deliveryId], references: [id])
+  items           OrderItem[]
+  ledgerEntry     ClientTransaction?
+
+  @@map("Order")
+}
+
+model OrderItem {
+  id              Int      @id @default(autoincrement())
+  orderId         Int
+  productId       Int
+  quantity        Int
+  unitPrice       Float
+  subtotal        Float
+  
+  order           Order    @relation(fields: [orderId], references: [id])
+  product         Product  @relation(fields: [productId], references: [id])
+
+  @@map("OrderItem")
+}
+
+model Delivery {
+  id              Int      @id @default(autoincrement())
+  status          String   @default("PENDING") // PENDING, IN_TRANSIT, DELIVERED, FAILED
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  orders          Order[]
+
+  @@map("Delivery")
+}
+
+model ClientTransaction {
+  id              Int      @id @default(autoincrement())
+  clientId        Int
+  type            String   // DEBIT, CREDIT
+  amount          Float
+  concept         String
+  description     String?
+  referenceId     Int?     @unique // E.g., Order ID
+  createdBy       Int?
+  createdAt       DateTime @default(now())
+  
+  client          Client   @relation(fields: [clientId], references: [id])
+  creator         User?    @relation(fields: [createdBy], references: [id])
+  order           Order?   @relation(fields: [referenceId], references: [id])
+
+  @@map("ClientTransaction")
+}
+
+model CashMovement {
+  id              Int      @id @default(autoincrement())
+  amount          Float
+  type            String   @default("INCOME") // INCOME / EXPENSE
+  concept         String
+  paymentMethod   String   @default("CASH")   // CASH, TRANSFER
+  referenceId     Int?     // Order ID if applicable
+  createdBy       Int?
+  createdAt       DateTime @default(now())
+  
+  creator         User?    @relation(fields: [createdBy], references: [id])
+
+  @@map("CashMovement")
+}
+
