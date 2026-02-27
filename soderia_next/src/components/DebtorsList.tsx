@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, MessageCircle, DollarSign, Eye, CreditCard, Droplets, ArrowRight, CheckCircle, TrendingDown } from "lucide-react";
+import { Search, MessageCircle, DollarSign, Eye, CreditCard, Droplets, ArrowRight, CheckCircle, TrendingDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ import QuickPaymentModal from "@/components/QuickPaymentModal";
 export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] }) {
        const [search, setSearch] = useState("");
        const [selectedClient, setSelectedClient] = useState<any>(null);
+       const [summaryClient, setSummaryClient] = useState<any>(null);
 
        const filtered = initialDebtors.filter(c =>
               c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -19,10 +20,21 @@ export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] 
        );
 
        const handleWhatsApp = (client: any) => {
-              const message = `Hola ${client.name}, te recordamos que tu saldo pendiente en Sodería Nico es de $${client.balance.toLocaleString()}. Por favor, regularizá tu situación a la brevedad. ¡Gracias!`;
+              const date = new Date().toLocaleDateString();
+              let message = `*ESTADO DE CUENTA - SODERÍA NICO*\n`;
+              message += `*Cliente:* ${client.name}\n`;
+              message += `*Fecha:* ${date}\n`;
+              message += `--------------------------------\n`;
+              message += `*SALDO PENDIENTE: $${client.balance.toLocaleString()}*\n`;
+              if (client.bottlesBalance !== 0) {
+                     message += `*Envases:* ${client.bottlesBalance} unid.\n`;
+              }
+              message += `--------------------------------\n`;
+              message += `_Este es un recordatorio automático. Por favor, regularice su saldo a la brevedad. ¡Muchas gracias!_`;
+
               const url = `https://wa.me/${client.phone?.replace(/[^0-9]/g, '') || ''}?text=${encodeURIComponent(message)}`;
               window.open(url, '_blank');
-              toast.success("Enlace de WhatsApp generado");
+              toast.success("Resumen enviado a WhatsApp");
        };
 
        return (
@@ -86,12 +98,13 @@ export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] 
                                                         </div>
 
                                                         <div className="flex gap-2 w-full sm:w-auto">
-                                                               <Link href={`/clientes/${client.id}`} className="flex-1 sm:flex-none">
-                                                                      <Button variant="outline" className="w-full h-12 rounded-xl group border-white/10 glass-card">
-                                                                             <Eye className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-                                                                             VER
-                                                                      </Button>
-                                                               </Link>
+                                                               <Button
+                                                                      onClick={() => setSummaryClient(client)}
+                                                                      variant="outline"
+                                                                      className="h-12 w-12 rounded-xl border-white/10 glass-card"
+                                                               >
+                                                                      <Eye className="w-5 h-5" />
+                                                               </Button>
                                                                <Button
                                                                       onClick={() => handleWhatsApp(client)}
                                                                       variant="outline"
@@ -113,6 +126,52 @@ export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] 
                             )}
                      </div>
 
+                     {/* Summary Quick View */}
+                     {summaryClient && (
+                            <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-xl animate-fade-in">
+                                   <div className="bg-card w-full max-w-lg rounded-t-[2.5rem] sm:rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden animate-slide-in-up">
+                                          <div className="p-8 pb-4 flex justify-between items-center">
+                                                 <div>
+                                                        <h3 className="text-2xl font-black italic uppercase tracking-tighter">Detalles de Cuenta</h3>
+                                                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{summaryClient.name}</p>
+                                                 </div>
+                                                 <Button variant="ghost" size="icon" onClick={() => setSummaryClient(null)} className="rounded-2xl">
+                                                        <X className="w-6 h-6" />
+                                                 </Button>
+                                          </div>
+
+                                          <div className="p-8 space-y-6">
+                                                 <div className="grid grid-cols-2 gap-4">
+                                                        <div className="bg-rose-500/5 p-6 rounded-3xl border border-rose-500/10">
+                                                               <p className="text-[10px] font-black uppercase tracking-widest text-rose-500/60 mb-1">Saldo Deudor</p>
+                                                               <div className="text-3xl font-black text-rose-500">${summaryClient.balance.toLocaleString()}</div>
+                                                        </div>
+                                                        <div className="bg-amber-500/5 p-6 rounded-3xl border border-amber-500/10">
+                                                               <p className="text-[10px] font-black uppercase tracking-widest text-amber-500/60 mb-1">Envases</p>
+                                                               <div className="text-3xl font-black text-amber-500">{summaryClient.bottlesBalance} <span className="text-xs">unid.</span></div>
+                                                        </div>
+                                                 </div>
+
+                                                 <div className="space-y-3">
+                                                        <Link href={`/clientes/${summaryClient.id}`} className="block">
+                                                               <Button variant="outline" className="w-full h-14 rounded-2xl border-white/10 glass-card font-black uppercase tracking-widest text-xs">
+                                                                      <Eye className="w-4 h-4 mr-2" />
+                                                                      VER HISTORIAL COMPLETO
+                                                               </Button>
+                                                        </Link>
+                                                        <Button
+                                                               onClick={() => handleWhatsApp(summaryClient)}
+                                                               className="w-full h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-emerald-500/20"
+                                                        >
+                                                               <MessageCircle className="w-5 h-5 mr-2" />
+                                                               COMPARTIR POR WHATSAPP
+                                                        </Button>
+                                                 </div>
+                                          </div>
+                                   </div>
+                            </div>
+                     )}
+
                      <QuickPaymentModal
                             client={selectedClient}
                             onClose={() => setSelectedClient(null)}
@@ -120,3 +179,4 @@ export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] 
               </div>
        );
 }
+

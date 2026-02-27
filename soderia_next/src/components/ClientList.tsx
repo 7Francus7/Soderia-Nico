@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Filter, Phone, MapPin, ChevronRight, MoreVertical, CreditCard, Droplets, Trash2, Edit } from "lucide-react";
+import { Search, Filter, Phone, MapPin, ChevronRight, MoreVertical, CreditCard, Droplets, Trash2, Edit, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 export default function ClientList({ initialClients }: { initialClients: any[] }) {
        const [clients, setClients] = useState(initialClients);
@@ -75,6 +76,26 @@ function ClientCard({ client, delay }: { client: any; delay: number }) {
        const hasDebt = client.balance > 0;
        const hasBottles = client.bottlesBalance > 0;
 
+       const handleWhatsApp = (e: React.MouseEvent) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const date = new Date().toLocaleDateString();
+              let message = `*ESTADO DE CUENTA - SODERÍA NICO*\n`;
+              message += `*Cliente:* ${client.name}\n`;
+              message += `*Fecha:* ${date}\n`;
+              message += `--------------------------------\n`;
+              message += `*SALDO ACTUAL: $${client.balance.toLocaleString()}*\n`;
+              if (client.bottlesBalance !== 0) {
+                     message += `*Envases:* ${client.bottlesBalance} unid.\n`;
+              }
+              message += `--------------------------------\n`;
+              message += `_Muchas gracias por elegirnos._`;
+
+              const url = `https://wa.me/${client.phone?.replace(/[^0-9]/g, '') || ''}?text=${encodeURIComponent(message)}`;
+              window.open(url, '_blank');
+              toast.success("Resumen enviado a WhatsApp");
+       };
+
        return (
               <Card
                      className="group relative overflow-hidden transition-all hover:scale-[1.02] hover:shadow-2xl animate-fade-in-up"
@@ -82,16 +103,16 @@ function ClientCard({ client, delay }: { client: any; delay: number }) {
               >
                      <Link href={`/clientes/${client.id}`} className="block p-8 pb-4">
                             <div className="flex justify-between items-start mb-6">
-                                   <div className="space-y-1">
+                                   <div className="space-y-1 overflow-hidden">
                                           <h3 className="text-2xl font-black tracking-tight group-hover:text-primary transition-colors truncate">
                                                  {client.name}
                                           </h3>
                                           <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm">
-                                                 <MapPin className="w-4 h-4" />
+                                                 <MapPin className="w-4 h-4 shrink-0" />
                                                  <span className="truncate">{client.address}</span>
                                           </div>
                                    </div>
-                                   <div className="w-10 h-10 rounded-2xl border border-white/10 flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-white transition-all">
+                                   <div className="w-10 h-10 rounded-2xl border border-white/10 flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-white transition-all shrink-0">
                                           <ChevronRight className="w-5 h-5" />
                                    </div>
                             </div>
@@ -122,19 +143,27 @@ function ClientCard({ client, delay }: { client: any; delay: number }) {
                      </Link>
 
                      <div className="px-8 pb-8 flex items-center justify-between text-muted-foreground text-xs font-bold">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 overflow-hidden">
                                    {client.phone && (
-                                          <div className="flex items-center gap-1">
+                                          <div className="flex items-center gap-1 truncate">
                                                  <Phone className="w-3 h-3" />
                                                  {client.phone}
                                           </div>
                                    )}
                             </div>
-                            <div className="flex gap-2">
-                                   <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-muted">
+                            <div className="flex gap-2 shrink-0 ml-4">
+                                   <Button
+                                          onClick={handleWhatsApp}
+                                          variant="ghost"
+                                          size="icon"
+                                          className="h-9 w-9 rounded-xl border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10"
+                                   >
+                                          <MessageCircle className="w-5 h-5" />
+                                   </Button>
+                                   <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl border border-white/5 hover:bg-muted">
                                           <Edit className="w-4 h-4" />
                                    </Button>
-                                   <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:text-destructive hover:bg-destructive/10">
+                                   <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl border border-white/5 hover:text-destructive hover:bg-destructive/10">
                                           <Trash2 className="w-4 h-4" />
                                    </Button>
                             </div>
