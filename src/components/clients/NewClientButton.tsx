@@ -44,83 +44,86 @@ export default function NewClientButton() {
 
        return (
               <>
-                     <Button onClick={() => setIsOpen(true)} className="gap-2 rounded-xl h-12 px-6 shadow-sm">
-                            <UserPlus className="w-5 h-5" />
-                            <span className="text-xs font-bold uppercase tracking-wider">Nuevo Cliente</span>
+                     <Button
+                            onClick={() => setIsOpen(true)}
+                            className="w-full md:w-auto px-8 h-14 rounded-2xl bg-white hover:bg-white/90 text-black font-black tracking-widest group border-none transition-all hover:scale-105 active:scale-95 shadow-2xl"
+                     >
+                            <UserPlus className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
+                            NUEVO CLIENTE
                      </Button>
 
                      {isOpen && (
-                            <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center bg-background/40 backdrop-blur-md animate-in fade-in duration-300">
-                                   <div className="bg-card w-full max-w-lg rounded-t-3xl sm:rounded-2xl border border-border shadow-2xl overflow-hidden animate-in slide-in-from-bottom-8 duration-300">
+                            <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-xl animate-fade-in">
+                                   <div className="bg-card w-full max-w-lg rounded-t-[2.5rem] sm:rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden animate-slide-in-up">
 
                                           {/* Header */}
-                                          <div className="px-8 py-6 flex justify-between items-center border-b border-border">
+                                          <div className="p-8 pb-4 flex justify-between items-center border-b border-white/5">
                                                  <div className="flex items-center gap-4">
-                                                        <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary">
-                                                               <UserPlus className="w-5 h-5" />
+                                                        <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary">
+                                                               <UserPlus className="w-6 h-6" />
                                                         </div>
                                                         <div>
-                                                               <h3 className="text-xl font-bold tracking-tight">Alta de Cliente</h3>
-                                                               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">Nuevo registro Maestro</p>
+                                                               <h3 className="text-2xl font-black tracking-tight uppercase italic">Alta de Cliente</h3>
+                                                               <p className="text-sm text-muted-foreground font-medium italic opacity-60">Nuevo registro Maestro.</p>
                                                         </div>
                                                  </div>
-                                                 <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="rounded-xl h-10 w-10">
-                                                        <X className="w-5 h-5" />
+                                                 <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="rounded-2xl hover:bg-white/5">
+                                                        <X className="w-6 h-6" />
                                                  </Button>
                                           </div>
 
                                           <form onSubmit={handleSubmit} className="p-8 space-y-6">
                                                  <div className="space-y-4">
-                                                        <div className="space-y-1.5">
-                                                               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Nombre Completo</label>
+                                                        <div className="space-y-2">
+                                                               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Nombre Completo</label>
                                                                <input
                                                                       type="text"
                                                                       required
                                                                       value={formData.name}
                                                                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                                      className="w-full h-12 bg-muted/30 border border-border rounded-xl px-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all placeholder:opacity-30"
+                                                                      className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-white/20 text-white"
                                                                       placeholder="Ej: Juan Pérez"
                                                                />
                                                         </div>
 
-                                                        <div className="space-y-1.5">
-                                                               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Dirección / Calle</label>
+                                                        <div className="space-y-2">
+                                                               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Dirección / Calle</label>
                                                                <div className="relative">
-                                                                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground opacity-40" />
+                                                                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                                                                       <input
                                                                              type="text"
                                                                              required
                                                                              value={formData.address}
                                                                              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                                                             className="w-full h-12 bg-muted/30 border border-border rounded-xl pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all placeholder:opacity-30"
+                                                                             className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-white"
                                                                              placeholder="Ej: Av. Principal 1234"
                                                                       />
                                                                </div>
                                                         </div>
 
                                                         <div className="grid grid-cols-2 gap-4">
-                                                               <div className="space-y-1.5">
-                                                                      <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Teléfono</label>
+                                                               <div className="space-y-2">
+                                                                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Teléfono</label>
                                                                       <div className="relative">
-                                                                             <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground opacity-40" />
+                                                                             <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                                                                              <input
                                                                                     type="text"
                                                                                     value={formData.phone}
                                                                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                                                                    className="w-full h-12 bg-muted/30 border border-border rounded-xl pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all placeholder:opacity-30"
+                                                                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-white"
                                                                                     placeholder="341-..."
                                                                              />
                                                                       </div>
                                                                </div>
-                                                               <div className="space-y-1.5">
-                                                                      <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Zona</label>
+                                                               <div className="space-y-2">
+                                                                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Zona</label>
                                                                       <div className="relative">
-                                                                             <Map className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground opacity-40" />
+                                                                             <Map className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                                                                              <input
                                                                                     type="text"
                                                                                     value={formData.zone}
                                                                                     onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
-                                                                                    className="w-full h-12 bg-muted/30 border border-border rounded-xl pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all placeholder:opacity-30"
+                                                                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-white"
                                                                                     placeholder="Ej: Centro"
                                                                              />
                                                                       </div>
@@ -128,9 +131,9 @@ export default function NewClientButton() {
                                                         </div>
                                                  </div>
 
-                                                 <div className="flex gap-3 pt-6 border-t border-border">
-                                                        <Button type="button" variant="ghost" className="flex-1 rounded-xl h-12 text-xs font-bold uppercase tracking-widest" onClick={() => setIsOpen(false)}>Cancelar</Button>
-                                                        <Button type="submit" disabled={loading} className="flex-[2] rounded-xl h-12 text-xs font-bold uppercase tracking-widest">
+                                                 <div className="flex gap-4 pt-4 border-t border-white/5">
+                                                        <Button type="button" variant="ghost" className="flex-1 rounded-xl font-bold text-xs uppercase tracking-[0.2em]" onClick={() => setIsOpen(false)}>Cancelar</Button>
+                                                        <Button type="submit" disabled={loading} className="flex-[2] h-14 rounded-2xl bg-white hover:bg-white/90 text-black font-black uppercase tracking-widest shadow-lg transition-all active:scale-95 disabled:bg-white/10">
                                                                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Guardar Cliente"}
                                                         </Button>
                                                  </div>

@@ -39,7 +39,7 @@ export default function NewUserButton() {
 
        return (
               <>
-                     <Button onClick={() => setIsOpen(true)} className="w-full md:w-auto px-8 h-14 rounded-2xl shadow-2xl bg-slate-900 group">
+                     <Button onClick={() => setIsOpen(true)} className="w-full md:w-auto px-8 h-14 rounded-2xl shadow-2xl bg-white hover:bg-white/90 text-black font-black tracking-widest group border-none transition-all hover:scale-105 active:scale-95">
                             <UserPlus className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
                             NUEVO USUARIO
                      </Button>
@@ -71,7 +71,7 @@ export default function NewUserButton() {
                                                                       type="text"
                                                                       value={formData.fullName}
                                                                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                                                      className="w-full h-14 bg-muted/20 border border-white/5 rounded-2xl px-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:opacity-20"
+                                                                      className="w-full h-14 bg-muted/20 border border-white/5 rounded-2xl px-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-white/20 text-white"
                                                                       placeholder="Ej: Juan Pérez"
                                                                />
                                                         </div>
@@ -84,14 +84,14 @@ export default function NewUserButton() {
                                                                              required
                                                                              value={formData.username}
                                                                              onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase() })}
-                                                                             className="w-full h-14 bg-muted/20 border border-white/5 rounded-2xl px-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:opacity-20 lowercase"
+                                                                             className="w-full h-14 bg-muted/20 border border-white/5 rounded-2xl px-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-white/20 text-white lowercase"
                                                                              placeholder="ej: juanp"
                                                                       />
                                                                </div>
                                                                <div className="space-y-2">
                                                                       <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Contraseña *</label>
                                                                       <div className="relative">
-                                                                             <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 opacity-20" />
+                                                                             <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                                                                              <input
                                                                                     type="password"
                                                                                     required
@@ -114,7 +114,9 @@ export default function NewUserButton() {
                                                                                     onClick={() => setFormData({ ...formData, role: role as any })}
                                                                                     className={cn(
                                                                                            "py-3 rounded-xl font-black text-[10px] uppercase transition-all",
-                                                                                           formData.role === role ? "bg-primary text-white shadow-lg" : "text-muted-foreground hover:bg-white/5"
+                                                                                           formData.role === role
+                                                                                                  ? "bg-white text-black shadow-xl"
+                                                                                                  : "text-white/40 hover:bg-white/5 hover:text-white"
                                                                                     )}
                                                                              >
                                                                                     {role}
@@ -126,7 +128,7 @@ export default function NewUserButton() {
 
                                                  <div className="flex gap-4 pt-4 border-t border-white/5">
                                                         <Button type="button" variant="ghost" className="flex-1" onClick={() => setIsOpen(false)}>Cancelar</Button>
-                                                        <Button type="submit" disabled={loading} className="flex-[2] h-16 rounded-2xl shadow-xl font-black text-sm uppercase tracking-widest">
+                                                        <Button type="submit" disabled={loading} className="flex-[2] h-16 rounded-2xl bg-white hover:bg-white/90 text-black font-black tracking-widest border-none transition-all active:scale-95 shadow-lg">
                                                                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "CREAR USUARIO"}
                                                         </Button>
                                                  </div>

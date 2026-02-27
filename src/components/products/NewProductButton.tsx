@@ -39,8 +39,11 @@ export default function NewProductButton() {
 
        return (
               <>
-                     <Button onClick={() => setIsOpen(true)} className="w-full md:w-auto px-8 h-14 rounded-2xl shadow-2xl">
-                            <Plus className="w-5 h-5 mr-3" />
+                     <Button
+                            onClick={() => setIsOpen(true)}
+                            className="w-full md:w-auto px-8 h-14 rounded-2xl bg-white hover:bg-white/90 text-black font-black tracking-widest group border-none transition-all hover:scale-105 active:scale-95 shadow-2xl"
+                     >
+                            <Plus className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
                             NUEVO PRODUCTO
                      </Button>
 
@@ -58,7 +61,7 @@ export default function NewProductButton() {
                                                                <p className="text-sm text-muted-foreground font-medium italic opacity-60">Configuración de catálogo.</p>
                                                         </div>
                                                  </div>
-                                                 <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="rounded-2xl">
+                                                 <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="rounded-2xl hover:bg-white/5">
                                                         <X className="w-6 h-6" />
                                                  </Button>
                                           </div>
@@ -73,7 +76,7 @@ export default function NewProductButton() {
                                                                              required
                                                                              value={formData.name}
                                                                              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                                             className="w-full h-14 bg-muted/20 border border-white/5 rounded-2xl px-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:opacity-20"
+                                                                             className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-white/20 text-white"
                                                                              placeholder="Ej: Sifón 1.5L"
                                                                       />
                                                                </div>
@@ -84,7 +87,7 @@ export default function NewProductButton() {
                                                                              required
                                                                              value={formData.code}
                                                                              onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                                                                             className="w-full h-14 bg-muted/20 border border-white/5 rounded-2xl px-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:opacity-20 uppercase"
+                                                                             className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-white/20 text-white uppercase"
                                                                              placeholder="Ej: SIF15"
                                                                       />
                                                                </div>
@@ -93,13 +96,13 @@ export default function NewProductButton() {
                                                         <div className="space-y-2">
                                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Precio de Venta ($) *</label>
                                                                <div className="relative group">
-                                                                      <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 opacity-20" />
+                                                                      <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-white/40" />
                                                                       <input
                                                                              type="number"
                                                                              required
                                                                              value={formData.price || ''}
                                                                              onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                                                                             className="w-full h-20 bg-muted/10 border border-white/5 rounded-2xl pl-12 pr-5 text-4xl font-black tracking-tighter focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                                                             className="w-full h-20 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 text-4xl font-black tracking-tighter focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-white"
                                                                              placeholder="0"
                                                                       />
                                                                </div>
@@ -107,13 +110,13 @@ export default function NewProductButton() {
 
                                                         <div className="space-y-4">
                                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Tipo de Envase</label>
-                                                               <div className="flex p-1 bg-muted/10 rounded-2xl border border-white/5">
+                                                               <div className="flex p-1.5 bg-black/40 rounded-2xl border border-white/10">
                                                                       <button
                                                                              type="button"
                                                                              onClick={() => setFormData({ ...formData, isReturnable: true })}
                                                                              className={cn(
                                                                                     "flex-1 flex items-center justify-center gap-2 py-4 rounded-xl font-black text-xs uppercase transition-all",
-                                                                                    formData.isReturnable ? "bg-amber-500 text-white shadow-lg" : "text-muted-foreground hover:bg-white/5"
+                                                                                    formData.isReturnable ? "bg-white text-black shadow-lg" : "text-white/40 hover:bg-white/5 hover:text-white"
                                                                              )}
                                                                       >
                                                                              <Droplets className="w-4 h-4" /> Retornable
@@ -123,7 +126,7 @@ export default function NewProductButton() {
                                                                              onClick={() => setFormData({ ...formData, isReturnable: false })}
                                                                              className={cn(
                                                                                     "flex-1 flex items-center justify-center gap-2 py-4 rounded-xl font-black text-xs uppercase transition-all",
-                                                                                    !formData.isReturnable ? "bg-blue-500 text-white shadow-lg" : "text-muted-foreground hover:bg-white/5"
+                                                                                    !formData.isReturnable ? "bg-white text-black shadow-lg" : "text-white/40 hover:bg-white/5 hover:text-white"
                                                                              )}
                                                                       >
                                                                              <FlaskConical className="w-4 h-4" /> Descartable
@@ -133,8 +136,8 @@ export default function NewProductButton() {
                                                  </div>
 
                                                  <div className="flex gap-4 pt-4 border-t border-white/5">
-                                                        <Button type="button" variant="ghost" className="flex-1" onClick={() => setIsOpen(false)}>Cancelar</Button>
-                                                        <Button type="submit" disabled={loading} className="flex-[2] h-16 rounded-2xl shadow-xl font-black text-sm uppercase tracking-widest">
+                                                        <Button type="button" variant="ghost" className="flex-1 rounded-xl font-bold" onClick={() => setIsOpen(false)}>Cancelar</Button>
+                                                        <Button type="submit" disabled={loading} className="flex-[2] h-16 rounded-2xl shadow-lg bg-white hover:bg-white/90 text-black font-black text-sm uppercase tracking-widest border-none transition-all active:scale-95">
                                                                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "REGISTRAR PRODUCTO"}
                                                         </Button>
                                                  </div>
