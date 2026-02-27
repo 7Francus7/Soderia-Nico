@@ -202,7 +202,7 @@
 
        /* UI-UX-PRO-MAX Glass Patters */
        .glass-card {
-              @apply bg-card/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_0_rgba(0, 0, 0, 0.1)];
+              @apply bg-card/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_0_rgba(0, 0, 0, 0.15)];
        }
 
        .glass-dark {
