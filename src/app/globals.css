@@ -44,6 +44,9 @@
        --color-chart-4: hsl(var(--chart-4));
        --color-chart-5: hsl(var(--chart-5));
 
+       /* UI-UX-PRO-MAX: Custom Shadows */
+       --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+
        /* PRO-MAX Animations */
        --animate-infinite-scroll: infinite-scroll 25s linear infinite;
        --animate-shine: shine 3s ease-in-out infinite;
@@ -140,7 +143,6 @@
 
 @layer base {
        :root {
-              color-scheme: light;
               --background: 240 10% 98%;
               --foreground: 240 10% 10%;
               --card: 0 0% 100%;
@@ -148,14 +150,12 @@
               --popover: 0 0% 100%;
               --popover-foreground: 240 10% 10%;
               --primary: 230 100% 60%;
-              /* Vivid Blue */
               --primary-foreground: 0 0% 100%;
               --secondary: 240 5% 94%;
               --secondary-foreground: 240 10% 15%;
               --muted: 240 5% 94%;
               --muted-foreground: 240 5% 45%;
               --accent: 250 100% 65%;
-              /* Indigo */
               --accent-foreground: 0 0% 100%;
               --destructive: 0 84% 60%;
               --destructive-foreground: 0 0% 100%;
@@ -166,23 +166,19 @@
        }
 
        .dark {
-              color-scheme: dark;
               --background: 240 33% 2%;
-              /* Ultra Deep Blue/Black */
               --foreground: 0 0% 100%;
               --card: 240 33% 4%;
               --card-foreground: 0 0% 100%;
               --popover: 240 33% 4%;
               --popover-foreground: 0 0% 100%;
               --primary: 220 100% 65%;
-              /* Neon Blue */
               --primary-foreground: 240 33% 2%;
               --secondary: 240 20% 8%;
               --secondary-foreground: 0 0% 100%;
               --muted: 240 20% 8%;
               --muted-foreground: 240 10% 65%;
               --accent: 260 100% 70%;
-              /* Electric Purple */
               --accent-foreground: 240 33% 2%;
               --destructive: 0 84% 60%;
               --destructive-foreground: 0 0% 100%;
@@ -200,9 +196,9 @@
 
 @layer utilities {
 
-       /* UI-UX-PRO-MAX Glass Patters */
+       /* UI-UX-PRO-MAX Glass Patterns */
        .glass-card {
-              @apply bg-card/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_0_rgba(0, 0, 0, 0.15)];
+              @apply bg-card/60 backdrop-blur-2xl border border-white/10 shadow-glass;
        }
 
        .glass-dark {
@@ -217,7 +213,6 @@
               @apply text-transparent bg-clip-text bg-gradient-to-br from-primary to-accent;
        }
 
-       /* Animation Utilities */
        .shimmer {
               @apply relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-glass-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent;
        }
