@@ -1,10 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { Banknote, ArrowUpRight, ArrowDownLeft, Plus, Calendar, CreditCard, Wallet, Landmark, History } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import CashMovementList from "@/components/CashMovementList";
-import NewCashMovementButton from "@/components/NewCashMovementButton";
-import { cn } from "@/lib/utils";
+import { Banknote, ArrowUpRight, ArrowDownLeft, Wallet, Landmark } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import CashMovementList from "@/components/finance/CashMovementList";
+import NewCashMovementButton from "@/components/finance/NewCashMovementButton";
 
 export default async function CajaPage() {
        const today = new Date();
@@ -37,74 +35,60 @@ export default async function CajaPage() {
        }, { income: 0, expense: 0, cash: 0, digital: 0 });
 
        return (
-              <div className="min-h-screen bg-background p-6 lg:p-10">
-                     <div className="fixed top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-
-                     <div className="relative z-10 max-w-7xl mx-auto space-y-10">
-                            {/* Header */}
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                                   <div className="space-y-1">
-                                          <div className="flex items-center gap-3">
-                                                 <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary shadow-xl shadow-primary/10">
-                                                        <Banknote className="w-6 h-6" />
-                                                 </div>
-                                                 <h1 className="text-4xl font-black tracking-tight">Caja Diaria</h1>
+              <div className="space-y-12 animate-fade-in-up">
+                     {/* Header */}
+                     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+                            <div className="space-y-2">
+                                   <div className="flex items-center gap-3 mb-2">
+                                          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                                                 <Banknote className="w-5 h-5" />
                                           </div>
-                                          <p className="text-muted-foreground font-medium text-lg">
-                                                 Control de ingresos, egresos y arqueo de caja.
-                                          </p>
+                                          <h1 className="text-3xl font-bold tracking-tight">Caja Diaria</h1>
                                    </div>
-
-                                   <NewCashMovementButton />
+                                   <p className="text-muted-foreground font-medium">
+                                          Supervisión en tiempo real de flujos de efectivo, transferencias y arqueo preventivo.
+                                   </p>
                             </div>
+                            <NewCashMovementButton />
+                     </header>
 
-                            {/* Totals Summary */}
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                   <Card className="bg-emerald-500/5 border-emerald-500/20 p-8 hover:scale-[1.02] transition-transform">
-                                          <div className="flex justify-between items-center mb-2">
-                                                 <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500/60">Ingresos Hoy</span>
-                                                 <ArrowUpRight className="w-4 h-4 text-emerald-500" />
-                                          </div>
-                                          <h3 className="text-4xl font-black text-emerald-500 tracking-tighter">${totals.income.toLocaleString()}</h3>
-                                   </Card>
-
-                                   <Card className="bg-rose-500/5 border-rose-500/20 p-8 hover:scale-[1.02] transition-transform">
-                                          <div className="flex justify-between items-center mb-2">
-                                                 <span className="text-[10px] font-black uppercase tracking-widest text-rose-500/60">Egresos Hoy</span>
-                                                 <ArrowDownLeft className="w-4 h-4 text-rose-500" />
-                                          </div>
-                                          <h3 className="text-4xl font-black text-rose-500 tracking-tighter">${totals.expense.toLocaleString()}</h3>
-                                   </Card>
-
-                                   <Card className="bg-primary/10 border-primary/20 p-8 hover:scale-[1.05] transition-transform shadow-2xl shadow-primary/10">
-                                          <div className="flex justify-between items-center mb-2">
-                                                 <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">Efectivo en Caja</span>
-                                                 <Wallet className="w-4 h-4 text-primary" />
-                                          </div>
-                                          <h3 className="text-4xl font-black text-primary tracking-tighter">${totals.cash.toLocaleString()}</h3>
-                                   </Card>
-
-                                   <Card className="bg-blue-500/5 border-blue-500/20 p-8 hover:scale-[1.02] transition-transform">
-                                          <div className="flex justify-between items-center mb-2">
-                                                 <span className="text-[10px] font-black uppercase tracking-widest text-blue-500/60">Banco / Digital</span>
-                                                 <Landmark className="w-4 h-4 text-blue-500" />
-                                          </div>
-                                          <h3 className="text-4xl font-black text-blue-500 tracking-tighter">${totals.digital.toLocaleString()}</h3>
-                                   </Card>
-                            </div>
-
-                            {/* History */}
-                            <div className="space-y-6">
-                                   <div className="flex items-center gap-3">
-                                          <div className="w-10 h-10 bg-muted/20 rounded-xl flex items-center justify-center">
-                                                 <History className="w-5 h-5 opacity-40" />
-                                          </div>
-                                          <h2 className="text-2xl font-black tracking-tight uppercase italic">Movimientos del Día</h2>
-                                   </div>
-
-                                   <CashMovementList initialMovements={movements} />
-                            </div>
+                     {/* Financial Summary Grid */}
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <BalanceCard label="Ingresos Hoy" value={totals.income} icon={<ArrowUpRight className="w-4 h-4" />} color="emerald" />
+                            <BalanceCard label="Egresos Hoy" value={totals.expense} icon={<ArrowDownLeft className="w-4 h-4" />} color="rose" />
+                            <BalanceCard label="Efectivo en Caja" value={totals.cash} icon={<Wallet className="w-4 h-4" />} color="primary" />
+                            <BalanceCard label="Digital / Bancos" value={totals.digital} icon={<Landmark className="w-4 h-4" />} color="blue" />
                      </div>
+
+                     {/* Detailed Movements List */}
+                     <section className="pt-8 border-t border-border">
+                            <div className="flex items-center gap-3 mb-8">
+                                   <h2 className="text-xl font-semibold tracking-tight">Registro de Movimientos</h2>
+                                   <span className="px-2 py-0.5 rounded-full bg-muted text-muted-foreground text-[10px] font-bold uppercase tracking-widest">{movements.length} ops</span>
+                            </div>
+                            <CashMovementList initialMovements={movements} />
+                     </section>
               </div>
        );
+}
+
+function BalanceCard({ label, value, icon, color }: any) {
+       const colors: any = {
+              emerald: "text-emerald-600 dark:text-emerald-400 bg-emerald-500/5",
+              rose: "text-rose-600 dark:text-rose-400 bg-rose-500/5",
+              primary: "text-primary bg-primary/5",
+              blue: "text-blue-600 dark:text-blue-400 bg-blue-500/5",
+       }
+
+       return (
+              <Card className="p-6 border-border bg-card shadow-sm rounded-2xl flex flex-col justify-between">
+                     <div className="flex justify-between items-center mb-6">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+                            <div className={`p-2 rounded-lg ${colors[color]} border border-border`}>{icon}</div>
+                     </div>
+                     <h3 className={`text-2xl font-bold tracking-tight ${color === 'rose' && value > 0 ? 'text-rose-600' : ''}`}>
+                            ${value.toLocaleString()}
+                     </h3>
+              </Card>
+       )
 }

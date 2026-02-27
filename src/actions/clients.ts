@@ -1,8 +1,8 @@
-"use strict";
 "use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { clientSchema, updateClientSchema } from "@/schemas/client";
 
 export async function getClients(search?: string, sortByDebt: boolean = false) {
        try {
@@ -21,8 +21,14 @@ export async function getClients(search?: string, sortByDebt: boolean = false) {
        }
 }
 
-export async function createClient(data: { name: string; address: string; phone?: string; zone?: string }) {
+export async function createClient(rawData: any) {
        try {
+              const validated = clientSchema.safeParse(rawData);
+              if (!validated.success) {
+                     return { success: false, error: validated.error.issues[0].message };
+              }
+              const data = validated.data;
+
               // Basic anti-duplicate check
               const existing = await prisma.client.findFirst({
                      where: { name: data.name, address: data.address }
@@ -33,8 +39,8 @@ export async function createClient(data: { name: string; address: string; phone?
               const client = await prisma.client.create({
                      data: {
                             ...data,
-                            balance: 0,
-                            bottlesBalance: 0,
+                            balance: data.balance ?? 0,
+                            bottlesBalance: data.bottlesBalance ?? 0,
                      }
               });
 
@@ -45,8 +51,13 @@ export async function createClient(data: { name: string; address: string; phone?
        }
 }
 
-export async function updateClient(id: number, data: { name?: string; address?: string; phone?: string; zone?: string }) {
+export async function updateClient(id: number, rawData: any) {
        try {
+              const validated = updateClientSchema.safeParse(rawData);
+              if (!validated.success) {
+                     return { success: false, error: validated.error.issues[0].message };
+              }
+              const data = validated.data;
               const client = await prisma.client.update({
                      where: { id },
                      data,

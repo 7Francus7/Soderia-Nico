@@ -1,10 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { Truck, Plus, RefreshCw, Calendar, Clock, CheckCircle, Eye, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import Link from "next/link";
-import DeliveryList from "@/components/DeliveryList";
-import NewDeliveryButton from "@/components/NewDeliveryButton";
+import { Truck } from "lucide-react";
+import DeliveryList from "@/components/delivery/DeliveryList";
+import NewDeliveryButton from "@/components/delivery/NewDeliveryButton";
 
 export default async function RepartosPage() {
        const deliveries = await prisma.delivery.findMany({
@@ -35,43 +32,31 @@ export default async function RepartosPage() {
               }
        });
 
-       const pendingOrders = availableOrders.length;
-
        return (
-              <div className="min-h-screen bg-background p-6 lg:p-10">
-                     {/* Background blobs */}
-                     <div className="fixed top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-                     <div className="fixed bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
-
-                     <div className="relative z-10 max-w-7xl mx-auto space-y-10">
-                            {/* Header */}
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                                   <div>
-                                          <div className="flex items-center gap-3 mb-2">
-                                                 <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary">
-                                                        <Truck className="w-6 h-6" />
-                                                 </div>
-                                                 <h1 className="text-4xl font-black tracking-tight">Repartos</h1>
+              <div className="space-y-12 animate-fade-in-up">
+                     {/* Header */}
+                     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+                            <div className="space-y-2">
+                                   <div className="flex items-center gap-3 mb-2">
+                                          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                                                 <Truck className="w-5 h-5" />
                                           </div>
-                                          <p className="text-muted-foreground font-medium text-lg">
-                                                 Control de hojas de ruta y logística de distribución.
-                                          </p>
+                                          <h1 className="text-3xl font-bold tracking-tight">Repartos</h1>
                                    </div>
-
-                                   <div className="flex items-center gap-3 w-full md:w-auto">
-                                          <Button variant="outline" size="icon" className="rounded-2xl border-white/10 glass-card">
-                                                 <RefreshCw className="w-5 h-5" />
-                                          </Button>
-                                          <NewDeliveryButton
-                                                 pendingOrdersCount={pendingOrders}
-                                                 availableOrders={availableOrders}
-                                          />
-                                   </div>
+                                   <p className="text-muted-foreground font-medium">
+                                          Gestión dinámica de logística, hojas de ruta y control de choferes.
+                                   </p>
                             </div>
+                            <NewDeliveryButton
+                                   pendingOrdersCount={availableOrders.length}
+                                   availableOrders={availableOrders}
+                            />
+                     </header>
 
-                            {/* Deliveries List */}
+                     {/* Delivery List Area */}
+                     <section className="pt-8 border-t border-border">
                             <DeliveryList initialDeliveries={processedDeliveries} />
-                     </div>
+                     </section>
               </div>
        );
 }
