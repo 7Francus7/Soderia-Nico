@@ -7,6 +7,7 @@ import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import { Card } from "@/components/ui/card";
 import NewOrderButton from "@/components/NewOrderButton";
 import { cn } from "@/lib/utils";
+import LiveActivityMonitor from "@/components/LiveActivityMonitor";
 
 export default async function Home() {
        const session = await getServerSession();
@@ -114,19 +115,27 @@ export default async function Home() {
                             </div>
                      </section>
 
-                     {/* Analytics & Charts */}
+                     {/* Analytics & Command Center */}
                      <section className="space-y-10 pt-10">
-                            <div className="flex items-center justify-between border-b border-white/5 pb-6">
+                            <div className="flex items-center justify-between border-b border-white/5 pb-8">
                                    <div className="space-y-1 text-right ml-auto">
-                                          <h3 className="text-2xl font-black tracking-tight flex items-center gap-3 justify-end">
-                                                 Sodería Analytics
-                                                 <TrendingUp className="w-7 h-7 text-primary" />
+                                          <h3 className="text-3xl font-black tracking-tightest flex items-center gap-3 justify-end italic text-gradient">
+                                                 Centro de COMANDO
+                                                 <Activity className="w-8 h-8 text-primary animate-pulse" />
                                           </h3>
-                                          <p className="text-slate-400 text-sm font-bold uppercase tracking-widest">Reporte de Rendimiento 7 días</p>
+                                          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.5em]">Consola de Operaciones en tiempo real</p>
                                    </div>
                             </div>
-                            <div className="p-1 rounded-[3.5rem] bg-gradient-to-br from-white/5 to-transparent shadow-3xl hover-pro">
-                                   <AnalyticsDashboard />
+
+                            <div className="grid grid-cols-1 xl:grid-cols-3 gap-10 items-start">
+                                   <div className="xl:col-span-2 space-y-10">
+                                          <div className="p-1 rounded-[3.5rem] bg-gradient-to-br from-white/5 to-transparent shadow-3xl hover-pro">
+                                                 <AnalyticsDashboard />
+                                          </div>
+                                   </div>
+                                   <div className="xl:col-span-1">
+                                          <LiveActivityMonitor />
+                                   </div>
                             </div>
                      </section>
               </div>
