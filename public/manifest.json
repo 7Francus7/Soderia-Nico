@@ -1,0 +1,17 @@
+{
+       "name": "Sodería Nico OS",
+       "short_name": "Sodería Nico",
+       "description": "Sistema de Gestión Premium para Sodería Nico",
+       "start_url": "/",
+       "display": "standalone",
+       "background_color": "#000000",
+       "theme_color": "#3b82f6",
+       "icons": [
+              {
+                     "src": "/icon.png",
+                     "sizes": "512x512",
+                     "type": "image/png",
+                     "purpose": "any maskable"
+              }
+       ]
+}

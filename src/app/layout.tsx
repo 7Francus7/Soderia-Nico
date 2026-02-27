@@ -13,6 +13,7 @@ const font = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
        title: "Sodería Nico - Gestión Inteligente",
        description: "Sistema integral de gestión para Sodería Nico. Repartos, Clientes y Finanzas.",
+       manifest: "/manifest.json",
 };
 
 export const viewport: Viewport = {

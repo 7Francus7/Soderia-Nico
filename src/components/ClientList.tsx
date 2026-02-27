@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Filter, Phone, MapPin, ChevronRight, MoreVertical, CreditCard, Droplets, Trash2, Edit, MessageCircle, TrendingUp } from "lucide-react";
+import { Search, Filter, Phone, MapPin, ChevronRight, MoreVertical, CreditCard, Droplets, Trash2, Edit, MessageCircle, TrendingUp, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -102,6 +102,21 @@ function ClientCard({ client, delay }: { client: any; delay: number }) {
                      style={{ animationDelay: `${delay}s` }}
               >
                      <Link href={`/clientes/${client.id}`} className="block p-10 pb-6">
+                            {/* Inactivity Alert */}
+                            {(() => {
+                                   const lastOrderDate = client.orders?.[0]?.createdAt;
+                                   const isInactive = lastOrderDate ? (Date.now() - new Date(lastOrderDate).getTime()) > 15 * 24 * 60 * 60 * 1000 : false;
+                                   if (isInactive) {
+                                          return (
+                                                 <div className="absolute top-6 right-8 flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-500 animate-pulse">
+                                                        <AlertCircle className="w-3 h-3" />
+                                                        <span className="text-[9px] font-black uppercase tracking-widest">Inactivo +15 días</span>
+                                                 </div>
+                                          );
+                                   }
+                                   return null;
+                            })()}
+
                             {/* Header Section */}
                             <div className="flex justify-between items-start mb-8">
                                    <div className="space-y-2 overflow-hidden flex-1">

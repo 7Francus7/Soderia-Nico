@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Truck, MapPin, ChevronLeft, Package, User, CheckCircle, Clock, MessageCircle, Phone } from "lucide-react";
+import { Truck, MapPin, ChevronLeft, Package, User, CheckCircle, Clock, MessageCircle, Phone, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -105,12 +105,21 @@ export default async function DeliveryDetailPage({ params }: { params: { id: str
 
                                                  <div className="space-y-3">
                                                         <div className="flex items-center justify-between gap-3 text-lg font-bold text-foreground/80">
-                                                               <div className="flex items-center gap-3">
-                                                                      <div className="w-10 h-10 rounded-xl bg-muted/30 flex items-center justify-center shrink-0">
+                                                               <a
+                                                                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.client.address)}`}
+                                                                      target="_blank"
+                                                                      className="flex items-center gap-3 hover:text-primary transition-colors group/address shrink min-w-0"
+                                                               >
+                                                                      <div className="w-10 h-10 rounded-xl bg-muted/30 flex items-center justify-center shrink-0 group-hover/address:bg-primary/20 group-hover/address:text-primary transition-all">
                                                                              <MapPin className="w-5 h-5" />
                                                                       </div>
-                                                                      {order.client.address}
-                                                               </div>
+                                                                      <div className="flex flex-col min-w-0">
+                                                                             <span className="leading-tight truncate">{order.client.address}</span>
+                                                                             <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 group-hover/address:opacity-100 flex items-center gap-1">
+                                                                                    Abrir GPS <ExternalLink className="w-2.5 h-2.5" />
+                                                                             </span>
+                                                                      </div>
+                                                               </a>
                                                                <div className="flex gap-2 shrink-0">
                                                                       <a
                                                                              href={`https://wa.me/${order.client.phone?.replace(/[^0-9]/g, '')}`}

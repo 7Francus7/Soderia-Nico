@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { ChevronLeft, CreditCard, Droplets, History, Phone, MapPin, User, ArrowUpCircle, ArrowDownCircle, Trash2, Calendar } from "lucide-react";
+import { ChevronLeft, CreditCard, Droplets, History, Phone, MapPin, User, ArrowUpCircle, ArrowDownCircle, Trash2, Calendar, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -48,7 +48,18 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
                                                  </div>
                                           </div>
                                    </div>
-                                   <ClientLedgerActions client={client} />
+
+                                   <div className="flex flex-wrap gap-2 w-full md:w-auto">
+                                          <Link href={`/clientes/${client.id}/resumen`} className="flex-1 md:flex-initial">
+                                                 <Button variant="outline" className="h-14 w-full gap-2 px-6 rounded-2xl glass-card font-black uppercase text-[10px] tracking-widest hover:border-blue-500/50 transition-colors">
+                                                        <Printer className="w-5 h-5 text-blue-500" />
+                                                        Resumen PDF
+                                                 </Button>
+                                          </Link>
+                                          <div className="flex-1 md:flex-initial">
+                                                 <ClientLedgerActions client={client} />
+                                          </div>
+                                   </div>
                             </div>
 
                             {/* Stats Cards */}

@@ -1,4 +1,3 @@
-"use strict";
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -65,6 +64,30 @@ export async function deliverOrder(orderId: number, data: {
                      // 3. Update Client Balance & Bottles
                      const client = order.client;
                      const totalAmount = order.totalAmount;
+
+                     // --- Stock Management Logic ---
+                     let warehouse = await tx.warehouse.findFirst();
+                     if (!warehouse) {
+                            warehouse = await tx.warehouse.create({ data: { name: "Depósito Central" } });
+                     }
+
+                     for (const item of order.items) {
+                            await tx.stock.upsert({
+                                   where: {
+                                          warehouseId_productId: {
+                                                 warehouseId: warehouse.id,
+                                                 productId: item.productId
+                                          }
+                                   },
+                                   update: { quantity: { decrement: item.quantity } },
+                                   create: {
+                                          warehouseId: warehouse.id,
+                                          productId: item.productId,
+                                          quantity: -item.quantity
+                                   }
+                            });
+                     }
+                     // ------------------------------
 
                      let paymentStatus = "PAID";
                      if (data.paymentMethod === "CURRENT_ACCOUNT") {

@@ -17,11 +17,17 @@ export default async function ClientesPage({
        const clients = await prisma.client.findMany({
               where: search ? {
                      OR: [
-                            { name: { contains: search } },
-                            { address: { contains: search } },
+                            { name: { contains: search, mode: 'insensitive' } },
+                            { address: { contains: search, mode: 'insensitive' } },
                      ]
               } : {},
               orderBy: sort ? { balance: "desc" } : { name: "asc" },
+              include: {
+                     orders: {
+                            orderBy: { createdAt: "desc" },
+                            take: 1,
+                     }
+              }
        });
 
        // Calculate metrics
