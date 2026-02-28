@@ -1,15 +1,15 @@
 "use strict";
 "use client";
 
-import { useState, useEffect } from "react";
-import { Plus, X, ShoppingBag, User, Box, Search, Trash2, Loader2, Minus, ChevronRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Plus, X, ShoppingBag, User, Box, Search, Trash2, Loader2, Minus, ChevronRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createOrder } from "@/actions/orders";
 import { getClients } from "@/actions/clients";
 import { getProducts } from "@/actions/products";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { Card } from "@/components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function NewOrderButton() {
        const [isOpen, setIsOpen] = useState(false);
@@ -52,7 +52,7 @@ export default function NewOrderButton() {
                             unitPrice: product.price
                      }]);
               }
-              toast.success(`${product.name} añadido`);
+              toast.success(`${product.name} añadido`, { duration: 1000 });
        };
 
        const updateQty = (productId: number, delta: number) => {
@@ -102,183 +102,299 @@ export default function NewOrderButton() {
               setSearch("");
        };
 
-       const filteredClients = clients.filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || c.address.toLowerCase().includes(search.toLowerCase()));
-       const filteredProducts = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+       const filteredClients = clients.filter(c =>
+              c.name.toLowerCase().includes(search.toLowerCase()) ||
+              c.address.toLowerCase().includes(search.toLowerCase())
+       );
 
        return (
               <>
-                     <Button onClick={() => setIsOpen(true)} className="gap-2 rounded-xl h-12 px-6 shadow-sm">
-                            <Plus className="w-5 h-5" />
-                            <span className="text-xs font-bold uppercase tracking-wider">Nuevo Pedido</span>
+                     <Button
+                            onClick={() => setIsOpen(true)}
+                            variant="premium"
+                            size="lg"
+                            className="shadow-[0_20px_50px_rgba(255,255,255,0.1)] group"
+                     >
+                            <Plus className="w-5 h-5 mr-3 group-hover:rotate-90 transition-transform duration-500" />
+                            NUEVO PEDIDO
                      </Button>
 
-                     {isOpen && (
-                            <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center bg-background/40 backdrop-blur-md animate-in fade-in duration-300">
-                                   <div className="bg-card w-full max-w-2xl h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col rounded-t-3xl sm:rounded-2xl border border-border shadow-2xl overflow-hidden animate-in slide-in-from-bottom-8 duration-300">
+                     <AnimatePresence>
+                            {isOpen && (
+                                   <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-6 overflow-hidden">
+                                          {/* Backdrop */}
+                                          <motion.div
+                                                 initial={{ opacity: 0 }}
+                                                 animate={{ opacity: 1 }}
+                                                 exit={{ opacity: 0 }}
+                                                 onClick={() => setIsOpen(false)}
+                                                 className="absolute inset-0 bg-black/90 backdrop-blur-2xl"
+                                          />
 
-                                          {/* Header */}
-                                          <div className="px-8 py-6 flex justify-between items-center border-b border-border">
-                                                 <div className="flex items-center gap-4">
-                                                        <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary">
-                                                               <ShoppingBag className="w-5 h-5" />
-                                                        </div>
-                                                        <div>
-                                                               <h3 className="text-xl font-bold tracking-tight">Registro de Pedido</h3>
-                                                               <div className="flex items-center gap-2 mt-0.5">
-                                                                      <span className={cn("text-[10px] font-bold uppercase tracking-widest", step === 1 ? "text-primary" : "text-muted-foreground opacity-40")}>Cliente</span>
-                                                                      <div className="w-1 h-1 rounded-full bg-border" />
-                                                                      <span className={cn("text-[10px] font-bold uppercase tracking-widest", step === 2 ? "text-primary" : "text-muted-foreground opacity-40")}>Productos</span>
+                                          {/* Modal Container */}
+                                          <motion.div
+                                                 initial={{ y: "100%", opacity: 0, scale: 0.9 }}
+                                                 animate={{ y: 0, opacity: 1, scale: 1 }}
+                                                 exit={{ y: "100%", opacity: 0, scale: 0.9 }}
+                                                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                                                 className="relative w-full max-w-4xl h-screen sm:h-[85vh] bg-neutral-950/50 sm:rounded-[4rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col"
+                                          >
+                                                 {/* Header Decoration */}
+                                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-1 bg-white/10 rounded-full mt-4 block sm:hidden" />
+
+                                                 {/* Header */}
+                                                 <div className="p-10 pb-6 flex justify-between items-center relative z-10">
+                                                        <div className="flex items-center gap-6">
+                                                               <div className="w-16 h-16 bg-white flex items-center justify-center rounded-[2rem] shadow-2xl shadow-white/20">
+                                                                      <ShoppingBag className="w-8 h-8 text-black" />
+                                                               </div>
+                                                               <div>
+                                                                      <h3 className="text-3xl font-black tracking-tight uppercase italic text-white leading-none">REGISTRO DE PEDIDO</h3>
+                                                                      <div className="flex items-center gap-4 mt-3">
+                                                                             <div className="flex items-center gap-2">
+                                                                                    <div className={cn("w-2 h-2 rounded-full", step === 1 ? "bg-white animate-pulse" : "bg-white/20")} />
+                                                                                    <span className={cn("text-[10px] font-black uppercase tracking-[0.3em]", step === 1 ? "text-white" : "text-white/20")}>Selección Cliente</span>
+                                                                             </div>
+                                                                             <ChevronRight className="w-4 h-4 text-white/10" />
+                                                                             <div className="flex items-center gap-2">
+                                                                                    <div className={cn("w-2 h-2 rounded-full", step === 2 ? "bg-white animate-pulse" : "bg-white/20")} />
+                                                                                    <span className={cn("text-[10px] font-black uppercase tracking-[0.3em]", step === 2 ? "text-white" : "text-white/20")}>Productos</span>
+                                                                             </div>
+                                                                      </div>
                                                                </div>
                                                         </div>
+                                                        <Button
+                                                               variant="ghost"
+                                                               size="icon"
+                                                               onClick={() => { setIsOpen(false); reset(); }}
+                                                               className="rounded-full w-14 h-14 hover:bg-white/5 border border-white/5 text-white"
+                                                        >
+                                                               <X className="w-8 h-8" />
+                                                        </Button>
                                                  </div>
-                                                 <Button variant="ghost" size="icon" onClick={() => { setIsOpen(false); reset(); }} className="rounded-xl h-10 w-10">
-                                                        <X className="w-5 h-5" />
-                                                 </Button>
-                                          </div>
 
-                                          {/* Body */}
-                                          <div className="flex-1 overflow-y-auto p-6 lg:p-8">
+                                                 {/* Body Content */}
+                                                 <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar relative z-10">
 
-                                                 {/* STEP 1 */}
-                                                 {step === 1 && (
-                                                        <div className="space-y-6">
-                                                               <div className="relative">
-                                                                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground opacity-50" />
-                                                                      <input
-                                                                             type="text"
-                                                                             placeholder="Buscar cliente por nombre o calle..."
-                                                                             autoFocus
-                                                                             value={search}
-                                                                             onChange={(e) => setSearch(e.target.value)}
-                                                                             className="w-full h-12 bg-muted/30 border border-border rounded-xl pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all"
-                                                                      />
-                                                               </div>
+                                                        {/* STEP 1: CLIENT PICKER */}
+                                                        {step === 1 && (
+                                                               <motion.div
+                                                                      initial={{ opacity: 0, x: -20 }}
+                                                                      animate={{ opacity: 1, x: 0 }}
+                                                                      className="space-y-8"
+                                                               >
+                                                                      <div className="relative group">
+                                                                             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-white/20 group-focus-within:text-white transition-colors" />
+                                                                             <input
+                                                                                    type="text"
+                                                                                    placeholder="Busca un cliente por nombre, calle o número..."
+                                                                                    autoFocus
+                                                                                    value={search}
+                                                                                    onChange={(e) => setSearch(e.target.value)}
+                                                                                    className="w-full h-20 bg-white/5 border border-white/10 rounded-[2rem] pl-16 pr-8 font-bold text-xl text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all placeholder:text-white/10"
+                                                                             />
+                                                                      </div>
 
-                                                               <div className="space-y-2">
-                                                                      {filteredClients.slice(0, 8).map(client => (
-                                                                             <button
-                                                                                    key={client.id}
-                                                                                    onClick={() => { setSelectedClient(client); setStep(2); setSearch(""); }}
-                                                                                    className="w-full flex items-center justify-between p-4 bg-card border border-border rounded-xl hover:bg-primary/5 hover:border-primary/20 transition-all group text-left"
-                                                                             >
-                                                                                    <div className="flex items-center gap-4">
-                                                                                           <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors">
-                                                                                                  <User className="w-5 h-5" />
+                                                                      <div className="grid grid-cols-1 gap-4">
+                                                                             {filteredClients.slice(0, 10).map(client => (
+                                                                                    <button
+                                                                                           key={client.id}
+                                                                                           onClick={() => { setSelectedClient(client); setStep(2); setSearch(""); }}
+                                                                                           className="w-full flex items-center justify-between p-7 bg-white/5 border border-white/5 rounded-[2.5rem] hover:bg-white/10 hover:border-white/20 transition-all group text-left relative overflow-hidden active:scale-[0.98]"
+                                                                                    >
+                                                                                           <div className="flex items-center gap-6 relative z-10">
+                                                                                                  <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-white/20 group-hover:text-white group-hover:bg-white/20 transition-all">
+                                                                                                         <User className="w-7 h-7" />
+                                                                                                  </div>
+                                                                                                  <div>
+                                                                                                         <div className="font-black text-2xl text-white tracking-tight">{client.name}</div>
+                                                                                                         <div className="text-xs font-bold text-white/30 uppercase tracking-[0.2em] mt-1">{client.address}</div>
+                                                                                                  </div>
+                                                                                           </div>
+                                                                                           <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all relative z-10">
+                                                                                                  <ChevronRight className="w-6 h-6" />
+                                                                                           </div>
+                                                                                    </button>
+                                                                             ))}
+                                                                             {search && filteredClients.length === 0 && (
+                                                                                    <div className="flex flex-col items-center justify-center py-20 opacity-20">
+                                                                                           <Search className="w-16 h-16 mb-4" />
+                                                                                           <p className="font-black uppercase tracking-[0.3em] text-sm">No hay resultados para "{search}"</p>
+                                                                                    </div>
+                                                                             )}
+                                                                      </div>
+                                                               </motion.div>
+                                                        )}
+
+                                                        {/* STEP 2: PRODUCT SELECTION & CART */}
+                                                        {step === 2 && (
+                                                               <motion.div
+                                                                      initial={{ opacity: 0, x: 20 }}
+                                                                      animate={{ opacity: 1, x: 0 }}
+                                                                      className="grid grid-cols-1 lg:grid-cols-12 gap-10"
+                                                               >
+                                                                      {/* Left Side: Client Info & Catalog */}
+                                                                      <div className="lg:col-span-7 space-y-10">
+                                                                             <div className="p-8 bg-white/5 border border-white/10 rounded-[3rem] flex items-center justify-between group">
+                                                                                    <div className="flex items-center gap-6">
+                                                                                           <div className="w-14 h-14 bg-white text-black rounded-2xl flex items-center justify-center">
+                                                                                                  <User className="w-7 h-7" />
                                                                                            </div>
                                                                                            <div>
-                                                                                                  <div className="font-bold text-sm">{client.name}</div>
-                                                                                                  <div className="text-[11px] font-medium text-muted-foreground uppercase opacity-60 tracking-tight">{client.address}</div>
+                                                                                                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-1">Cliente Seleccionado</p>
+                                                                                                  <p className="font-black text-2xl tracking-tighter text-white">{selectedClient.name}</p>
                                                                                            </div>
                                                                                     </div>
-                                                                                    <ChevronRight className="w-4 h-4 opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                                                                             </button>
-                                                                      ))}
-                                                                      {search && filteredClients.length === 0 && (
-                                                                             <div className="text-center py-8 text-sm text-muted-foreground italic">No se encontraron clientes.</div>
-                                                                      )}
-                                                               </div>
-                                                        </div>
-                                                 )}
-
-                                                 {/* STEP 2 */}
-                                                 {step === 2 && (
-                                                        <div className="space-y-8">
-                                                               <div className="p-4 bg-primary/5 border border-primary/10 rounded-xl flex items-center justify-between">
-                                                                      <div className="flex items-center gap-3">
-                                                                             <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
-                                                                                    <User className="w-4 h-4" />
+                                                                                    <Button
+                                                                                           variant="ghost"
+                                                                                           className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest hover:bg-white/10 text-white/60 hover:text-white"
+                                                                                           onClick={() => setStep(1)}
+                                                                                    >
+                                                                                           CAMBIAR
+                                                                                    </Button>
                                                                              </div>
-                                                                             <div>
-                                                                                    <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Pedido para</p>
-                                                                                    <p className="font-bold text-sm tracking-tight">{selectedClient.name}</p>
-                                                                             </div>
-                                                                      </div>
-                                                                      <Button variant="ghost" size="sm" className="text-[10px] font-bold h-7" onClick={() => setStep(1)}>CAMBIAR</Button>
-                                                               </div>
 
-                                                               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                                                      {/* Catalog */}
-                                                                      <div className="space-y-4">
-                                                                             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Productos</p>
-                                                                             <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2 no-scrollbar">
-                                                                                    {products.map(product => (
-                                                                                           <button
-                                                                                                  key={product.id}
-                                                                                                  onClick={() => addItem(product)}
-                                                                                                  className="w-full flex items-center justify-between p-3 bg-muted/20 border border-border rounded-xl hover:border-primary/40 transition-all group"
-                                                                                           >
-                                                                                                  <div className="flex items-center gap-3">
-                                                                                                         <div className="w-8 h-8 bg-card rounded flex items-center justify-center text-muted-foreground">
-                                                                                                                <Box className="w-4 h-4" />
-                                                                                                         </div>
-                                                                                                         <div className="text-left">
-                                                                                                                <div className="font-bold text-xs">{product.name}</div>
-                                                                                                                <div className="text-[10px] font-bold text-muted-foreground">${product.price}</div>
-                                                                                                         </div>
-                                                                                                  </div>
-                                                                                                  <Plus className="w-4 h-4 text-primary opacity-40 group-hover:opacity-100" />
-                                                                                           </button>
-                                                                                    ))}
-                                                                             </div>
-                                                                      </div>
-
-                                                                      {/* Cart */}
-                                                                      <div className="space-y-4">
-                                                                             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Detalle</p>
-                                                                             <div className="bg-muted/30 border border-border p-4 rounded-xl min-h-[150px] space-y-3">
-                                                                                    {orderItems.length === 0 ? (
-                                                                                           <div className="h-32 flex flex-col items-center justify-center text-muted-foreground opacity-40 text-[10px] font-bold uppercase tracking-widest">Carrito Vacío</div>
-                                                                                    ) : (
-                                                                                           orderItems.map(item => (
-                                                                                                  <div key={item.productId} className="flex items-center justify-between bg-card p-2 px-3 rounded-lg border border-border">
-                                                                                                         <div className="flex flex-col">
-                                                                                                                <span className="text-[11px] font-bold truncate max-w-[100px]">{item.name}</span>
-                                                                                                                <span className="text-[10px] font-medium text-muted-foreground">${(item.quantity * item.unitPrice).toLocaleString()}</span>
-                                                                                                         </div>
-                                                                                                         <div className="flex items-center gap-2">
-                                                                                                                <button onClick={() => updateQty(item.productId, -1)} className="w-6 h-6 rounded bg-muted flex items-center justify-center hover:bg-border transition-colors"><Minus className="w-3 h-3" /></button>
-                                                                                                                <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
-                                                                                                                <button onClick={() => updateQty(item.productId, 1)} className="w-6 h-6 rounded bg-muted flex items-center justify-center hover:bg-border transition-colors"><Plus className="w-3 h-3" /></button>
-                                                                                                         </div>
-                                                                                                  </div>
-                                                                                           ))
-                                                                                    )}
-                                                                                    <div className="mt-4 pt-3 border-t border-border flex justify-between items-end">
-                                                                                           <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Total</span>
-                                                                                           <span className="text-2xl font-bold tracking-tighter">${total.toLocaleString()}</span>
+                                                                             <div className="space-y-6">
+                                                                                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 px-4">Catálogo de Productos</h4>
+                                                                                    <div className="grid grid-cols-1 gap-4 overflow-y-auto max-h-[40vh] pr-4 custom-scrollbar">
+                                                                                           {products.map(product => {
+                                                                                                  const inCart = orderItems.find(i => i.productId === product.id);
+                                                                                                  return (
+                                                                                                         <button
+                                                                                                                key={product.id}
+                                                                                                                onClick={() => addItem(product)}
+                                                                                                                className={cn(
+                                                                                                                       "w-full flex items-center justify-between p-6 rounded-[2.5rem] transition-all group active:scale-[0.98] border",
+                                                                                                                       inCart ? "bg-white/10 border-white/30" : "bg-white/5 border-white/5 hover:border-white/20 hover:bg-white/[0.07]"
+                                                                                                                )}
+                                                                                                         >
+                                                                                                                <div className="flex items-center gap-5">
+                                                                                                                       <div className={cn(
+                                                                                                                              "w-14 h-14 rounded-2xl flex items-center justify-center transition-all",
+                                                                                                                              inCart ? "bg-white text-black" : "bg-black/40 text-white/20 group-hover:text-white"
+                                                                                                                       )}>
+                                                                                                                              {inCart ? <Check className="w-7 h-7" /> : <Box className="w-7 h-7" />}
+                                                                                                                       </div>
+                                                                                                                       <div className="text-left">
+                                                                                                                              <div className="font-black text-lg text-white group-hover:translate-x-1 transition-transform">{product.name}</div>
+                                                                                                                              <div className="font-black text-2xl text-white/50 tracking-tighter">${product.price.toLocaleString()}</div>
+                                                                                                                       </div>
+                                                                                                                </div>
+                                                                                                                <div className={cn(
+                                                                                                                       "w-12 h-12 rounded-2xl border flex items-center justify-center transition-all",
+                                                                                                                       inCart ? "bg-white border-white text-black" : "border-white/10 group-hover:bg-white group-hover:text-black"
+                                                                                                                )}>
+                                                                                                                       <Plus className="w-6 h-6" />
+                                                                                                                </div>
+                                                                                                         </button>
+                                                                                                  );
+                                                                                           })}
                                                                                     </div>
                                                                              </div>
                                                                       </div>
-                                                               </div>
 
-                                                               <textarea
-                                                                      placeholder="Notas u observaciones para el chofer..."
-                                                                      value={notes}
-                                                                      onChange={(e) => setNotes(e.target.value)}
-                                                                      className="w-full h-20 bg-muted/20 border border-border rounded-xl p-4 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all resize-none"
-                                                               />
-                                                        </div>
-                                                 )}
-                                          </div>
+                                                                      {/* Right Side: Cart Summary */}
+                                                                      <div className="lg:col-span-5 flex flex-col gap-6">
+                                                                             <div className="flex-1 bg-white/[0.03] border border-white/10 rounded-[3.5rem] p-10 flex flex-col relative overflow-hidden">
+                                                                                    <div className="absolute top-0 right-0 p-10 opacity-5">
+                                                                                           <ShoppingBag className="w-40 h-40" />
+                                                                                    </div>
 
-                                          {/* Footer */}
-                                          <div className="p-6 bg-muted/10 border-t border-border flex gap-3">
-                                                 <Button variant="ghost" className="flex-1 rounded-xl h-12 text-xs font-bold uppercase tracking-widest" onClick={() => { setIsOpen(false); reset(); }}>
-                                                        Cancelar
-                                                 </Button>
-                                                 {step === 2 && (
+                                                                                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 mb-8 relative z-10">Resumen del Carrito</h4>
+
+                                                                                    <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar relative z-10">
+                                                                                           {orderItems.length === 0 ? (
+                                                                                                  <div className="h-full flex flex-col items-center justify-center opacity-10 text-center py-20">
+                                                                                                         <ShoppingBag className="w-20 h-20 mb-4" />
+                                                                                                         <p className="font-black uppercase tracking-[0.2em] text-xs">Añade productos para ver el total</p>
+                                                                                                  </div>
+                                                                                           ) : (
+                                                                                                  orderItems.map(item => (
+                                                                                                         <div key={item.productId} className="flex justify-between items-center bg-white/5 p-5 rounded-[2rem] border border-white/5 group hover:border-white/20 transition-all">
+                                                                                                                <div className="flex flex-col">
+                                                                                                                       <span className="text-lg font-black text-white">{item.name}</span>
+                                                                                                                       <span className="text-sm font-bold text-white/30 uppercase tracking-widest">${(item.quantity * item.unitPrice).toLocaleString()}</span>
+                                                                                                                </div>
+                                                                                                                <div className="flex items-center gap-4 bg-black/60 p-2 rounded-[1.5rem] border border-white/5">
+                                                                                                                       <button
+                                                                                                                              onClick={() => updateQty(item.productId, -1)}
+                                                                                                                              className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 text-white transition-all active:scale-90"
+                                                                                                                       >
+                                                                                                                              <Minus className="w-5 h-5" />
+                                                                                                                       </button>
+                                                                                                                       <span className="text-xl font-black w-6 text-center text-white">{item.quantity}</span>
+                                                                                                                       <button
+                                                                                                                              onClick={() => updateQty(item.productId, 1)}
+                                                                                                                              className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 text-white transition-all active:scale-90"
+                                                                                                                       >
+                                                                                                                              <Plus className="w-5 h-5" />
+                                                                                                                       </button>
+                                                                                                                </div>
+                                                                                                         </div>
+                                                                                                  ))
+                                                                                           )}
+                                                                                    </div>
+
+                                                                                    <div className="mt-10 pt-10 border-t border-white/10 relative z-10">
+                                                                                           <div className="flex justify-between items-end">
+                                                                                                  <div>
+                                                                                                         <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mb-2">Total Final</p>
+                                                                                                         <p className="text-6xl font-black tracking-tighter text-white leading-none">${total.toLocaleString()}</p>
+                                                                                                  </div>
+                                                                                                  <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center text-white ring-8 ring-white/[0.02]">
+                                                                                                         <Check className="w-8 h-8" />
+                                                                                                  </div>
+                                                                                           </div>
+                                                                                    </div>
+                                                                             </div>
+
+                                                                             <div className="space-y-4">
+                                                                                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 px-4">Notas para el Chofer / Observaciones</label>
+                                                                                    <textarea
+                                                                                           placeholder="Instrucciones adicionales..."
+                                                                                           value={notes}
+                                                                                           onChange={(e) => setNotes(e.target.value)}
+                                                                                           className="w-full h-32 bg-white/5 border border-white/10 rounded-[2.5rem] p-8 text-lg font-bold text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all resize-none placeholder:text-white/10 lg:h-32"
+                                                                                    />
+                                                                             </div>
+                                                                      </div>
+                                                               </motion.div>
+                                                        )}
+                                                 </div>
+
+                                                 {/* Sticky Footer Action Bar */}
+                                                 <div className="p-10 bg-black/40 backdrop-blur-3xl border-t border-white/10 flex gap-6 relative z-20">
                                                         <Button
-                                                               disabled={loading || orderItems.length === 0}
-                                                               onClick={handleSubmit}
-                                                               className="flex-[2] rounded-xl h-12 text-xs font-bold uppercase tracking-widest"
+                                                               variant="ghost"
+                                                               className="flex-1 h-20 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-white/5 text-white/40 hover:text-white"
+                                                               onClick={() => { setIsOpen(false); reset(); }}
                                                         >
-                                                               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirmar Pedido"}
+                                                               Cancelar
                                                         </Button>
-                                                 )}
-                                          </div>
+                                                        {step === 2 && (
+                                                               <Button
+                                                                      disabled={loading || orderItems.length === 0}
+                                                                      onClick={handleSubmit}
+                                                                      variant="action"
+                                                                      size="xl"
+                                                                      className="flex-[2.5] shadow-2xl shadow-primary/40 relative overflow-hidden group"
+                                                               >
+                                                                      <span className="relative z-10">
+                                                                             {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : "CONFIRMAR PEDIDO"}
+                                                                      </span>
+                                                                      {/* Animated Background for the button */}
+                                                                      <motion.div
+                                                                             animate={{ x: ["-100%", "100%"] }}
+                                                                             transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                                                                             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
+                                                                      />
+                                                               </Button>
+                                                        )}
+                                                 </div>
+                                          </motion.div>
                                    </div>
-                            </div>
-                     )}
+                            )}
+                     </AnimatePresence>
               </>
        );
 }

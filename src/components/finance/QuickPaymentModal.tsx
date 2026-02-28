@@ -1,11 +1,13 @@
+"use strict";
 "use client";
 
 import { useState } from "react";
-import { X, DollarSign, Loader2, CheckCircle } from "lucide-react";
+import { X, DollarSign, Loader2, CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { registerPayment } from "@/actions/clients";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function QuickPaymentModal({ client, onClose }: { client: any; onClose: () => void }) {
        const [amount, setAmount] = useState<number>(0);
@@ -29,54 +31,93 @@ export default function QuickPaymentModal({ client, onClose }: { client: any; on
        const setFullPayment = () => setAmount(client.balance);
 
        return (
-              <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-xl animate-fade-in">
-                     <div className="bg-card w-full max-w-md rounded-t-[2.5rem] sm:rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden animate-slide-in-up">
+              <AnimatePresence>
+                     {client && (
+                            <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-6 overflow-hidden">
+                                   {/* Backdrop */}
+                                   <motion.div
+                                          initial={{ opacity: 0 }}
+                                          animate={{ opacity: 1 }}
+                                          exit={{ opacity: 0 }}
+                                          onClick={onClose}
+                                          className="absolute inset-0 bg-black/95 backdrop-blur-2xl"
+                                   />
 
-                            <div className="p-8 pb-4 flex justify-between items-center border-b border-white/5">
-                                   <div>
-                                          <h3 className="text-2xl font-black italic uppercase tracking-tighter">Cobro Rápido</h3>
-                                          <p className="text-sm font-bold opacity-50">{client.name}</p>
-                                   </div>
-                                   <Button variant="ghost" size="icon" onClick={onClose} className="rounded-2xl">
-                                          <X className="w-6 h-6" />
-                                   </Button>
-                            </div>
-
-                            <div className="p-8 space-y-8">
-                                   <div className="bg-muted/10 p-8 rounded-[2rem] border border-white/5 text-center relative overflow-hidden group">
-                                          <div className="absolute top-0 left-0 w-full h-1 bg-primary/20" />
-                                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Importe a Cobrar</p>
-                                          <div className="flex items-center justify-center text-6xl font-black tracking-tighter">
-                                                 <span className="text-2xl opacity-20 mt-2 mr-1">$</span>
-                                                 <input
-                                                        type="number"
-                                                        autoFocus
-                                                        value={amount || ''}
-                                                        onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-                                                        className="bg-transparent border-none focus:outline-none w-40 text-center"
-                                                        placeholder="0"
-                                                 />
+                                   {/* Modal Container */}
+                                   <motion.div
+                                          initial={{ y: 50, opacity: 0, scale: 0.95 }}
+                                          animate={{ y: 0, opacity: 1, scale: 1 }}
+                                          exit={{ y: 50, opacity: 0, scale: 0.95 }}
+                                          className="relative bg-neutral-900 w-full max-w-md rounded-t-[3rem] sm:rounded-[3.5rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col text-white"
+                                   >
+                                          {/* Header */}
+                                          <div className="p-10 pb-6 flex justify-between items-center relative z-10">
+                                                 <div className="flex items-center gap-6">
+                                                        <div className="w-16 h-16 bg-emerald-500 text-white rounded-[2rem] flex items-center justify-center shadow-2xl shadow-emerald-500/40">
+                                                               <DollarSign className="w-8 h-8" />
+                                                        </div>
+                                                        <div>
+                                                               <h3 className="text-3xl font-black italic uppercase tracking-tighter leading-none">Caja Rápida</h3>
+                                                               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mt-3">{client.name}</p>
+                                                        </div>
+                                                 </div>
+                                                 <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full w-14 h-14 hover:bg-white/5 border border-white/5">
+                                                        <X className="w-8 h-8" />
+                                                 </Button>
                                           </div>
 
-                                          <button
-                                                 onClick={setFullPayment}
-                                                 className="mt-4 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest hover:bg-primary/20 transition-colors"
-                                          >
-                                                 Cargar Total: ${client.balance.toLocaleString()}
-                                          </button>
-                                   </div>
+                                          <div className="p-10 space-y-10 relative z-10">
+                                                 {/* High Impact Amount Input */}
+                                                 <div className="bg-white/5 p-12 rounded-[3.5rem] border border-white/10 text-center relative overflow-hidden group">
+                                                        <div className="absolute top-0 left-0 w-full h-1.5 bg-emerald-500 animate-pulse" />
+                                                        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-4">Monto a Percibir</p>
+                                                        <div className="flex items-center justify-center text-8xl font-black tracking-tighter text-white">
+                                                               <span className="text-3xl text-emerald-500/40 mt-4 mr-2">$</span>
+                                                               <input
+                                                                      type="number"
+                                                                      autoFocus
+                                                                      value={amount || ''}
+                                                                      onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+                                                                      className="bg-transparent border-none focus:outline-none w-64 text-center tabular-nums"
+                                                                      placeholder="0"
+                                                               />
+                                                        </div>
 
-                                   <div className="flex gap-4">
-                                          <Button
-                                                 disabled={loading || amount <= 0}
-                                                 onClick={handlePayment}
-                                                 className="w-full h-16 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black uppercase tracking-widest text-sm shadow-xl shadow-emerald-500/20"
-                                          >
-                                                 {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : "CONFIRMAR COBRO"}
-                                          </Button>
-                                   </div>
+                                                        <button
+                                                               onClick={setFullPayment}
+                                                               className="mt-8 px-8 py-4 rounded-[1.5rem] bg-white/5 text-emerald-500 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-emerald-500 hover:text-white transition-all active:scale-95 border border-emerald-500/10"
+                                                        >
+                                                               Liquidar Deuda: ${client.balance.toLocaleString()}
+                                                        </button>
+                                                 </div>
+
+                                                 <div className="flex gap-6">
+                                                        <Button
+                                                               variant="ghost"
+                                                               className="flex-1 h-20 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-white/5 text-white/30 hover:text-white"
+                                                               onClick={onClose}
+                                                        >
+                                                               Cerrar
+                                                        </Button>
+                                                        <Button
+                                                               disabled={loading || amount <= 0}
+                                                               onClick={handlePayment}
+                                                               variant="action"
+                                                               size="xl"
+                                                               className="flex-[2] shadow-2xl shadow-emerald-500/20 active:scale-95 group"
+                                                        >
+                                                               {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : (
+                                                                      <span className="flex items-center gap-3">
+                                                                             CONFIRMAR
+                                                                             <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                                                                      </span>
+                                                               )}
+                                                        </Button>
+                                                 </div>
+                                          </div>
+                                   </motion.div>
                             </div>
-                     </div>
-              </div>
+                     )}
+              </AnimatePresence>
        );
 }
