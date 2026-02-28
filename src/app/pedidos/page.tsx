@@ -1,8 +1,10 @@
+"use strict";
+
 import { prisma } from "@/lib/prisma";
-import { ShoppingBag, Clock, Package, Calendar } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { ShoppingBag, Clock, Package, Calendar, ArrowRight, Activity, Zap } from "lucide-react";
 import OrderList from "@/components/orders/OrderList";
 import NewOrderButton from "@/components/orders/NewOrderButton";
+import { cn } from "@/lib/utils";
 
 export default async function PedidosPage() {
        const orders = await prisma.order.findMany({
@@ -27,55 +29,95 @@ export default async function PedidosPage() {
        };
 
        return (
-              <div className="space-y-12 animate-fade-in-up">
-                     {/* Header */}
-                     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
-                            <div className="space-y-2">
-                                   <div className="flex items-center gap-3 mb-2">
-                                          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                                                 <ShoppingBag className="w-5 h-5" />
-                                          </div>
-                                          <h1 className="text-3xl font-bold tracking-tight">Pedidos</h1>
+              <div className="max-w-screen-2xl mx-auto space-y-20 py-12 px-6 sm:px-10 text-white animate-fade-in-up">
+
+                     {/* RADICAL HEADER */}
+                     <header className="relative flex flex-col md:flex-row justify-between items-start md:items-end gap-12 pb-16 border-b border-white/5">
+                            <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] pointer-events-none opacity-30" />
+
+                            <div className="space-y-6 relative z-10">
+                                   <div className="inline-flex items-center gap-4 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/40">
+                                          <ShoppingBag className="w-4 h-4" />
+                                          <span className="text-[10px] font-black uppercase tracking-[0.3em]">Logística de Ventas</span>
                                    </div>
-                                   <p className="text-muted-foreground font-medium">
-                                          Gestión integral de ventas, seguimiento de estados y logística de envíos.
-                                   </p>
+                                   <div className="space-y-4">
+                                          <h1 className="text-6xl md:text-8xl font-black tracking-tighter italic uppercase leading-[0.85]">
+                                                 Gestión de<br /><span className="text-transparent border-text-white" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.2)' }}>Pedidos</span>.
+                                          </h1>
+                                          <p className="max-w-xl text-white/30 font-black uppercase tracking-[0.2em] text-[10px] leading-relaxed">
+                                                 Monitoreo en tiempo real de la cadena de suministro, entregas finales y facturación automatizada por ruta.
+                                          </p>
+                                   </div>
                             </div>
-                            <NewOrderButton />
+                            <div className="relative z-10">
+                                   <NewOrderButton />
+                            </div>
                      </header>
 
-                     {/* Stats Grid */}
-                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            <StatCard label="Pendientes" value={stats.pending.toString()} icon={<Clock className="w-4 h-4" />} color="amber" />
-                            <StatCard label="Entregados" value={stats.delivered.toString()} icon={<Package className="w-4 h-4" />} color="emerald" />
-                            <StatCard label="Pedidos Hoy" value={stats.totalToday.toString()} icon={<Calendar className="w-4 h-4" />} color="primary" />
+                     {/* PERFORMANCE STATS */}
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <StatCard
+                                   label="Órdenes Pendientes"
+                                   value={stats.pending.toString()}
+                                   icon={<Clock className="w-7 h-7" />}
+                                   color="amber"
+                                   description="Esperando despacho"
+                            />
+                            <StatCard
+                                   label="Entregas Exitosas"
+                                   value={stats.delivered.toString()}
+                                   icon={<Package className="w-7 h-7" />}
+                                   color="emerald"
+                                   description="Ciclo completado"
+                            />
+                            <StatCard
+                                   label="Actividad de Hoy"
+                                   value={stats.totalToday.toString()}
+                                   icon={<Zap className="w-7 h-7" />}
+                                   color="primary"
+                                   description="Volumen acumulado"
+                            />
                      </div>
 
-                     {/* Main List */}
-                     <section className="pt-8 border-t border-border">
+                     {/* ORDERS PIPELINE SECTION */}
+                     <section className="space-y-12">
+                            <div className="flex items-center justify-between px-2">
+                                   <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">Historial de Operaciones / Pipeline</h3>
+                                   <div className="h-[1px] flex-1 mx-10 bg-gradient-to-r from-white/10 to-transparent" />
+                            </div>
                             <OrderList initialOrders={orders} />
                      </section>
               </div>
        );
 }
 
-function StatCard({ label, value, icon, color }: any) {
+function StatCard({ label, value, icon, color, description }: any) {
        const colors: any = {
-              amber: "text-amber-600 bg-amber-500/5 border-amber-500/10",
-              emerald: "text-emerald-600 bg-emerald-500/5 border-emerald-500/10",
-              primary: "text-primary bg-primary/5 border-primary/10"
+              amber: "border-amber-500/10 bg-amber-500/5 text-amber-500",
+              emerald: "border-emerald-500/10 bg-emerald-500/5 text-emerald-500",
+              primary: "border-white/10 bg-white/5 text-white"
        }
        const colorClass = colors[color] || colors.primary;
 
        return (
-              <Card className="bg-card border-border shadow-sm flex items-center p-6 gap-4 rounded-2xl">
-                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${colorClass} border`}>
-                            {icon}
+              <div className={cn(
+                     "relative overflow-hidden p-10 rounded-[3rem] border transition-all duration-500 group",
+                     colorClass
+              )}>
+                     <div className="flex justify-between items-start mb-10">
+                            <div className="w-16 h-16 rounded-[1.5rem] bg-black/40 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
+                                   {icon}
+                            </div>
+                            <ArrowRight className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0" />
                      </div>
                      <div>
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{label}</p>
-                            <h4 className="text-2xl font-bold tracking-tight">{value}</h4>
+                            <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-2 truncate">{label}</p>
+                            <h4 className="text-6xl font-black tracking-tighter tabular-nums mb-4">{value}</h4>
+                            <p className="text-[8px] font-black uppercase tracking-[0.2em] opacity-20">{description}</p>
                      </div>
-              </Card>
+                     <div className="absolute top-0 right-0 p-8 opacity-5">
+                            {icon}
+                     </div>
+              </div>
        )
 }
