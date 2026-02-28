@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, X, Box, DollarSign, PackageCheck, Loader2, Save, ArrowRight } from "lucide-react";
+import { Plus, X, Box, DollarSign, PackageCheck, Loader2, Save, ArrowRight, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createProduct } from "@/actions/products";
 import { toast } from "sonner";
@@ -14,14 +14,15 @@ export default function NewProductButton() {
        const [loading, setLoading] = useState(false);
        const [formData, setFormData] = useState({
               name: "",
+              code: "",
               price: 0,
-              type: "CONTAINER", // CONTAINER or ACCESSORY
+              isReturnable: true,
        });
 
        const handleSubmit = async (e: React.FormEvent) => {
               e.preventDefault();
-              if (!formData.name || formData.price <= 0) {
-                     toast.error("Nombre y precio son obligatorios");
+              if (!formData.name || !formData.code || formData.price <= 0) {
+                     toast.error("Nombre, código y precio son obligatorios");
                      return;
               }
 
@@ -30,7 +31,7 @@ export default function NewProductButton() {
               if (result.success) {
                      toast.success("¡Producto creado!");
                      setIsOpen(false);
-                     setFormData({ name: "", price: 0, type: "CONTAINER" });
+                     setFormData({ name: "", code: "", price: 0, isReturnable: true });
               } else {
                      toast.error("Error: " + result.error);
               }
@@ -82,8 +83,8 @@ export default function NewProductButton() {
                                                         </Button>
                                                  </div>
 
-                                                 <form onSubmit={handleSubmit} className="p-10 space-y-10 relative z-10">
-                                                        <div className="space-y-8">
+                                                 <form onSubmit={handleSubmit} className="p-10 space-y-8 relative z-10">
+                                                        <div className="space-y-6">
                                                                <div className="space-y-4">
                                                                       <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Descripción del Producto</label>
                                                                       <div className="relative group">
@@ -100,49 +101,66 @@ export default function NewProductButton() {
                                                                       </div>
                                                                </div>
 
-                                                               <div className="space-y-4">
-                                                                      <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Precio de Venta</label>
-                                                                      <div className="relative group">
-                                                                             <DollarSign className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-white/20 group-focus-within:text-white transition-colors" />
-                                                                             <input
-                                                                                    type="number"
-                                                                                    required
-                                                                                    value={formData.price || ''}
-                                                                                    onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                                                                                    placeholder="0.00"
-                                                                                    className="w-full h-20 bg-white/5 border border-white/10 rounded-[2rem] pl-16 pr-8 font-bold text-xl text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all placeholder:text-white/10 tabular-nums"
-                                                                             />
+                                                               <div className="grid grid-cols-2 gap-6">
+                                                                      <div className="space-y-4">
+                                                                             <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Código / SKU</label>
+                                                                             <div className="relative group">
+                                                                                    <Hash className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-white transition-colors" />
+                                                                                    <input
+                                                                                           type="text"
+                                                                                           required
+                                                                                           value={formData.code}
+                                                                                           onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                                                                                           placeholder="SKU"
+                                                                                           className="w-full h-16 bg-white/5 border border-white/10 rounded-[1.5rem] pl-14 pr-6 font-bold text-lg text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all placeholder:text-white/10"
+                                                                                    />
+                                                                             </div>
+                                                                      </div>
+
+                                                                      <div className="space-y-4">
+                                                                             <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Precio</label>
+                                                                             <div className="relative group">
+                                                                                    <DollarSign className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-white transition-colors" />
+                                                                                    <input
+                                                                                           type="number"
+                                                                                           required
+                                                                                           value={formData.price || ''}
+                                                                                           onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+                                                                                           placeholder="0.00"
+                                                                                           className="w-full h-16 bg-white/5 border border-white/10 rounded-[1.5rem] pl-14 pr-6 font-bold text-lg text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all placeholder:text-white/10 tabular-nums"
+                                                                                    />
+                                                                             </div>
                                                                       </div>
                                                                </div>
 
                                                                <div className="space-y-4">
-                                                                      <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Tipo de Item</label>
+                                                                      <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Configuración</label>
                                                                       <div className="flex p-2 bg-black/60 rounded-[2rem] border border-white/10">
                                                                              <button
                                                                                     type="button"
-                                                                                    onClick={() => setFormData({ ...formData, type: "CONTAINER" })}
+                                                                                    onClick={() => setFormData({ ...formData, isReturnable: true })}
                                                                                     className={cn(
                                                                                            "flex-1 flex items-center justify-center gap-3 py-6 rounded-[1.5rem] font-black uppercase text-[10px] tracking-widest transition-all",
-                                                                                           formData.type === "CONTAINER" ? "bg-white text-black shadow-xl" : "text-white/30 hover:bg-white/5"
+                                                                                           formData.isReturnable ? "bg-white text-black shadow-xl" : "text-white/30 hover:bg-white/5"
                                                                                     )}
                                                                              >
-                                                                                    <PackageCheck className="w-4 h-4" /> Envase Retornable
+                                                                                    <PackageCheck className="w-4 h-4" /> Es Retornable
                                                                              </button>
                                                                              <button
                                                                                     type="button"
-                                                                                    onClick={() => setFormData({ ...formData, type: "ACCESSORY" })}
+                                                                                    onClick={() => setFormData({ ...formData, isReturnable: false })}
                                                                                     className={cn(
                                                                                            "flex-1 flex items-center justify-center gap-3 py-6 rounded-[1.5rem] font-black uppercase text-[10px] tracking-widest transition-all",
-                                                                                           formData.type === "ACCESSORY" ? "bg-white text-black shadow-xl" : "text-white/30 hover:bg-white/5"
+                                                                                           !formData.isReturnable ? "bg-white text-black shadow-xl" : "text-white/30 hover:bg-white/5"
                                                                                     )}
                                                                              >
-                                                                                    <Plus className="w-4 h-4" /> Accesorio / Otro
+                                                                                    <Plus className="w-4 h-4" /> Descartable
                                                                              </button>
                                                                       </div>
                                                                </div>
                                                         </div>
 
-                                                        <div className="flex gap-6 pt-6">
+                                                        <div className="flex gap-6 pt-4">
                                                                <Button
                                                                       type="button"
                                                                       variant="ghost"
