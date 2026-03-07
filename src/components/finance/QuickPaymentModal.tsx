@@ -18,7 +18,12 @@ export default function QuickPaymentModal({ client, onClose }: { client: any; on
        const handlePayment = async () => {
               if (amount <= 0) return;
               setLoading(true);
-              const result = await registerPayment(client.id, amount, "Pago rápido desde lista de deudores");
+              const result = await registerPayment({
+                     clientId: client.id,
+                     amount,
+                     description: "Pago rápido desde lista de deudores",
+                     paymentMethod: "CASH"
+              });
               if (result.success) {
                      toast.success("Pago registrado con éxito");
                      onClose();
