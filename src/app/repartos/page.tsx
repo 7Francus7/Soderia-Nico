@@ -33,18 +33,18 @@ export default async function RepartosPage() {
        });
 
        return (
-              <div className="space-y-12 animate-fade-in-up">
+              <div className="page-container space-y-8 lg:space-y-12 text-white">
                      {/* Header */}
-                     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+                     <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-5 pb-6 border-b border-white/5">
                             <div className="space-y-2">
-                                   <div className="flex items-center gap-3 mb-2">
-                                          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                                                 <Truck className="w-5 h-5" />
+                                   <div className="flex items-center gap-3">
+                                          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                                                 <Truck className="w-4 h-4 sm:w-5 sm:h-5" />
                                           </div>
-                                          <h1 className="text-3xl font-bold tracking-tight">Repartos</h1>
+                                          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Repartos</h1>
                                    </div>
-                                   <p className="text-muted-foreground font-medium">
-                                          Gestión dinámica de logística, hojas de ruta y control de choferes.
+                                   <p className="text-sm text-muted-foreground">
+                                          Logística dinámica, hojas de ruta y control de choferes.
                                    </p>
                             </div>
                             <NewDeliveryButton
@@ -53,8 +53,8 @@ export default async function RepartosPage() {
                             />
                      </header>
 
-                     {/* Delivery List Area */}
-                     <section className="pt-8 border-t border-border">
+                     {/* Delivery List */}
+                     <section className="pt-2">
                             <DeliveryList initialDeliveries={processedDeliveries} />
                      </section>
               </div>

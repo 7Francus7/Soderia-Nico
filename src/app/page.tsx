@@ -8,7 +8,6 @@ import NewOrderButton from "@/components/orders/NewOrderButton";
 import LiveActivityMonitor from "@/components/dashboard/LiveActivityMonitor";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { QuickActionCard } from "@/components/dashboard/QuickActionCard";
-import { cn } from "@/lib/utils";
 
 export default async function Home() {
        const session = await getServerSession();
@@ -19,160 +18,162 @@ export default async function Home() {
               prisma.delivery.count({ where: { status: "IN_PROGRESS" } })
        ]);
 
-       const userName = session?.user?.name || "Nico";
        const currentDate = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
 
        return (
-              <div className="max-w-screen-2xl mx-auto space-y-24 py-12 px-6 sm:px-10 text-white selection:bg-white selection:text-black">
+              <div className="page-container space-y-10 lg:space-y-16 text-white selection:bg-white selection:text-black">
 
-                     {/* RADICAL HERO SECTION */}
-                     <header className="relative flex flex-col md:flex-row justify-between items-start md:items-end gap-12 pb-16 border-b border-white/5">
-                            {/* Background decoration */}
-                            <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none opacity-50" />
+                     {/* HERO SECTION */}
+                     <header className="relative flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-8 border-b border-white/5">
+                            <div className="absolute -top-16 -left-10 w-72 h-72 bg-primary/10 rounded-full blur-[100px] pointer-events-none opacity-40" />
 
-                            <div className="space-y-8 relative z-10">
-                                   <div className="inline-flex items-center gap-4 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-white/50 backdrop-blur-md">
-                                          <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
-                                          <span className="text-[10px] font-black uppercase tracking-[0.3em]">Sistema Operativo v2.5.0 Premium</span>
-                                          <div className="w-1 h-1 rounded-full bg-white/20" />
-                                          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500">Live Status</span>
+                            <div className="space-y-4 relative z-10 flex-1 min-w-0">
+                                   {/* Badge */}
+                                   <div className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50">
+                                          <Zap className="w-3 h-3 text-amber-500 fill-amber-500 shrink-0" />
+                                          <span className="text-[9px] font-black uppercase tracking-[0.25em] truncate">Sistema v2.5.0 Premium</span>
+                                          <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                                    </div>
 
-                                   <div className="space-y-4">
-                                          <h2 className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.85] italic uppercase">
-                                                 Sodería<br /><span className="text-transparent border-text-white stroke-white" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.2)' }}>Nico</span>.
+                                   {/* Title */}
+                                   <div>
+                                          <h2 className="text-hero font-black tracking-tighter leading-[0.85] italic uppercase">
+                                                 Sodería<br /><span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.2)' }}>Nico</span>.
                                           </h2>
-                                          <div className="flex flex-wrap items-center gap-6 mt-6">
-                                                 <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-xl border border-white/5 font-black text-xs uppercase tracking-widest text-white/40">
-                                                        <Calendar className="w-4 h-4" />
-                                                        {currentDate}
-                                                 </div>
-                                                 <div className="flex items-center gap-3 bg-emerald-500/10 px-4 py-2 rounded-xl border border-emerald-500/20 font-black text-xs uppercase tracking-widest text-emerald-500">
-                                                        <Activity className="w-4 h-4 animate-pulse" />
-                                                        {activeDeliveries} Rutas Activas
-                                                 </div>
+                                   </div>
+
+                                   {/* Meta pills */}
+                                   <div className="flex flex-wrap items-center gap-3">
+                                          <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5 font-black text-[10px] uppercase tracking-widest text-white/40">
+                                                 <Calendar className="w-3 h-3 shrink-0" />
+                                                 <span className="truncate max-w-[160px] sm:max-w-none">{currentDate}</span>
+                                          </div>
+                                          <div className="flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 font-black text-[10px] uppercase tracking-widest text-emerald-500">
+                                                 <Activity className="w-3 h-3 animate-pulse shrink-0" />
+                                                 {activeDeliveries} Rutas Activas
                                           </div>
                                    </div>
                             </div>
 
-                            <div className="flex items-center gap-6 relative z-10">
+                            <div className="relative z-10 shrink-0">
                                    <NewOrderButton />
                             </div>
                      </header>
 
-                     {/* MAIN METRICS HUB */}
-                     <section className="space-y-12">
-                            <div className="flex items-center justify-between px-2">
-                                   <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">Estado Global / Métricas Hoy</h3>
-                                   <div className="h-[1px] flex-1 mx-10 bg-gradient-to-r from-white/10 to-transparent" />
+                     {/* METRICS */}
+                     <section className="space-y-6">
+                            <div className="flex items-center gap-4 px-1">
+                                   <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 shrink-0">Métricas Hoy</h3>
+                                   <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
                                    <MetricCard
-                                          label="Total Clientes"
+                                          label="Clientes"
                                           value={clientCount.toString()}
-                                          icon={<Users className="w-7 h-7" />}
+                                          icon={<Users className="w-5 h-5 sm:w-7 sm:h-7" />}
                                           color="blue"
                                           href="/clientes"
                                    />
                                    <MetricCard
-                                          label="Ventas Entregadas"
+                                          label="Entregas"
                                           value={orderCount.toString()}
-                                          icon={<Truck className="w-7 h-7" />}
+                                          icon={<Truck className="w-5 h-5 sm:w-7 sm:h-7" />}
                                           color="purple"
                                           href="/pedidos"
                                    />
                                    <MetricCard
-                                          label="Crédito a Cobrar"
+                                          label="Crédito"
                                           value={`$${(totalDebt._sum.balance || 0).toLocaleString()}`}
-                                          icon={<CreditCard className="w-7 h-7" />}
+                                          icon={<CreditCard className="w-5 h-5 sm:w-7 sm:h-7" />}
                                           color="rose"
                                           href="/cuentas"
                                    />
                                    <MetricCard
-                                          label="Repartos en Curso"
+                                          label="En Ruta"
                                           value={activeDeliveries.toString()}
-                                          icon={<Activity className="w-7 h-7" />}
+                                          icon={<Activity className="w-5 h-5 sm:w-7 sm:h-7" />}
                                           color="amber"
                                           href="/repartos"
                                    />
                             </div>
                      </section>
 
-                     {/* STRATEGIC COMMAND CENTER */}
-                     <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 pt-12">
+                     {/* STRATEGIC CONTENT */}
+                     <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 lg:gap-12">
 
-                            {/* Left Side: Performance Analysis */}
-                            <div className="xl:col-span-8 space-y-12">
-                                   <div className="space-y-2 px-2">
-                                          <h4 className="text-4xl font-black tracking-tighter italic uppercase text-white">Análisis Operativo</h4>
-                                          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Monitoreo de rendimiento y ventas semanales</p>
+                            {/* Analytics Chart */}
+                            <div className="xl:col-span-8 space-y-6">
+                                   <div className="px-1">
+                                          <h4 className="text-section font-black tracking-tighter italic uppercase text-white">Análisis Operativo</h4>
+                                          <p className="text-[9px] font-black uppercase tracking-[0.35em] text-white/20 mt-1">Rendimiento y ventas semanales</p>
                                    </div>
-                                   <div className="p-10 rounded-[4rem] bg-neutral-900/30 border border-white/5 backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
+                                   <div className="p-5 sm:p-8 lg:p-10 rounded-[2rem] sm:rounded-[3rem] bg-neutral-900/30 border border-white/5 backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
                                           <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                                           <AnalyticsDashboard />
                                    </div>
                             </div>
 
-                            {/* Right Side: Activity & Quick Actions */}
-                            <div className="xl:col-span-4 space-y-16">
-                                   <div className="space-y-8">
-                                          <div className="space-y-2 px-2">
-                                                 <h4 className="text-xl font-black tracking-tighter italic uppercase text-white">Centro de Comando</h4>
-                                                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Acceso directo a módulos</p>
+                            {/* Command Center + Live Monitor */}
+                            <div className="xl:col-span-4 space-y-8">
+                                   {/* Quick Actions */}
+                                   <div className="space-y-5">
+                                          <div className="px-1">
+                                                 <h4 className="text-lg sm:text-xl font-black tracking-tighter italic uppercase text-white">Centro de Comando</h4>
+                                                 <p className="text-[9px] font-black uppercase tracking-[0.25em] text-white/20 mt-1">Acceso a módulos</p>
                                           </div>
-                                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
+                                          <div className="grid grid-cols-2 xl:grid-cols-1 gap-3">
                                                  <QuickActionCard
                                                         title="Repartos"
                                                         subtitle="Rutas y Logística"
-                                                        icon={<Truck className="w-6 h-6" />}
+                                                        icon={<Truck className="w-5 h-5" />}
                                                         href="/repartos"
                                                         color="blue"
                                                  />
                                                  <QuickActionCard
                                                         title="Clientes"
                                                         subtitle="Fichas y Saldos"
-                                                        icon={<Users className="w-6 h-6" />}
+                                                        icon={<Users className="w-5 h-5" />}
                                                         href="/clientes"
                                                         color="sky"
                                                  />
                                                  <QuickActionCard
                                                         title="Cuentas"
-                                                        subtitle="Cobranzas Globales"
-                                                        icon={<CreditCard className="w-6 h-6" />}
+                                                        subtitle="Cobranzas"
+                                                        icon={<CreditCard className="w-5 h-5" />}
                                                         href="/cuentas"
                                                         color="rose"
                                                  />
                                                  <QuickActionCard
                                                         title="Caja"
-                                                        subtitle="Gestión Financiera"
-                                                        icon={<Banknote className="w-6 h-6" />}
+                                                        subtitle="Financiero"
+                                                        icon={<Banknote className="w-5 h-5" />}
                                                         href="/caja"
                                                         color="emerald"
                                                  />
                                           </div>
                                    </div>
 
-                                   {/* Live Monitor Section */}
-                                   <div className="space-y-8">
-                                          <div className="space-y-2 px-2 flex justify-between items-end">
+                                   {/* Live Monitor */}
+                                   <div className="space-y-5">
+                                          <div className="px-1 flex justify-between items-end">
                                                  <div>
-                                                        <h4 className="text-xl font-black tracking-tighter italic uppercase text-white">Live Monitor</h4>
-                                                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Actividad reciente</p>
+                                                        <h4 className="text-lg font-black tracking-tighter italic uppercase text-white">Live Monitor</h4>
+                                                        <p className="text-[9px] font-black uppercase tracking-[0.25em] text-white/20 mt-1">Actividad reciente</p>
                                                  </div>
                                                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                                           </div>
-                                          <div className="p-8 rounded-[3rem] bg-black/40 border border-white/5 backdrop-blur-md">
+                                          <div className="p-5 sm:p-8 rounded-[2rem] bg-black/40 border border-white/5 backdrop-blur-md">
                                                  <LiveActivityMonitor />
                                           </div>
                                    </div>
                             </div>
                      </div>
 
-                     {/* FOOTER INFO */}
-                     <footer className="pt-24 pb-8 flex justify-between items-center text-[10px] font-black uppercase tracking-[0.5em] text-white/10 border-t border-white/5">
-                            <div>© 2026 SODERIA NICO - PREMIUM COMMAND CENTER</div>
-                            <div className="flex gap-10">
+                     {/* FOOTER */}
+                     <footer className="pt-10 pb-2 flex flex-col sm:flex-row justify-between items-center gap-3 text-[9px] font-black uppercase tracking-[0.4em] text-white/10 border-t border-white/5">
+                            <div>© 2026 Sodería Nico</div>
+                            <div className="flex gap-6">
                                    <span>Status: Optimal</span>
                                    <span>Security: Active</span>
                             </div>

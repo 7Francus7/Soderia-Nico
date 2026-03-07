@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { Box } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import ProductList from "@/components/products/ProductList";
 import NewProductButton from "@/components/products/NewProductButton";
 
@@ -10,32 +9,32 @@ export default async function ProductosPage() {
        });
 
        return (
-              <div className="space-y-12 animate-fade-in-up">
+              <div className="page-container space-y-8 lg:space-y-12 text-white">
                      {/* Header */}
-                     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+                     <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-5 pb-6 border-b border-white/5">
                             <div className="space-y-2">
-                                   <div className="flex items-center gap-3 mb-2">
-                                          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                                                 <Box className="w-5 h-5" />
+                                   <div className="flex items-center gap-3">
+                                          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                                                 <Box className="w-4 h-4 sm:w-5 sm:h-5" />
                                           </div>
-                                          <h1 className="text-3xl font-bold tracking-tight">Productos</h1>
+                                          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Productos</h1>
                                    </div>
-                                   <p className="text-muted-foreground font-medium">
-                                          Administración de catálogo, listas de precios y control de activos retornables.
+                                   <p className="text-sm text-muted-foreground">
+                                          Catálogo de productos, precios y activos retornables.
                                    </p>
                             </div>
                             <NewProductButton />
                      </header>
 
-                     {/* Stats Quick Grid */}
-                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            <SmallQuickCard label="Total Items" value={products.length.toString()} />
+                     {/* Stats - 3 columns */}
+                     <div className="grid grid-cols-3 gap-3 sm:gap-5">
+                            <SmallQuickCard label="Total" value={products.length.toString()} />
                             <SmallQuickCard label="Retornables" value={products.filter((p: any) => p.isReturnable).length.toString()} />
                             <SmallQuickCard label="Descartables" value={products.filter((p: any) => !p.isReturnable).length.toString()} />
                      </div>
 
-                     {/* Product List Area */}
-                     <section className="pt-8 border-t border-border">
+                     {/* Product List */}
+                     <section className="pt-6 border-t border-white/5">
                             <ProductList initialProducts={products} />
                      </section>
               </div>
@@ -44,9 +43,9 @@ export default async function ProductosPage() {
 
 function SmallQuickCard({ label, value }: { label: string, value: string }) {
        return (
-              <Card className="p-6 border-border bg-card shadow-sm rounded-2xl">
-                     <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-                     <h3 className="text-2xl font-bold tracking-tight">{value}</h3>
-              </Card>
+              <div className="p-4 sm:p-6 border border-white/5 bg-white/[0.02] rounded-2xl">
+                     <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-2">{label}</p>
+                     <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">{value}</h3>
+              </div>
        )
 }

@@ -10,33 +10,33 @@ export default async function UsuariosPage() {
        });
 
        return (
-              <div className="space-y-12 animate-fade-in-up">
+              <div className="page-container space-y-8 lg:space-y-12 text-white">
                      {/* Header */}
-                     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+                     <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-5 pb-6 border-b border-white/5">
                             <div className="space-y-2">
-                                   <div className="flex items-center gap-3 mb-2">
-                                          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                                                 <ShieldCheck className="w-5 h-5" />
+                                   <div className="flex items-center gap-3">
+                                          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                                                 <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                                           </div>
-                                          <h1 className="text-3xl font-bold tracking-tight">Usuarios</h1>
+                                          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Usuarios</h1>
                                    </div>
-                                   <p className="text-muted-foreground font-medium">
-                                          Gestión de perfiles, roles jerárquicos y control de accesos al sistema.
+                                   <p className="text-sm text-muted-foreground">
+                                          Gestión de perfiles, roles y control de accesos.
                                    </p>
                             </div>
                             <NewUserButton />
                      </header>
 
-                     {/* Stats Quick Grid */}
-                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <UserStatCard label="Total Personal" value={users.length} icon={<Users className="w-4 h-4" />} />
+                     {/* Stats Quick Grid - 2x2 on mobile */}
+                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+                            <UserStatCard label="Total" value={users.length} icon={<Users className="w-4 h-4" />} />
                             <UserStatCard label="Choferes" value={users.filter((u: any) => u.role === "CHOFER").length} icon={<Truck className="w-4 h-4" />} color="blue" />
                             <UserStatCard label="Admin" value={users.filter((u: any) => u.role === "ADMIN").length} icon={<Lock className="w-4 h-4" />} color="amber" />
                             <UserStatCard label="Activos" value={users.filter((u: any) => u.isActive).length} icon={<ShieldCheck className="w-4 h-4" />} color="emerald" />
                      </div>
 
                      {/* Main List Area */}
-                     <section className="pt-8 border-t border-border">
+                     <section className="pt-6 border-t border-white/5">
                             <UserList initialUsers={users} />
                      </section>
               </div>

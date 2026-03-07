@@ -29,7 +29,6 @@ export async function createClient(rawData: any) {
               }
               const data = validated.data;
 
-              // Basic anti-duplicate check
               const existing = await prisma.client.findFirst({
                      where: { name: data.name, address: data.address }
               });
@@ -81,10 +80,36 @@ export async function deleteClient(id: number) {
        }
 }
 
+export async function updateClientNotes(id: number, notes: string) {
+       try {
+              await prisma.client.update({
+                     where: { id },
+                     data: { notes },
+              });
+              revalidatePath(`/clientes/${id}`);
+              return { success: true };
+       } catch (error: any) {
+              return { success: false, error: error.message };
+       }
+}
+
+export async function updateClientTag(id: number, tag: string | null) {
+       try {
+              await prisma.client.update({
+                     where: { id },
+                     data: { tag },
+              });
+              revalidatePath("/clientes");
+              revalidatePath(`/clientes/${id}`);
+              return { success: true };
+       } catch (error: any) {
+              return { success: false, error: error.message };
+       }
+}
+
 export async function registerPayment(clientId: number, amount: number, description?: string) {
        try {
               const result = await prisma.$transaction(async (tx) => {
-                     // Create Transaction
                      await tx.clientTransaction.create({
                             data: {
                                    clientId,
@@ -95,7 +120,6 @@ export async function registerPayment(clientId: number, amount: number, descript
                             }
                      });
 
-                     // Update Client Balance
                      const client = await tx.client.update({
                             where: { id: clientId },
                             data: {
@@ -117,7 +141,6 @@ export async function registerPayment(clientId: number, amount: number, descript
 export async function registerCharge(clientId: number, amount: number, description?: string) {
        try {
               const result = await prisma.$transaction(async (tx) => {
-                     // Create Transaction
                      await tx.clientTransaction.create({
                             data: {
                                    clientId,
@@ -128,7 +151,6 @@ export async function registerCharge(clientId: number, amount: number, descripti
                             }
                      });
 
-                     // Update Client Balance
                      const client = await tx.client.update({
                             where: { id: clientId },
                             data: {

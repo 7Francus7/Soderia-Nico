@@ -32,6 +32,8 @@ model Client {
   zone            String?
   balance         Float    @default(0)
   bottlesBalance  Int      @default(0)
+  notes           String?  // Notas internas (ej: "no tocar timbre")
+  tag             String?  // VIP, MOROSO, FRECUENTE
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   

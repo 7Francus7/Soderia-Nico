@@ -170,6 +170,45 @@
        .radical-glass {
               @apply bg-neutral-900/40 backdrop-blur-3xl border border-white/5 shadow-2xl;
        }
+
+       /* ── Responsive Page Container ── */
+       .page-container {
+              @apply max-w-screen-2xl mx-auto py-6 px-4 sm:px-6 lg:py-10 lg:px-10;
+       }
+
+       /* ── Safe padding bottom for mobile nav ── */
+       .mobile-safe {
+              padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+       }
+
+       /* ── Responsive text helpers ── */
+       .text-hero {
+              @apply text-4xl sm:text-5xl md:text-7xl lg:text-8xl;
+       }
+
+       .text-section {
+              @apply text-2xl sm:text-3xl md:text-4xl;
+       }
+
+       /* ── Touch-friendly buttons ── */
+       .btn-touch {
+              @apply min-h-[2.75rem] min-w-[2.75rem];
+       }
+
+       /* ── Stat cards grid ── */
+       .stats-grid {
+              @apply grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6;
+       }
+
+       /* ── Hide scrollbar but keep scroll ── */
+       .no-scrollbar {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+       }
+
+       .no-scrollbar::-webkit-scrollbar {
+              display: none;
+       }
 }
 
 /* Base style for standard scrollbars */

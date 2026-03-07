@@ -1,7 +1,7 @@
 "use strict";
 
 import { prisma } from "@/lib/prisma";
-import { ShoppingBag, Clock, Package, Calendar, ArrowRight, Activity, Zap } from "lucide-react";
+import { ShoppingBag, Clock, Package, Zap, ArrowRight } from "lucide-react";
 import OrderList from "@/components/orders/OrderList";
 import NewOrderButton from "@/components/orders/NewOrderButton";
 import { cn } from "@/lib/utils";
@@ -29,61 +29,57 @@ export default async function PedidosPage() {
        };
 
        return (
-              <div className="max-w-screen-2xl mx-auto space-y-20 py-12 px-6 sm:px-10 text-white animate-fade-in-up">
+              <div className="page-container space-y-10 lg:space-y-16 text-white">
 
-                     {/* RADICAL HEADER */}
-                     <header className="relative flex flex-col md:flex-row justify-between items-start md:items-end gap-12 pb-16 border-b border-white/5">
-                            <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] pointer-events-none opacity-30" />
+                     {/* HEADER */}
+                     <header className="relative flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-8 border-b border-white/5">
+                            <div className="absolute top-0 left-0 w-56 h-56 bg-primary/10 rounded-full blur-[80px] pointer-events-none opacity-25" />
 
-                            <div className="space-y-6 relative z-10">
-                                   <div className="inline-flex items-center gap-4 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/40">
-                                          <ShoppingBag className="w-4 h-4" />
-                                          <span className="text-[10px] font-black uppercase tracking-[0.3em]">Logística de Ventas</span>
+                            <div className="space-y-4 relative z-10 flex-1 min-w-0">
+                                   <div className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/40">
+                                          <ShoppingBag className="w-3 h-3 shrink-0" />
+                                          <span className="text-[9px] font-black uppercase tracking-[0.25em]">Logística de Ventas</span>
                                    </div>
-                                   <div className="space-y-4">
-                                          <h1 className="text-6xl md:text-8xl font-black tracking-tighter italic uppercase leading-[0.85]">
-                                                 Gestión de<br /><span className="text-transparent border-text-white" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.2)' }}>Pedidos</span>.
-                                          </h1>
-                                          <p className="max-w-xl text-white/30 font-black uppercase tracking-[0.2em] text-[10px] leading-relaxed">
-                                                 Monitoreo en tiempo real de la cadena de suministro, entregas finales y facturación automatizada por ruta.
-                                          </p>
-                                   </div>
+                                   <h1 className="text-hero font-black tracking-tighter italic uppercase leading-[0.85]">
+                                          Gestión de<br /><span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.2)' }}>Pedidos</span>.
+                                   </h1>
                             </div>
-                            <div className="relative z-10">
+
+                            <div className="relative z-10 shrink-0">
                                    <NewOrderButton />
                             </div>
                      </header>
 
-                     {/* PERFORMANCE STATS */}
-                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                     {/* STATS */}
+                     <div className="grid grid-cols-3 gap-3 sm:gap-5">
                             <StatCard
-                                   label="Órdenes Pendientes"
+                                   label="Pendientes"
                                    value={stats.pending.toString()}
-                                   icon={<Clock className="w-7 h-7" />}
+                                   icon={<Clock className="w-5 h-5 sm:w-7 sm:h-7" />}
                                    color="amber"
-                                   description="Esperando despacho"
+                                   description="Por despachar"
                             />
                             <StatCard
-                                   label="Entregas Exitosas"
+                                   label="Entregados"
                                    value={stats.delivered.toString()}
-                                   icon={<Package className="w-7 h-7" />}
+                                   icon={<Package className="w-5 h-5 sm:w-7 sm:h-7" />}
                                    color="emerald"
-                                   description="Ciclo completado"
+                                   description="Completado"
                             />
                             <StatCard
-                                   label="Actividad de Hoy"
+                                   label="Hoy"
                                    value={stats.totalToday.toString()}
-                                   icon={<Zap className="w-7 h-7" />}
+                                   icon={<Zap className="w-5 h-5 sm:w-7 sm:h-7" />}
                                    color="primary"
-                                   description="Volumen acumulado"
+                                   description="Acumulado"
                             />
                      </div>
 
-                     {/* ORDERS PIPELINE SECTION */}
-                     <section className="space-y-12">
-                            <div className="flex items-center justify-between px-2">
-                                   <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">Historial de Operaciones / Pipeline</h3>
-                                   <div className="h-[1px] flex-1 mx-10 bg-gradient-to-r from-white/10 to-transparent" />
+                     {/* LIST */}
+                     <section className="space-y-6">
+                            <div className="flex items-center gap-4 px-1">
+                                   <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 shrink-0">Pipeline de Operaciones</h3>
+                                   <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
                             </div>
                             <OrderList initialOrders={orders} />
                      </section>
@@ -97,26 +93,22 @@ function StatCard({ label, value, icon, color, description }: any) {
               emerald: "border-emerald-500/10 bg-emerald-500/5 text-emerald-500",
               primary: "border-white/10 bg-white/5 text-white"
        }
-       const colorClass = colors[color] || colors.primary;
 
        return (
               <div className={cn(
-                     "relative overflow-hidden p-10 rounded-[3rem] border transition-all duration-500 group",
-                     colorClass
+                     "relative overflow-hidden p-4 sm:p-6 lg:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] border transition-all duration-500 group",
+                     colors[color] || colors.primary
               )}>
-                     <div className="flex justify-between items-start mb-10">
-                            <div className="w-16 h-16 rounded-[1.5rem] bg-black/40 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
+                     <div className="flex justify-between items-start mb-4 sm:mb-8">
+                            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-[1rem] sm:rounded-[1.5rem] bg-black/40 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                                    {icon}
                             </div>
-                            <ArrowRight className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0" />
+                            <ArrowRight className="w-4 h-4 hidden sm:block opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0" />
                      </div>
                      <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-2 truncate">{label}</p>
-                            <h4 className="text-6xl font-black tracking-tighter tabular-nums mb-4">{value}</h4>
-                            <p className="text-[8px] font-black uppercase tracking-[0.2em] opacity-20">{description}</p>
-                     </div>
-                     <div className="absolute top-0 right-0 p-8 opacity-5">
-                            {icon}
+                            <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mb-1 truncate">{label}</p>
+                            <h4 className="text-3xl sm:text-5xl font-black tracking-tighter tabular-nums mb-1">{value}</h4>
+                            <p className="text-[7px] sm:text-[8px] font-black uppercase tracking-[0.2em] opacity-20 hidden sm:block">{description}</p>
                      </div>
               </div>
        )

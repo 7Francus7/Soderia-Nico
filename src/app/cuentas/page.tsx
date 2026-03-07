@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { CreditCard, TrendingDown, AlertCircle, Droplets } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { CreditCard, Droplets, AlertCircle } from "lucide-react";
 import DebtorsList from "@/components/finance/DebtorsList";
 
 export default async function CuentasPage() {
@@ -18,49 +17,51 @@ export default async function CuentasPage() {
        const totalBottles = debtors.reduce((acc: number, c: any) => acc + (c.bottlesBalance > 0 ? c.bottlesBalance : 0), 0);
 
        return (
-              <div className="space-y-12 animate-fade-in-up">
+              <div className="page-container space-y-8 lg:space-y-12 text-white">
                      {/* Header */}
-                     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+                     <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-5 pb-6 border-b border-white/5">
                             <div className="space-y-2">
-                                   <div className="flex items-center gap-3 mb-2">
-                                          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                                                 <CreditCard className="w-5 h-5" />
+                                   <div className="flex items-center gap-3">
+                                          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                                                 <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
                                           </div>
-                                          <h1 className="text-3xl font-bold tracking-tight">Cuentas Corrientes</h1>
+                                          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Cuentas Corrientes</h1>
                                    </div>
-                                   <p className="text-muted-foreground font-medium">
-                                          Control estratégico de saldos, seguimiento de cobranzas y gestión de envases.
+                                   <p className="text-sm text-muted-foreground">
+                                          Control de saldos, cobranzas y envases en circulación.
                                    </p>
                             </div>
                      </header>
 
-                     {/* Global Stats Grid */}
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <Card className="p-8 border-border bg-card shadow-sm flex flex-col justify-between rounded-2xl">
-                                   <div>
-                                          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Deuda Global</p>
-                                          <h3 className="text-4xl font-bold tracking-tight text-rose-600 dark:text-rose-400">${totalDebt.toLocaleString()}</h3>
+                     {/* Stats Grid - side by side on mobile */}
+                     <div className="grid grid-cols-2 gap-3 sm:gap-5">
+                            {/* Total Deuda */}
+                            <div className="p-4 sm:p-6 lg:p-8 border border-rose-500/10 bg-rose-500/5 rounded-2xl sm:rounded-[2rem] flex flex-col justify-between">
+                                   <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-rose-400/60 mb-3">Deuda Global</p>
+                                   <h3 className="text-2xl sm:text-4xl font-bold tracking-tight text-rose-400 tabular-nums">
+                                          ${totalDebt.toLocaleString()}
+                                   </h3>
+                                   <div className="mt-3 flex items-center gap-1.5 text-[9px] sm:text-xs font-medium text-rose-400/50">
+                                          <AlertCircle className="w-3 h-3 shrink-0" />
+                                          <span className="truncate">{debtors.filter((c: any) => c.balance > 0).length} clientes</span>
                                    </div>
-                                   <div className="mt-6 flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                                          <AlertCircle className="w-3.5 h-3.5" />
-                                          Saldo a cobrar de {debtors.filter((c: any) => c.balance > 0).length} clientes
-                                   </div>
-                            </Card>
+                            </div>
 
-                            <Card className="p-8 border-border bg-card shadow-sm flex flex-col justify-between rounded-2xl">
-                                   <div>
-                                          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Envases en Calle</p>
-                                          <h3 className="text-4xl font-bold tracking-tight text-amber-600 dark:text-amber-400">{totalBottles.toLocaleString()} <span className="text-xl font-medium opacity-60">unid.</span></h3>
+                            {/* Envases */}
+                            <div className="p-4 sm:p-6 lg:p-8 border border-amber-500/10 bg-amber-500/5 rounded-2xl sm:rounded-[2rem] flex flex-col justify-between">
+                                   <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-amber-400/60 mb-3">Envases en Calle</p>
+                                   <h3 className="text-2xl sm:text-4xl font-bold tracking-tight text-amber-400 tabular-nums">
+                                          {totalBottles.toLocaleString()} <span className="text-sm sm:text-xl font-medium opacity-50">unid.</span>
+                                   </h3>
+                                   <div className="mt-3 flex items-center gap-1.5 text-[9px] sm:text-xs font-medium text-amber-400/50">
+                                          <Droplets className="w-3 h-3 shrink-0" />
+                                          <span className="truncate">Stock en circulación</span>
                                    </div>
-                                   <div className="mt-6 flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                                          <Droplets className="w-3.5 h-3.5" />
-                                          Stock estimado en circulación externa
-                                   </div>
-                            </Card>
+                            </div>
                      </div>
 
-                     {/* Main List Area */}
-                     <section className="pt-8 border-t border-border">
+                     {/* Debtors List */}
+                     <section className="pt-6 border-t border-white/5">
                             <DebtorsList initialDebtors={debtors} />
                      </section>
               </div>
