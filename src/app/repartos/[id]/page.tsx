@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import OrderDeliveryActions from "@/components/delivery/OrderDeliveryActions";
 import DeliveryRouteMode from "@/components/delivery/DeliveryRouteMode";
 import DeliveryRoutePrintModal from "@/components/delivery/DeliveryRoutePrintModal";
+import { DeliveryStop } from "@/types/delivery";
 
 export default async function DeliveryDetailPage({ params, searchParams }: {
        params: Promise<{ id: string }>;
@@ -47,15 +48,16 @@ export default async function DeliveryDetailPage({ params, searchParams }: {
        const progress = totalCount > 0 ? (deliveredCount / totalCount) * 100 : 0;
 
        // Prepare stops for route mode
-       const stops = delivery.orders.map((order: any) => ({
+       const stops: DeliveryStop[] = delivery.orders.map((order: any) => ({
               orderId: order.id,
+              clientId: order.clientId,
               clientName: order.client.name,
               clientAddress: order.client.address,
               clientPhone: order.client.phone,
               clientBalance: order.client.balance,
               items: order.items.map((item: any) => ({ name: item.product.name, qty: item.quantity })),
               totalAmount: order.totalAmount,
-              status: order.status === "DELIVERED" ? "delivered" : "pending" as "delivered" | "pending",
+              status: order.status === "DELIVERED" ? "delivered" : "pending",
        }));
 
        // ─── MODO REPARTIDOR ─────────────────────────────────────────────────
