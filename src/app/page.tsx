@@ -31,9 +31,9 @@ export default async function Home() {
                                                         <TrendingUp className="w-4 h-4" />
                                                         <span className="text-[10px] font-black uppercase tracking-[0.2em]">+12% vs ayer</span>
                                                  </div>
-                                                 <div className="px-4 py-1.5 bg-slate-50 border border-slate-100 rounded-full flex items-center gap-2 shadow-sm">
-                                                        <Clock className="w-4 h-4 text-amber-500" />
-                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] opacity-80 italic">Horario normal</span>
+                                                 <div className="px-4 py-1.5 bg-slate-50 border border-slate-200 rounded-full flex items-center gap-2 shadow-sm">
+                                                        <Clock className="w-4 h-4 text-amber-600" />
+                                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] italic">Horario normal</span>
                                                  </div>
                                           </div>
                                           <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-foreground leading-none">
@@ -41,7 +41,7 @@ export default async function Home() {
                                           </h1>
                                           <div className="flex items-center gap-3 mt-4">
                                                  <div className="w-10 h-1 bg-primary rounded-full" />
-                                                 <span className="text-[12px] font-black text-slate-300 uppercase tracking-[0.4em]">{currentDate}</span>
+                                                 <span className="text-[12px] font-black text-slate-500 uppercase tracking-[0.4em]">{currentDate}</span>
                                           </div>
                                    </div>
 
@@ -61,7 +61,7 @@ export default async function Home() {
                                                  <div className="w-5 h-5 rounded-full border-4 border-slate-50 border-t-primary animate-spin" />
                                                  <h3 className="text-[14px] font-black text-foreground uppercase tracking-[0.2em]">Monitor de Desempeño</h3>
                                           </div>
-                                          <div className="text-[10px] font-black text-slate-200 uppercase tracking-[0.3em]">Tiempo Real</div>
+                                          <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Tiempo Real</div>
                                    </div>
                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                                           <MetricCard
@@ -106,12 +106,12 @@ export default async function Home() {
                                                         </div>
                                                         <div className="flex flex-col">
                                                                <h3 className="text-2xl font-black text-foreground tracking-tighter leading-tight">Ventas Estratégicas</h3>
-                                                               <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.25em]">Métricas de Producción</p>
+                                                               <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em]">Métricas de Producción</p>
                                                         </div>
                                                  </div>
                                                  <div className="flex p-1.5 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner overflow-hidden whitespace-nowrap">
                                                         <button className="text-[10px] font-black px-6 py-2.5 rounded-[0.8rem] bg-white text-primary shadow-sm border border-slate-100 uppercase tracking-[0.15em] transition-all">Semanales</button>
-                                                        <button className="text-[10px] font-black px-6 py-2.5 text-slate-300 uppercase tracking-[0.15em]">Mensuales</button>
+                                                        <button className="text-[10px] font-black px-6 py-2.5 text-slate-500 uppercase tracking-[0.15em]">Mensuales</button>
                                                  </div>
                                           </div>
                                           <div className="p-8 sm:p-14 rounded-[4rem] bg-white border-4 border-slate-50 shadow-2xl shadow-slate-200/50 hover:shadow-slate-300/60 transition-all duration-700 group relative">
@@ -129,7 +129,7 @@ export default async function Home() {
                                           {/* ACCESS LIST - Quick Access Premium */}
                                           <div className="space-y-10">
                                                  <div className="flex items-center gap-4 px-3">
-                                                        <Inbox className="w-5 h-5 text-primary opacity-40" />
+                                                        <Inbox className="w-5 h-5 text-primary opacity-70" />
                                                         <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.2em]">Enlace Rápido</h3>
                                                         <div className="h-px flex-1 bg-slate-50" />
                                                  </div>
@@ -162,7 +162,7 @@ export default async function Home() {
                                           <div className="space-y-8">
                                                  <div className="flex items-center justify-between px-3">
                                                         <div className="flex items-center gap-4">
-                                                               <Activity className="w-5 h-5 text-amber-500 opacity-40" />
+                                                               <Activity className="w-5 h-5 text-amber-600 opacity-70" />
                                                                <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.2em] leading-none pt-1">Auditoría en Vivo</h3>
                                                         </div>
                                                         <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse" />
@@ -176,7 +176,7 @@ export default async function Home() {
                      </main>
 
                      {/* PREMIUM iOS FOOTER */}
-                     <footer className="mt-auto px-10 py-16 flex flex-col items-center gap-6 text-[10px] font-black text-slate-200 border-t border-slate-50 uppercase tracking-[0.4em] bg-slate-50/20 overflow-hidden relative">
+                     <footer className="mt-auto px-10 py-16 flex flex-col items-center gap-6 text-[10px] font-black text-slate-400 border-t border-slate-100 uppercase tracking-[0.4em] bg-slate-50/20 overflow-hidden relative">
                             <div className="absolute inset-0 opacity-10 flex justify-center items-center pointer-events-none select-none overflow-hidden scale-150 -z-10">
                                    <div className="text-[200px] font-black rotate-12 -translate-y-20">NICO</div>
                             </div>

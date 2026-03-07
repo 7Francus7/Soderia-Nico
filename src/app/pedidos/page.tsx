@@ -34,14 +34,14 @@ export default async function PedidosPage() {
                      <header className="px-6 pt-12 pb-10 sm:px-10 lg:px-16 flex flex-col gap-8">
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
                                    <div className="space-y-1">
-                                          <div className="flex items-center gap-1.5 opacity-40 mb-1 px-1">
-                                                 <Inbox className="w-4 h-4" />
-                                                 <span className="text-[10px] font-black uppercase tracking-[0.2em]">Logística Activa</span>
+                                          <div className="flex items-center gap-1.5 mb-1 px-1">
+                                                 <Inbox className="w-4 h-4 text-slate-500" />
+                                                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Logística Activa</span>
                                           </div>
                                           <div className="flex items-center gap-3">
                                                  <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-foreground leading-tight">Pedidos</h1>
                                           </div>
-                                          <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mt-2 px-1 opacity-60">
+                                          <p className="text-[11px] font-black text-slate-600 uppercase tracking-widest mt-2 px-1">
                                                  Gestión de despachos y flujo de ventas
                                           </p>
                                    </div>
@@ -81,10 +81,10 @@ export default async function PedidosPage() {
                             <section className="pt-8 space-y-8">
                                    <div className="flex items-center justify-between px-2">
                                           <div className="flex items-center gap-3">
-                                                 <TrendingUp className="w-4 h-4 text-primary opacity-40" />
+                                                 <TrendingUp className="w-4 h-4 text-primary opacity-70" />
                                                  <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.15em]">Pipeline de Operaciones</h3>
                                           </div>
-                                          <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">{orders.length} Totales</span>
+                                          <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{orders.length} Totales</span>
                                    </div>
                                    <OrderList initialOrders={orders} />
                             </section>
@@ -95,17 +95,17 @@ export default async function PedidosPage() {
 
 function MetricOrderCard({ label, value, icon: Icon, color, subtitle }: { label: string, value: string, icon: any, color: "primary" | "amber" | "emerald", subtitle: string }) {
        const colors = {
-              primary: "bg-primary/5 text-primary border-primary/10 shadow-primary/5",
-              amber: "bg-amber-50 text-amber-500 border-amber-100 shadow-amber-500/5",
-              emerald: "bg-emerald-50 text-emerald-500 border-emerald-100 shadow-emerald-500/5"
+              primary: "bg-primary/5 text-primary border-primary/20",
+              amber: "bg-amber-50 text-amber-600 border-amber-100",
+              emerald: "bg-emerald-50 text-emerald-600 border-emerald-100"
        };
 
        return (
               <div className="group p-10 rounded-[2.5rem] border-2 border-slate-50 bg-white flex flex-col transition-all duration-300 shadow-2xl shadow-slate-200/40 hover:scale-[1.02] hover:shadow-slate-300/40">
                      <div className="flex justify-between items-start mb-6">
-                            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-slate-300">{label}</p>
+                            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-slate-500">{label}</p>
                             <div className={cn(
-                                   "w-14 h-14 rounded-[1.4rem] flex items-center justify-center transition-transform group-hover:rotate-12",
+                                   "w-14 h-14 rounded-[1.4rem] flex items-center justify-center transition-transform group-hover:rotate-12 shadow-sm border",
                                    colors[color]
                             )}>
                                    <Icon className="w-7 h-7 stroke-[2.5px]" />
@@ -117,7 +117,7 @@ function MetricOrderCard({ label, value, icon: Icon, color, subtitle }: { label:
                             </h3>
                             <div className="flex items-center gap-2">
                                    <div className={cn("w-1.5 h-1.5 rounded-full", color === "amber" ? "bg-amber-400 animate-pulse" : color === "emerald" ? "bg-emerald-400" : "bg-primary")} />
-                                   <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">{subtitle}</p>
+                                   <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">{subtitle}</p>
                             </div>
                      </div>
               </div>

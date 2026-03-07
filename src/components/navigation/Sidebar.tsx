@@ -46,7 +46,7 @@ export default function Sidebar() {
                             </div>
                             <div>
                                    <h1 className="text-sm font-semibold text-foreground leading-none">Sodería Nico</h1>
-                                   <span className="text-[10px] text-muted-foreground font-medium">Sistema de Gestión</span>
+                                   <span className="text-[10px] text-slate-500 font-bold">Sistema de Gestión</span>
                             </div>
                      </Link>
 
@@ -54,13 +54,13 @@ export default function Sidebar() {
                      <div className="px-6 py-3 border-b border-border bg-muted/40">
                             <div className="flex items-center gap-2">
                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                   <span className="text-[10px] text-muted-foreground font-medium">Sistema activo · v2.5.0</span>
+                                   <span className="text-[10px] text-slate-500 font-bold">Sistema activo · v2.5.0</span>
                             </div>
                      </div>
 
                      {/* Navigation List */}
                      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto custom-scrollbar">
-                            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">Módulos</p>
+                            <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] px-3 py-2">Módulos</p>
                             {navItems.map((item, idx) => {
                                    const isActive = pathname === item.href;
                                    return (
@@ -76,11 +76,11 @@ export default function Sidebar() {
                                                                "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium",
                                                                isActive
                                                                       ? "bg-primary/10 text-primary"
-                                                                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                                                      : "text-slate-600 hover:bg-muted hover:text-foreground"
                                                         )}
                                                  >
-                                                        <item.icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
-                                                        <span className="flex-1">{item.name}</span>
+                                                        <item.icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-primary" : "text-slate-500 group-hover:text-foreground")} />
+                                                        <span className="flex-1 font-bold">{item.name}</span>
                                                         {isActive && (
                                                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                                         )}
@@ -102,7 +102,7 @@ export default function Sidebar() {
                                           </p>
                                           <div className="flex items-center gap-1">
                                                  <ShieldCheck className="w-3 h-3 text-emerald-500" />
-                                                 <span className="text-[10px] text-muted-foreground">Admin</span>
+                                                 <span className="text-[10px] text-slate-500 font-bold">Admin</span>
                                           </div>
                                    </div>
                             </div>

@@ -34,7 +34,7 @@ export function QuickActionCard({ title, subtitle, icon, href, color }: QuickAct
                                           <div className="scale-110 stroke-[2.5px]">{icon}</div>
                                    </div>
                                    <div className="flex-1 min-w-0">
-                                          <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.25em] mb-1.5">{subtitle}</p>
+                                          <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.25em] mb-1.5">{subtitle}</p>
                                           <h4 className="text-xl font-black text-foreground tracking-tighter group-hover:text-primary transition-colors leading-none">{title}</h4>
                                    </div>
                                    <div className="w-12 h-12 rounded-2xl bg-slate-50/50 border border-slate-100 flex items-center justify-center text-slate-200 group-hover:bg-primary group-hover:text-white group-hover:translate-x-1 transition-all duration-500">

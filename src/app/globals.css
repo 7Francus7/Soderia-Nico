@@ -70,10 +70,10 @@
        :root {
               /* iOS Full White Style */
               --background: 0 0% 100%;
-              --foreground: 240 10% 4%;
+              --foreground: 240 10% 2%;
 
               --card: 0 0% 100%;
-              --card-foreground: 240 10% 4%;
+              --card-foreground: 240 10% 2%;
 
               /* iOS Electric Blue Primary */
               --primary: 211 100% 50%;
@@ -83,7 +83,7 @@
               --secondary-foreground: 240 6% 10%;
 
               --muted: 240 4.8% 96%;
-              --muted-foreground: 240 4% 46%;
+              --muted-foreground: 240 5% 35%;
 
               --border: 240 6% 90%;
               --input: 240 6% 90%;

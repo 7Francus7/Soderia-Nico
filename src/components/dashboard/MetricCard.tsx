@@ -32,7 +32,7 @@ export function MetricCard({ label, value, icon, color, href }: MetricCardProps)
                      </div>
 
                      <div className="relative z-10 px-1">
-                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.25em] mb-2">{label}</p>
+                            <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.25em] mb-2">{label}</p>
                             <h4 className="text-4xl font-black tracking-tighter text-foreground tabular-nums leading-none group-hover:translate-x-1 transition-transform duration-500">{value}</h4>
                             <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-700">
                                    <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
