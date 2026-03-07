@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { Banknote, ArrowUpRight, ArrowDownLeft, Wallet, Landmark } from "lucide-react";
+import { Banknote, ArrowUpRight, ArrowDownLeft, Wallet, Landmark, Activity, Calendar } from "lucide-react";
 import CashMovementList from "@/components/finance/CashMovementList";
 import NewCashMovementButton from "@/components/finance/NewCashMovementButton";
 import CierreDiario from "@/components/finance/CierreDiario";
+import { cn } from "@/lib/utils";
 
 export default async function CajaPage() {
        const today = new Date();
@@ -35,22 +36,25 @@ export default async function CajaPage() {
        }, { income: 0, expense: 0, cash: 0, digital: 0 });
 
        const balance = totals.income - totals.expense;
+       const currentDateLabel = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
 
        return (
-              <div className="page-container space-y-8 lg:space-y-12 text-white">
+              <div className="flex flex-col min-h-screen bg-white animate-fade-in-up">
 
-                     {/* Header */}
-                     <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-5 pb-6 border-b border-white/5">
-                            <div className="space-y-2">
-                                   <div className="flex items-center gap-3">
-                                          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                                                 <Banknote className="w-4 h-4 sm:w-5 sm:h-5" />
-                                          </div>
-                                          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Caja Diaria</h1>
+                     {/* iOS HEADER AREA */}
+                     <header className="px-6 pt-10 pb-8 sm:px-10 lg:px-16 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+                            <div className="space-y-1">
+                                   <div className="flex items-center gap-1.5 opacity-40 mb-1 px-1">
+                                          <Activity className="w-3.5 h-3.5" />
+                                          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Monitor Financiero</span>
                                    </div>
-                                   <p className="text-muted-foreground text-sm">
-                                          Supervisión en tiempo real de flujos de efectivo y arqueo.
-                                   </p>
+                                   <h1 className="text-4xl font-black tracking-tight text-foreground leading-tight px-1">
+                                          Caja Diaria
+                                   </h1>
+                                   <div className="flex items-center gap-1.5 mt-2 px-1">
+                                          <Calendar className="w-3.5 h-3.5 text-primary/40" />
+                                          <span className="text-[11px] font-bold text-muted-foreground/50 uppercase tracking-[0.1em]">{currentDateLabel}</span>
+                                   </div>
                             </div>
                             <div className="flex items-center gap-3">
                                    <CierreDiario totals={totals} movementsCount={movements.length} />
@@ -58,56 +62,93 @@ export default async function CajaPage() {
                             </div>
                      </header>
 
-                     {/* Balance del día — destacado */}
-                     <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl sm:rounded-[2rem] border ${balance >= 0 ? 'bg-emerald-500/5 border-emerald-500/10' : 'bg-rose-500/5 border-rose-500/10'}`}>
-                            <div>
-                                   <p className="text-[9px] font-black uppercase tracking-[0.35em] text-white/30 mb-1">Balance Neto del Día</p>
-                                   <div className={`text-4xl sm:text-5xl font-black tracking-tighter tabular-nums ${balance >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                                          {balance >= 0 ? "+" : ""}${balance.toLocaleString()}
+                     {/* MAIN CONTENT GRID */}
+                     <main className="px-6 sm:px-10 lg:px-16 pb-32 space-y-12">
+
+                            {/* BALANCE DESTACADO - iOS CARD STYLE */}
+                            <section className="space-y-6">
+                                   <div className="flex items-center gap-2 px-2">
+                                          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                          <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.15em]">Arqueo Neto</h3>
                                    </div>
-                            </div>
-                            <div className="text-right">
-                                   <p className="text-[9px] font-black uppercase tracking-widest text-white/20">{movements.length} operaciones hoy</p>
-                            </div>
-                     </div>
+                                   <div className={cn(
+                                          "flex flex-col sm:flex-row items-center justify-between gap-8 p-10 sm:p-14 rounded-[3.5rem] border-2 transition-all shadow-2xl shadow-slate-200/40",
+                                          balance >= 0 ? "bg-white border-emerald-50" : "bg-white border-rose-50"
+                                   )}>
+                                          <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                                                 <p className="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground/30 mb-4">Balance en Tiempo Real</p>
+                                                 <div className={cn(
+                                                        "text-6xl sm:text-8xl font-black tracking-tighter tabular-nums leading-none",
+                                                        balance >= 0 ? "text-emerald-500" : "text-rose-500"
+                                                 )}>
+                                                        {balance >= 0 ? "+" : ""}${balance.toLocaleString()}
+                                                 </div>
+                                          </div>
+                                          <div className="flex flex-col items-center sm:items-end gap-3">
+                                                 <div className="px-5 py-2.5 bg-slate-50 border border-slate-100 rounded-[1.2rem] flex items-center gap-2 shadow-sm">
+                                                        <Activity className="w-4 h-4 text-primary" />
+                                                        <span className="text-[11px] font-black text-slate-800 uppercase tracking-widest">{movements.length} Operaciones</span>
+                                                 </div>
+                                                 <span className="text-[11px] font-black text-muted-foreground/20 uppercase tracking-[0.3em]">Sincronizado ahora</span>
+                                          </div>
+                                   </div>
+                            </section>
 
-                     {/* Financial Summary Grid - 2x2 on mobile, 4 on lg */}
-                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                            <BalanceCard label="Ingresos" value={totals.income} icon={<ArrowUpRight className="w-4 h-4" />} color="emerald" />
-                            <BalanceCard label="Egresos" value={totals.expense} icon={<ArrowDownLeft className="w-4 h-4" />} color="rose" />
-                            <BalanceCard label="Efectivo" value={totals.cash} icon={<Wallet className="w-4 h-4" />} color="primary" />
-                            <BalanceCard label="Digital" value={totals.digital} icon={<Landmark className="w-4 h-4" />} color="blue" />
-                     </div>
+                            {/* FINANCIAL SUMMARY GRID */}
+                            <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                                   <BalanceCard label="Ingresos" value={totals.income} icon={<ArrowUpRight className="w-5 h-5" />} color="emerald" />
+                                   <BalanceCard label="Egresos" value={totals.expense} icon={<ArrowDownLeft className="w-5 h-5" />} color="rose" />
+                                   <BalanceCard label="Caja Física" value={totals.cash} icon={<Wallet className="w-5 h-5" />} color="amber" />
+                                   <BalanceCard label="Banco Digital" value={totals.digital} icon={<Landmark className="w-5 h-5" />} color="blue" />
+                            </section>
 
-                     {/* Movements List */}
-                     <section className="pt-6 border-t border-white/5">
-                            <div className="flex items-center gap-3 mb-5">
-                                   <h2 className="text-sm font-black uppercase tracking-widest text-white/40">Movimientos</h2>
-                                   <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest text-white/30">{movements.length} ops</span>
+                            {/* MOVEMENTS LIST SECTION */}
+                            <section className="space-y-6">
+                                   <div className="flex items-center justify-between px-2">
+                                          <div className="flex items-center gap-2">
+                                                 <Banknote className="w-4 h-4 text-primary" />
+                                                 <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.15em]">Historial de Movimientos</h3>
+                                          </div>
+                                          <div className="text-[10px] font-black text-muted-foreground/30 uppercase tracking-[0.2em]">{movements.length} Registros hoy</div>
+                                   </div>
+                                   <CashMovementList initialMovements={movements} />
+                            </section>
+                     </main>
+
+                     {/* iOS FOOTER DECORATION */}
+                     <footer className="mt-auto px-10 py-12 flex flex-col items-center gap-4 text-[10px] font-bold text-muted-foreground/30 border-t border-border/20 uppercase tracking-[0.3em]">
+                            <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center opacity-50">
+                                   <Banknote className="w-4 h-4" />
                             </div>
-                            <CashMovementList initialMovements={movements} />
-                     </section>
+                            <span>© 2026 Sodería Nico — Auditoría Avanzada</span>
+                     </footer>
               </div>
        );
 }
 
 function BalanceCard({ label, value, icon, color }: any) {
        const colors: any = {
-              emerald: "text-emerald-400 bg-emerald-500/5 border-emerald-500/10",
-              rose: "text-rose-400 bg-rose-500/5 border-rose-500/10",
-              primary: "text-white bg-white/5 border-white/10",
-              blue: "text-blue-400 bg-blue-500/5 border-blue-500/10",
+              emerald: "text-emerald-500 bg-emerald-50 border-emerald-100 shadow-emerald-500/5",
+              rose: "text-rose-500 bg-rose-50 border-rose-100 shadow-rose-500/5",
+              amber: "text-amber-500 bg-amber-50 border-amber-100 shadow-amber-500/5",
+              blue: "text-primary bg-primary/5 border-primary/10 shadow-primary/5",
        }
 
        return (
-              <div className={`p-4 sm:p-5 border rounded-xl sm:rounded-2xl flex flex-col ${colors[color]}`}>
-                     <div className="flex justify-between items-center mb-3 sm:mb-4">
-                            <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.3em] opacity-50 leading-tight">{label}</p>
-                            <div className={`p-1.5 rounded-lg ${colors[color]}`}>{icon}</div>
+              <motion.div
+                     whileHover={{ y: -4 }}
+                     className={cn(
+                            "group p-8 border rounded-[2.5rem] flex flex-col justify-between transition-all duration-300",
+                            colors[color]
+                     )}
+              >
+                     <div className="flex justify-between items-start mb-6">
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 leading-tight group-hover:opacity-100 transition-opacity">{label}</p>
+                            <div className={cn("w-12 h-12 rounded-[1.2rem] flex items-center justify-center shadow-lg transition-transform group-hover:scale-110", colors[color], "bg-white")}>{icon}</div>
                      </div>
-                     <h3 className="text-lg sm:text-xl font-black tracking-tight tabular-nums">
+                     <h3 className="text-3xl font-black tracking-tighter tabular-nums leading-none">
                             ${value.toLocaleString()}
                      </h3>
-              </div>
+              </motion.div>
        )
 }

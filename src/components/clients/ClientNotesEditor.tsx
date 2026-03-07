@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { StickyNote, Save, Loader2, CheckCircle } from "lucide-react";
+import { StickyNote, Save, Loader2, CheckCircle, FileText, ClipboardList } from "lucide-react";
 import { updateClientNotes } from "@/actions/clients";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,51 +19,63 @@ export default function ClientNotesEditor({ clientId, initialNotes }: {
                      const result = await updateClientNotes(clientId, notes);
                      if (result.success) {
                             setSaved(true);
-                            toast.success("Notas guardadas");
+                            toast.success("Notas actualizadas", {
+                                   style: { borderRadius: '1rem', fontWeight: '800' }
+                            });
                             setTimeout(() => setSaved(false), 2000);
                      } else {
-                            toast.error("Error al guardar");
+                            toast.error("Error al guardar", {
+                                   style: { borderRadius: '1rem', fontWeight: '800' }
+                            });
                      }
               });
        };
 
        return (
-              <div className="space-y-3">
-                     <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
-                                   <StickyNote className="w-4 h-4" />
+              <div className="space-y-6">
+                     <div className="flex items-center gap-3 px-1">
+                            <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-primary/40 shrink-0">
+                                   <ClipboardList className="w-5 h-5 stroke-[2.5px]" />
                             </div>
-                            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-white/40">Notas Internas</h3>
+                            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Instrucciones de Reparto</h3>
                      </div>
 
-                     <div className="relative">
+                     <div className="relative group">
                             <textarea
                                    value={notes}
                                    onChange={(e) => setNotes(e.target.value)}
-                                   placeholder='Ej: "No tocar timbre — llamar por celular", "Paga a fin de mes", "Vive en Dpto 3B"...'
-                                   rows={3}
-                                   className="w-full bg-amber-500/5 border border-amber-500/10 focus:border-amber-500/30 rounded-2xl p-4 text-sm text-white/70 placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-amber-500/20 transition-all resize-none font-medium leading-relaxed"
+                                   placeholder='Ej: "No tocar timbre — llamar por celular", "Cobrar solo en efectivo los lunes"...'
+                                   rows={4}
+                                   className="w-full bg-slate-50/50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white rounded-[2rem] p-8 text-base font-bold text-foreground placeholder-slate-200 focus:outline-none transition-all resize-none leading-relaxed shadow-inner"
                             />
                      </div>
 
-                     <div className="flex justify-end">
+                     <div className="flex justify-end gap-3 px-1">
+                            {notes !== (initialNotes || "") && !saved && (
+                                   <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center mr-auto">
+                                          <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest animate-pulse flex items-center gap-2">
+                                                 <div className="w-1.5 h-1.5 rounded-full bg-amber-500" /> Cambios sin guardar
+                                          </span>
+                                   </motion.div>
+                            )}
+
                             <button
                                    onClick={handleSave}
                                    disabled={isPending}
-                                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 hover:bg-amber-500/20 transition-all text-xs font-black uppercase tracking-widest disabled:opacity-50 active:scale-95"
+                                   className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-primary text-white hover:bg-primary/90 shadow-xl shadow-primary/20 transition-all text-[11px] font-black uppercase tracking-widest disabled:opacity-50 active:scale-95 group overflow-hidden"
                             >
                                    <AnimatePresence mode="wait">
                                           {isPending ? (
-                                                 <motion.span key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                                                        <Loader2 className="w-3 h-3 animate-spin" /> Guardando...
+                                                 <motion.span key="loading" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center gap-2">
+                                                        <Loader2 className="w-4 h-4 animate-spin stroke-[3px]" /> Procesando
                                                  </motion.span>
                                           ) : saved ? (
-                                                 <motion.span key="saved" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                                                        <CheckCircle className="w-3 h-3" /> Guardado
+                                                 <motion.span key="saved" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center gap-2">
+                                                        <CheckCircle className="w-4 h-4 stroke-[3px]" /> Sincronizado
                                                  </motion.span>
                                           ) : (
-                                                 <motion.span key="save" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                                                        <Save className="w-3 h-3" /> Guardar Nota
+                                                 <motion.span key="save" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center gap-2">
+                                                        <Save className="w-4 h-4 stroke-[3px] group-hover:rotate-12 transition-transform" /> Aplicar Cambios
                                                  </motion.span>
                                           )}
                                    </AnimatePresence>
