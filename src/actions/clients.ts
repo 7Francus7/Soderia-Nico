@@ -179,3 +179,32 @@ export async function deleteClient(id: number) {
               return { success: false, error: error.message };
        }
 }
+
+export async function updateClientNotes(id: number, notes: string) {
+       try {
+              await getRequiredSession();
+              await prisma.client.update({
+                     where: { id },
+                     data: { notes },
+              });
+              revalidatePath(`/clientes/${id}`);
+              return { success: true };
+       } catch (error: any) {
+              return { success: false, error: error.message };
+       }
+}
+
+export async function updateClientTag(id: number, tag: string | null) {
+       try {
+              await getRequiredSession();
+              await prisma.client.update({
+                     where: { id },
+                     data: { tag: tag as any },
+              });
+              revalidatePath(`/clientes/${id}`);
+              revalidatePath("/clientes");
+              return { success: true };
+       } catch (error: any) {
+              return { success: false, error: error.message };
+       }
+}
