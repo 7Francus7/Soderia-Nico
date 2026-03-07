@@ -1,6 +1,6 @@
 "use strict";
 
-import { Truck, Users, CreditCard, Banknote, Activity, MapPin, TrendingUp, Clock, Inbox, ChevronRight } from "lucide-react";
+import { Truck, Users, CreditCard, Banknote, Activity, MapPin, TrendingUp, Clock, Inbox, ChevronRight, Droplet } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
