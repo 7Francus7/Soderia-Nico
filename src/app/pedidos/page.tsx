@@ -1,7 +1,7 @@
 "use strict";
 
 import { prisma } from "@/lib/prisma";
-import { ShoppingBag, Clock, Package, Zap, ArrowRight } from "lucide-react";
+import { ShoppingBag, Clock, Package, Zap, ArrowRight, TrendingUp, Calendar, Inbox } from "lucide-react";
 import OrderList from "@/components/orders/OrderList";
 import NewOrderButton from "@/components/orders/NewOrderButton";
 import { cn } from "@/lib/utils";
@@ -29,86 +29,96 @@ export default async function PedidosPage() {
        };
 
        return (
-              <div className="page-container space-y-10 lg:space-y-16 text-white">
-
-                     {/* HEADER */}
-                     <header className="relative flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-8 border-b border-white/5">
-                            <div className="absolute top-0 left-0 w-56 h-56 bg-primary/10 rounded-full blur-[80px] pointer-events-none opacity-25" />
-
-                            <div className="space-y-4 relative z-10 flex-1 min-w-0">
-                                   <div className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/40">
-                                          <ShoppingBag className="w-3 h-3 shrink-0" />
-                                          <span className="text-[9px] font-black uppercase tracking-[0.25em]">Logística de Ventas</span>
+              <div className="flex flex-col min-h-screen bg-white animate-fade-in pb-32">
+                     {/* iOS PREMIUM HEADER */}
+                     <header className="px-6 pt-12 pb-10 sm:px-10 lg:px-16 flex flex-col gap-8">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+                                   <div className="space-y-1">
+                                          <div className="flex items-center gap-1.5 opacity-40 mb-1 px-1">
+                                                 <Inbox className="w-4 h-4" />
+                                                 <span className="text-[10px] font-black uppercase tracking-[0.2em]">Logística Activa</span>
+                                          </div>
+                                          <div className="flex items-center gap-3">
+                                                 <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-foreground leading-tight">Pedidos</h1>
+                                          </div>
+                                          <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mt-2 px-1 opacity-60">
+                                                 Gestión de despachos y flujo de ventas
+                                          </p>
                                    </div>
-                                   <h1 className="text-hero font-black tracking-tighter italic uppercase leading-[0.85]">
-                                          Gestión de<br /><span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.2)' }}>Pedidos</span>.
-                                   </h1>
-                            </div>
-
-                            <div className="relative z-10 shrink-0">
-                                   <NewOrderButton />
+                                   <div className="w-full sm:w-auto">
+                                          <NewOrderButton />
+                                   </div>
                             </div>
                      </header>
 
-                     {/* STATS */}
-                     <div className="grid grid-cols-3 gap-3 sm:gap-5">
-                            <StatCard
-                                   label="Pendientes"
-                                   value={stats.pending.toString()}
-                                   icon={<Clock className="w-5 h-5 sm:w-7 sm:h-7" />}
-                                   color="amber"
-                                   description="Por despachar"
-                            />
-                            <StatCard
-                                   label="Entregados"
-                                   value={stats.delivered.toString()}
-                                   icon={<Package className="w-5 h-5 sm:w-7 sm:h-7" />}
-                                   color="emerald"
-                                   description="Completado"
-                            />
-                            <StatCard
-                                   label="Hoy"
-                                   value={stats.totalToday.toString()}
-                                   icon={<Zap className="w-5 h-5 sm:w-7 sm:h-7" />}
-                                   color="primary"
-                                   description="Acumulado"
-                            />
-                     </div>
+                     <main className="px-6 sm:px-10 lg:px-16 space-y-12">
+                            {/* STATS - 3 columns premium cards */}
+                            <section className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                   <MetricOrderCard
+                                          label="Pendientes"
+                                          value={stats.pending.toString()}
+                                          icon={Clock}
+                                          color="amber"
+                                          subtitle="A la espera"
+                                   />
+                                   <MetricOrderCard
+                                          label="Entregados"
+                                          value={stats.delivered.toString()}
+                                          icon={Package}
+                                          color="emerald"
+                                          subtitle="Completados"
+                                   />
+                                   <MetricOrderCard
+                                          label="Pedidos de Hoy"
+                                          value={stats.totalToday.toString()}
+                                          icon={Zap}
+                                          color="primary"
+                                          subtitle="Ventas del día"
+                                   />
+                            </section>
 
-                     {/* LIST */}
-                     <section className="space-y-6">
-                            <div className="flex items-center gap-4 px-1">
-                                   <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 shrink-0">Pipeline de Operaciones</h3>
-                                   <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
-                            </div>
-                            <OrderList initialOrders={orders} />
-                     </section>
+                            {/* PIPELINE SECTION */}
+                            <section className="pt-8 space-y-8">
+                                   <div className="flex items-center justify-between px-2">
+                                          <div className="flex items-center gap-3">
+                                                 <TrendingUp className="w-4 h-4 text-primary opacity-40" />
+                                                 <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.15em]">Pipeline de Operaciones</h3>
+                                          </div>
+                                          <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">{orders.length} Totales</span>
+                                   </div>
+                                   <OrderList initialOrders={orders} />
+                            </section>
+                     </main>
               </div>
        );
 }
 
-function StatCard({ label, value, icon, color, description }: any) {
-       const colors: any = {
-              amber: "border-amber-500/10 bg-amber-500/5 text-amber-500",
-              emerald: "border-emerald-500/10 bg-emerald-500/5 text-emerald-500",
-              primary: "border-white/10 bg-white/5 text-white"
-       }
+function MetricOrderCard({ label, value, icon: Icon, color, subtitle }: { label: string, value: string, icon: any, color: "primary" | "amber" | "emerald", subtitle: string }) {
+       const colors = {
+              primary: "bg-primary/5 text-primary border-primary/10 shadow-primary/5",
+              amber: "bg-amber-50 text-amber-500 border-amber-100 shadow-amber-500/5",
+              emerald: "bg-emerald-50 text-emerald-500 border-emerald-100 shadow-emerald-500/5"
+       };
 
        return (
-              <div className={cn(
-                     "relative overflow-hidden p-4 sm:p-6 lg:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] border transition-all duration-500 group",
-                     colors[color] || colors.primary
-              )}>
-                     <div className="flex justify-between items-start mb-4 sm:mb-8">
-                            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-[1rem] sm:rounded-[1.5rem] bg-black/40 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                                   {icon}
+              <div className="group p-10 rounded-[2.5rem] border-2 border-slate-50 bg-white flex flex-col transition-all duration-300 shadow-2xl shadow-slate-200/40 hover:scale-[1.02] hover:shadow-slate-300/40">
+                     <div className="flex justify-between items-start mb-6">
+                            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-slate-300">{label}</p>
+                            <div className={cn(
+                                   "w-14 h-14 rounded-[1.4rem] flex items-center justify-center transition-transform group-hover:rotate-12",
+                                   colors[color]
+                            )}>
+                                   <Icon className="w-7 h-7 stroke-[2.5px]" />
                             </div>
-                            <ArrowRight className="w-4 h-4 hidden sm:block opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0" />
                      </div>
                      <div>
-                            <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mb-1 truncate">{label}</p>
-                            <h4 className="text-3xl sm:text-5xl font-black tracking-tighter tabular-nums mb-1">{value}</h4>
-                            <p className="text-[7px] sm:text-[8px] font-black uppercase tracking-[0.2em] opacity-20 hidden sm:block">{description}</p>
+                            <h3 className="text-5xl font-black tracking-tighter tabular-nums leading-none text-foreground mb-4">
+                                   {value}
+                            </h3>
+                            <div className="flex items-center gap-2">
+                                   <div className={cn("w-1.5 h-1.5 rounded-full", color === "amber" ? "bg-amber-400 animate-pulse" : color === "emerald" ? "bg-emerald-400" : "bg-primary")} />
+                                   <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">{subtitle}</p>
+                            </div>
                      </div>
               </div>
        )

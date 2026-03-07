@@ -1,4 +1,4 @@
-import { Truck, Users, CreditCard, Banknote, Activity, Calendar, Droplets, MapPin, TrendingUp, Clock } from "lucide-react";
+import { Truck, Users, CreditCard, Banknote, Activity, Calendar, Droplets, MapPin, TrendingUp, Clock, Inbox, ChevronRight, Share2, Printer } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard";
@@ -6,6 +6,7 @@ import NewOrderButton from "@/components/orders/NewOrderButton";
 import LiveActivityMonitor from "@/components/dashboard/LiveActivityMonitor";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { QuickActionCard } from "@/components/dashboard/QuickActionCard";
+import { cn } from "@/lib/utils";
 
 export default async function Home() {
        const session = await getServerSession();
@@ -22,137 +23,151 @@ export default async function Home() {
               <div className="flex flex-col min-h-screen bg-white">
 
                      {/* PREMIUM iOS HEADER AREA */}
-                     <header className="px-6 pt-10 pb-8 sm:px-10 lg:px-16 animate-fade-in-up">
-                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
-                                   <div className="space-y-1">
-                                          <div className="flex items-center gap-2 mb-2">
-                                                 <div className="px-2.5 py-1 bg-primary/10 rounded-full border border-primary/20 flex items-center gap-1.5 shadow-sm">
-                                                        <TrendingUp className="w-3 h-3 text-primary" />
-                                                        <span className="text-[10px] font-extrabold text-primary uppercase tracking-widest">+12% vs ayer</span>
+                     <header className="px-6 pt-16 pb-12 sm:px-10 lg:px-16 animate-fade-in">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-10">
+                                   <div className="space-y-3">
+                                          <div className="flex flex-wrap items-center gap-3 mb-4">
+                                                 <div className="px-4 py-1.5 bg-primary text-white rounded-full flex items-center gap-2 shadow-xl shadow-primary/20">
+                                                        <TrendingUp className="w-4 h-4" />
+                                                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">+12% vs ayer</span>
                                                  </div>
-                                                 <div className="px-2.5 py-1 bg-amber-50 rounded-full border border-amber-100 flex items-center gap-1.5 shadow-sm">
-                                                        <Clock className="w-3 h-3 text-amber-500" />
-                                                        <span className="text-[10px] font-extrabold text-amber-600 uppercase tracking-widest">En horario</span>
+                                                 <div className="px-4 py-1.5 bg-slate-50 border border-slate-100 rounded-full flex items-center gap-2 shadow-sm">
+                                                        <Clock className="w-4 h-4 text-amber-500" />
+                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] opacity-80 italic">Horario normal</span>
                                                  </div>
                                           </div>
-                                          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-foreground leading-tight">
+                                          <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-foreground leading-none">
                                                  Hola, {session?.user?.name?.split(' ')[0] || "Nico"}
                                           </h1>
-                                          <div className="flex items-center gap-1.5 mt-2">
-                                                 <div className="w-6 h-1 bg-primary rounded-full" />
-                                                 <span className="text-[11px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em]">{currentDate}</span>
+                                          <div className="flex items-center gap-3 mt-4">
+                                                 <div className="w-10 h-1 bg-primary rounded-full" />
+                                                 <span className="text-[12px] font-black text-slate-300 uppercase tracking-[0.4em]">{currentDate}</span>
                                           </div>
                                    </div>
 
-                                   <div className="flex sm:pb-1">
+                                   <div className="w-full sm:w-auto flex sm:pb-3">
                                           <NewOrderButton />
                                    </div>
                             </div>
                      </header>
 
                      {/* DASHBOARD GRID */}
-                     <main className="px-5 sm:px-8 lg:px-16 pb-32 space-y-12 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                     <main className="px-5 sm:px-8 lg:px-16 pb-40 space-y-20 animate-fade-in" style={{ animationDelay: '0.1s' }}>
 
-                            {/* METRIC ROWS */}
-                            <section className="space-y-6">
-                                   <div className="flex items-center justify-between px-2">
-                                          <div className="flex items-center gap-2">
-                                                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                                                 <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.15em]">Resumen en vivo</h3>
+                            {/* METRIC ROWS - High Impact */}
+                            <section className="space-y-10">
+                                   <div className="flex items-center justify-between px-3">
+                                          <div className="flex items-center gap-3">
+                                                 <div className="w-5 h-5 rounded-full border-4 border-slate-50 border-t-primary animate-spin" />
+                                                 <h3 className="text-[14px] font-black text-foreground uppercase tracking-[0.2em]">Monitor de Desempeño</h3>
                                           </div>
+                                          <div className="text-[10px] font-black text-slate-200 uppercase tracking-[0.3em]">Tiempo Real</div>
                                    </div>
-                                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                                           <MetricCard
-                                                 label="Clientes"
+                                                 label="Red de Clientes"
                                                  value={clientCount.toString()}
-                                                 icon={<Users className="w-5.5 h-5.5" />}
+                                                 icon={<Users className="w-8 h-8" />}
                                                  color="blue"
                                                  href="/clientes"
                                           />
                                           <MetricCard
-                                                 label="Entregas"
+                                                 label="Entregas Totales"
                                                  value={orderCount.toString()}
-                                                 icon={<Truck className="w-5.5 h-5.5" />}
+                                                 icon={<Truck className="w-8 h-8" />}
                                                  color="purple"
                                                  href="/pedidos"
                                           />
                                           <MetricCard
                                                  label="Saldo Clientes"
                                                  value={`$${(totalDebt._sum.balance || 0).toLocaleString()}`}
-                                                 icon={<CreditCard className="w-5.5 h-5.5" />}
+                                                 icon={<CreditCard className="w-8 h-8" />}
                                                  color="rose"
                                                  href="/cuentas"
                                           />
                                           <MetricCard
                                                  label="Rutas Activas"
                                                  value={activeDeliveries.toString()}
-                                                 icon={<Activity className="w-5.5 h-5.5" />}
+                                                 icon={<Activity className="w-8 h-8" />}
                                                  color="amber"
                                                  href="/repartos"
                                           />
                                    </div>
                             </section>
 
-                            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 lg:gap-12">
+                            <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 lg:gap-20">
 
-                                   {/* ANALYTICS SECTION */}
-                                   <section className="xl:col-span-8 space-y-6">
-                                          <div className="flex items-center justify-between px-2">
-                                                 <div className="flex items-center gap-2">
-                                                        <Droplets className="w-4 h-4 text-primary" />
-                                                        <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.15em]">Rendimiento de Ventas</h3>
+                                   {/* ANALYTICS SECTION - Center Widget */}
+                                   <section className="xl:col-span-8 space-y-10">
+                                          <div className="flex flex-col sm:flex-row items-center justify-between px-3 gap-6">
+                                                 <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 bg-primary/5 rounded-[1.2rem] flex items-center justify-center text-primary border border-primary/20">
+                                                               <TrendingUp className="w-6 h-6 stroke-[2.5px]" />
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                               <h3 className="text-2xl font-black text-foreground tracking-tighter leading-tight">Ventas Estratégicas</h3>
+                                                               <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.25em]">Métricas de Producción</p>
+                                                        </div>
                                                  </div>
-                                                 <div className="flex gap-1.5">
-                                                        <button className="text-[10px] font-bold bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-lg active:bg-slate-100 transition-colors uppercase tracking-wider">7 días</button>
-                                                        <button className="text-[10px] font-bold text-muted-foreground/50 px-3 py-1.5 uppercase tracking-wider">30 días</button>
+                                                 <div className="flex p-1.5 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner overflow-hidden whitespace-nowrap">
+                                                        <button className="text-[10px] font-black px-6 py-2.5 rounded-[0.8rem] bg-white text-primary shadow-sm border border-slate-100 uppercase tracking-[0.15em] transition-all">Semanales</button>
+                                                        <button className="text-[10px] font-black px-6 py-2.5 text-slate-300 uppercase tracking-[0.15em]">Mensuales</button>
                                                  </div>
                                           </div>
-                                          <div className="p-4 sm:p-10 rounded-[2.5rem] bg-white border border-border/40 shadow-[0_15px_60px_rgba(0,0,0,0.03)] overflow-hidden">
-                                                 <AnalyticsDashboard />
+                                          <div className="p-8 sm:p-14 rounded-[4rem] bg-white border-4 border-slate-50 shadow-2xl shadow-slate-200/50 hover:shadow-slate-300/60 transition-all duration-700 group relative">
+                                                 {/* Background Accents */}
+                                                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity" />
+                                                 <div className="relative z-10">
+                                                        <AnalyticsDashboard />
+                                                 </div>
                                           </div>
                                    </section>
 
                                    {/* SIDEBAR ACTIONS & ACTIVITY */}
-                                   <aside className="xl:col-span-4 space-y-12">
+                                   <aside className="xl:col-span-4 space-y-20">
 
-                                          {/* ACCESS LIST */}
-                                          <div className="space-y-6">
-                                                 <div className="flex items-center gap-2 px-2">
-                                                        <TrendingUp className="w-4 h-4 text-emerald-500" />
-                                                        <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.15em]">Atajos de Gestión</h3>
+                                          {/* ACCESS LIST - Quick Access Premium */}
+                                          <div className="space-y-10">
+                                                 <div className="flex items-center gap-4 px-3">
+                                                        <Inbox className="w-5 h-5 text-primary opacity-40" />
+                                                        <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.2em]">Enlace Rápido</h3>
+                                                        <div className="h-px flex-1 bg-slate-50" />
                                                  </div>
-                                                 <div className="flex flex-col gap-3">
+                                                 <div className="flex flex-col gap-5 pr-2">
                                                         <QuickActionCard
                                                                title="Rutas de Reparto"
                                                                subtitle="Logística Geográfica"
-                                                               icon={<MapPin className="w-5 h-5" />}
+                                                               icon={<MapPin className="w-6 h-6" />}
                                                                href="/repartos"
                                                                color="blue"
                                                         />
                                                         <QuickActionCard
                                                                title="Gestión de Cuentas"
                                                                subtitle="Cobranzas y Morosidad"
-                                                               icon={<Banknote className="w-5 h-5" />}
+                                                               icon={<Banknote className="w-6 h-6" />}
                                                                href="/cuentas"
                                                                color="rose"
                                                         />
                                                         <QuickActionCard
-                                                               title="Inventario"
+                                                               title="Inventario Maestro"
                                                                subtitle="Sifones y Bidones"
-                                                               icon={<Droplets className="w-5 h-5" />}
+                                                               icon={<Droplets className="w-6 h-6" />}
                                                                href="/productos"
                                                                color="sky"
                                                         />
                                                  </div>
                                           </div>
 
-                                          {/* LIVE FEED */}
-                                          <div className="space-y-6">
-                                                 <div className="flex items-center gap-2 px-2">
-                                                        <Activity className="w-4 h-4 text-amber-500" />
-                                                        <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.15em]">Monitor de Actividad</h3>
+                                          {/* LIVE FEED - Integrated Monitor */}
+                                          <div className="space-y-8">
+                                                 <div className="flex items-center justify-between px-3">
+                                                        <div className="flex items-center gap-4">
+                                                               <Activity className="w-5 h-5 text-amber-500 opacity-40" />
+                                                               <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.2em] leading-none pt-1">Auditoría en Vivo</h3>
+                                                        </div>
+                                                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse" />
                                                  </div>
-                                                 <div className="rounded-[2rem] overflow-hidden border border-border/40 bg-slate-50/30 p-2">
+                                                 <div className="rounded-[3rem] overflow-hidden border-2 border-slate-50 bg-slate-50/20 p-4 shadow-inner min-h-[400px]">
                                                         <LiveActivityMonitor />
                                                  </div>
                                           </div>
@@ -161,11 +176,21 @@ export default async function Home() {
                      </main>
 
                      {/* PREMIUM iOS FOOTER */}
-                     <footer className="mt-auto px-10 py-12 flex flex-col items-center gap-4 text-[10px] font-bold text-muted-foreground/30 border-t border-border/20 uppercase tracking-[0.3em]">
-                            <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center opacity-50">
-                                   <Droplets className="w-4 h-4" />
+                     <footer className="mt-auto px-10 py-16 flex flex-col items-center gap-6 text-[10px] font-black text-slate-200 border-t border-slate-50 uppercase tracking-[0.4em] bg-slate-50/20 overflow-hidden relative">
+                            <div className="absolute inset-0 opacity-10 flex justify-center items-center pointer-events-none select-none overflow-hidden scale-150 -z-10">
+                                   <div className="text-[200px] font-black rotate-12 -translate-y-20">NICO</div>
                             </div>
-                            <span>© 2026 Sodería Nico — v2.5.0 Premium</span>
+                            <div className="w-14 h-14 rounded-2xl bg-white border-2 border-slate-50 flex items-center justify-center shadow-2xl shadow-slate-200/50">
+                                   <Droplets className="w-7 h-7 text-primary stroke-[2.5px]" />
+                            </div>
+                            <div className="flex items-center gap-6">
+                                   <span>Sodería Nico App</span>
+                                   <div className="w-1.5 h-1.5 rounded-full bg-slate-100" />
+                                   <span>Intelligent Logistics v2.5.0</span>
+                                   <div className="w-1.5 h-1.5 rounded-full bg-slate-100" />
+                                   <span>Buenos Aires</span>
+                            </div>
+                            <p className="mt-4 opacity-30">Designed for Premium Productivity</p>
                      </footer>
               </div>
        );

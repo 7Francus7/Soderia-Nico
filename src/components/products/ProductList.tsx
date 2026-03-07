@@ -2,12 +2,13 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Package, Tag, Edit, Trash2, Droplets, FlaskConical } from "lucide-react";
+import { Search, Package, Tag, Edit, Trash2, Droplets, FlaskConical, DollarSign, Activity, Settings2, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { deleteProduct } from "@/actions/products";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ProductList({ initialProducts }: { initialProducts: any[] }) {
        const [search, setSearch] = useState("");
@@ -20,88 +21,119 @@ export default function ProductList({ initialProducts }: { initialProducts: any[
        const handleDelete = async (id: number) => {
               if (!confirm("¿Seguro que deseas eliminar este producto?")) return;
               const result = await deleteProduct(id);
-              if (result.success) toast.success("Producto eliminado");
-              else toast.error("Error: " + result.error);
+              if (result.success) toast.success("¡Producto eliminado!", {
+                     style: { borderRadius: '1rem', fontWeight: '800' }
+              });
+              else toast.error("Error: " + result.error, {
+                     style: { borderRadius: '1rem', fontWeight: '800' }
+              });
        };
 
        return (
-              <div className="space-y-4">
-                     {/* Search */}
-                     <div className="flex items-center gap-2 max-w-sm">
-                            <div className="relative group flex-1">
-                                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+              <div className="space-y-10">
+                     {/* iOS Style Search Bar */}
+                     <div className="flex flex-col sm:flex-row items-center gap-4">
+                            <div className="relative group flex-1 w-full">
+                                   <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-300 stroke-[3px] transition-colors group-focus-within:text-primary" />
                                    <input
                                           type="text"
-                                          placeholder="Buscar productos..."
+                                          placeholder="Buscar por nombre o código..."
                                           value={search}
                                           onChange={(e) => setSearch(e.target.value)}
-                                          className="w-full h-11 bg-white border border-border rounded-xl pl-10 pr-4 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60 shadow-sm"
+                                          className="w-full h-18 bg-slate-50 border-2 border-slate-50 rounded-[2rem] pl-16 pr-8 text-base font-bold text-foreground focus:outline-none focus:border-primary/20 focus:bg-white transition-all placeholder:text-slate-300 shadow-inner"
                                    />
                             </div>
-                            <div className="px-3 h-11 rounded-xl bg-muted border border-border flex items-center justify-center shrink-0">
-                                   <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{filtered.length}</span>
+                            <div className="h-18 px-8 rounded-[2rem] bg-slate-50 border-2 border-slate-100 flex items-center justify-center shrink-0 min-w-[120px] shadow-sm">
+                                   <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{filtered.length} Productos</span>
                             </div>
                      </div>
 
-                     {/* Grid */}
-                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                            {filtered.length === 0 ? (
-                                   <div className="col-span-full py-16 text-center bg-white border border-dashed border-border rounded-xl">
-                                          <Package className="w-10 h-10 mx-auto mb-3 text-muted-foreground/20" />
-                                          <p className="font-semibold text-muted-foreground/40 text-sm italic">No hay productos disponibles</p>
-                                   </div>
-                            ) : (
-                                   filtered.map((product, idx) => (
-                                          <Card
-                                                 key={product.id}
-                                                 className="group overflow-hidden rounded-xl border border-border bg-white hover:border-primary/40 transition-all card-shadow hover:card-shadow-md animate-fade-in-up"
-                                                 style={{ animationDelay: `${idx * 0.05}s` }}
+                     {/* Grid with staggered motion */}
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            <AnimatePresence mode="popLayout">
+                                   {filtered.length === 0 ? (
+                                          <motion.div
+                                                 initial={{ opacity: 0, scale: 0.9 }}
+                                                 animate={{ opacity: 1, scale: 1 }}
+                                                 className="col-span-full py-24 text-center bg-slate-50 border-2 border-dashed border-slate-100 rounded-[3rem] px-10"
                                           >
-                                                 <div className="p-5">
-                                                        <div className="flex justify-between items-start mb-4">
-                                                               <div className="space-y-1">
-                                                                      <span className="text-[9px] font-bold uppercase tracking-widest text-primary bg-primary/5 px-2 py-0.5 rounded-md border border-primary/10">
-                                                                             {product.code}
-                                                                      </span>
-                                                                      <h3 className="text-base font-bold text-foreground leading-tight pt-1">
-                                                                             {product.name}
-                                                                      </h3>
+                                                 <Package className="w-16 h-16 mx-auto mb-6 text-slate-200" />
+                                                 <p className="font-black text-slate-300 uppercase tracking-[0.2em] text-[11px]">No se encontraron resultados</p>
+                                          </motion.div>
+                                   ) : (
+                                          filtered.map((product, idx) => (
+                                                 <motion.div
+                                                        layout
+                                                        key={product.id}
+                                                        initial={{ opacity: 0, y: 30 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        transition={{ delay: idx * 0.05, type: "spring", damping: 20 }}
+                                                 >
+                                                        <Card className="group overflow-hidden rounded-[2.8rem] border-2 border-slate-50 bg-white hover:border-primary/20 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50 flex flex-col h-full relative cursor-default">
+                                                               <div className="p-8 pb-10 flex-1 space-y-8">
+                                                                      {/* Top Header Card */}
+                                                                      <div className="flex justify-between items-start">
+                                                                             <div className="space-y-1">
+                                                                                    <div className="flex items-center gap-1.5 opacity-30 mb-0.5 px-0.5">
+                                                                                           <Tag className="w-3 h-3" />
+                                                                                           <span className="text-[9px] font-black uppercase tracking-[0.1em]">{product.code}</span>
+                                                                                    </div>
+                                                                                    <h3 className="text-2xl font-black text-foreground leading-tight tracking-tighter group-hover:text-primary transition-colors pr-2">
+                                                                                           {product.name}
+                                                                                    </h3>
+                                                                             </div>
+                                                                             <div className={cn(
+                                                                                    "w-12 h-12 rounded-[1.2rem] flex items-center justify-center shrink-0 border transition-transform group-hover:scale-110 shadow-sm",
+                                                                                    product.isReturnable ? "bg-amber-50 border-amber-100/50 text-amber-500 shadow-amber-500/5" : "bg-indigo-50 border-indigo-100/50 text-indigo-500 shadow-indigo-500/5"
+                                                                             )}>
+                                                                                    {product.isReturnable ? <Droplets className="w-6 h-6 stroke-[2.5px]" /> : <FlaskConical className="w-6 h-6 stroke-[2.5px]" />}
+                                                                             </div>
+                                                                      </div>
+
+                                                                      {/* Price Feature Area */}
+                                                                      <div className="bg-slate-50/50 border border-slate-100 p-6 rounded-[1.8rem] relative group-hover:bg-white group-hover:shadow-xl group-hover:shadow-slate-200/40 transition-all duration-500">
+                                                                             <div className="flex items-center gap-2 mb-2 px-1">
+                                                                                    <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Precio de Venta</h4>
+                                                                             </div>
+                                                                             <div className="flex items-baseline text-4xl font-black tracking-tighter text-foreground tabular-nums leading-none">
+                                                                                    <span className="text-base font-black text-primary mr-1 opacity-40">$</span>
+                                                                                    {product.price.toLocaleString()}
+                                                                             </div>
+                                                                      </div>
+
+                                                                      {/* Status Pills */}
+                                                                      <div className="flex flex-wrap gap-2 pt-2">
+                                                                             <span className={cn(
+                                                                                    "text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border shadow-sm",
+                                                                                    product.isReturnable ? "text-amber-500 bg-amber-50 border-amber-100" : "text-indigo-500 bg-indigo-50 border-indigo-100"
+                                                                             )}>
+                                                                                    {product.isReturnable ? "RETORNABLE" : "DESCARTABLE"}
+                                                                             </span>
+                                                                             {product.isReturnable && (
+                                                                                    <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-slate-100 bg-slate-50 text-slate-300 shadow-sm">
+                                                                                           CON ENVASE
+                                                                                    </span>
+                                                                             )}
+                                                                      </div>
                                                                </div>
-                                                               {product.isReturnable ? (
-                                                                      <div className="w-8 h-8 bg-amber-50 text-amber-500 rounded-lg flex items-center justify-center shrink-0 border border-amber-100" title="Retornable">
-                                                                             <Droplets className="w-4 h-4" />
-                                                                      </div>
-                                                               ) : (
-                                                                      <div className="w-8 h-8 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center shrink-0 border border-blue-100" title="Descartable">
-                                                                             <FlaskConical className="w-4 h-4" />
-                                                                      </div>
-                                                               )}
-                                                        </div>
 
-                                                        <div className="text-2xl font-bold text-foreground tracking-tight mb-4 tabular-nums">
-                                                               <span className="text-xs text-muted-foreground font-medium mr-0.5 opacity-50">$</span>{product.price.toLocaleString()}
-                                                        </div>
-
-                                                        <div className="flex items-center justify-between pt-4 border-t border-border">
-                                                               <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/50 italic">
-                                                                      {product.isReturnable ? "Sujeto a devolución" : "Envase descartable"}
-                                                               </span>
-                                                               <div className="flex gap-1.5">
-                                                                      <button className="h-8 w-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground hover:bg-primary/5 hover:border-primary/20 hover:text-primary transition-all active:scale-95">
-                                                                             <Edit className="w-3.5 h-3.5" />
+                                                               {/* Action Bar for Card */}
+                                                               <div className="p-4 bg-slate-50/50 border-t border-slate-50 flex gap-2">
+                                                                      <button className="h-14 flex-1 rounded-[1.4rem] bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/20 transition-all active:scale-95 group/btn shadow-sm">
+                                                                             <Edit className="w-5 h-5 stroke-[2.5px] group-hover/btn:rotate-12 transition-transform" />
                                                                       </button>
                                                                       <button
                                                                              onClick={() => handleDelete(product.id)}
-                                                                             className="h-8 w-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground hover:bg-rose-50 hover:border-rose-100 hover:text-rose-500 transition-all active:scale-95"
+                                                                             className="h-14 flex-1 rounded-[1.4rem] bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-100 transition-all active:scale-95 group/btn shadow-sm"
                                                                       >
-                                                                             <Trash2 className="w-3.5 h-3.5" />
+                                                                             <Trash className="w-5 h-5 stroke-[2.5px] group-hover/btn:rotate-12 transition-transform" />
                                                                       </button>
                                                                </div>
-                                                        </div>
-                                                 </div>
-                                          </Card>
-                                   ))
-                            )}
+                                                        </Card>
+                                                 </motion.div>
+                                          ))
+                                   )}
+                            </AnimatePresence>
                      </div>
               </div>
        );

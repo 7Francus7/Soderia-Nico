@@ -3,41 +3,42 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ArrowRight } from "lucide-react";
 import { QuickActionCardProps } from "@/types/dashboard";
 import { motion } from "framer-motion";
 
 export function QuickActionCard({ title, subtitle, icon, href, color }: QuickActionCardProps) {
        const colors = {
-              blue: "bg-blue-50 text-blue-600 border-blue-100/50 shadow-blue-500/10",
-              sky: "bg-sky-50 text-sky-600 border-sky-100/50 shadow-sky-500/10",
-              rose: "bg-rose-50 text-rose-600 border-rose-100/50 shadow-rose-500/10",
-              emerald: "bg-emerald-50 text-emerald-600 border-emerald-100/50 shadow-emerald-500/10",
+              blue: "bg-blue-50/50 text-blue-500 border-blue-100/50 shadow-blue-500/5",
+              sky: "bg-sky-50/50 text-sky-500 border-sky-100/50 shadow-sky-500/5",
+              rose: "bg-rose-50/50 text-rose-500 border-rose-100/50 shadow-rose-500/5",
+              emerald: "bg-emerald-50/50 text-emerald-500 border-emerald-100/50 shadow-emerald-500/5",
        };
 
        return (
               <motion.div
-                     whileHover={{ x: 4 }}
-                     whileTap={{ scale: 0.97 }}
-                     initial={{ opacity: 0, x: -10 }}
+                     initial={{ opacity: 0, x: -20 }}
                      whileInView={{ opacity: 1, x: 0 }}
                      viewport={{ once: true }}
-                     transition={{ duration: 0.4, type: "spring", bounce: 0.4 }}
+                     whileTap={{ scale: 0.96 }}
+                     transition={{ duration: 0.5, type: "spring", damping: 20 }}
               >
                      <Link href={href} className="group block">
-                            <div className="flex items-center gap-4 p-5 rounded-[1.8rem] bg-white border border-border/40 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_25px_rgba(0,0,0,0.08)] transition-all duration-300">
+                            <div className="flex items-center gap-6 p-7 rounded-[2.5rem] bg-white border-2 border-slate-50 shadow-2xl shadow-slate-200/40 hover:shadow-slate-300/50 hover:border-primary/20 transition-all duration-500 overflow-hidden relative">
+                                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+
                                    <div className={cn(
-                                          "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 shadow-lg",
+                                          "w-16 h-16 rounded-[1.8rem] flex items-center justify-center shrink-0 border transition-transform duration-500 group-hover:scale-110 shadow-sm",
                                           colors[color]
                                    )}>
-                                          {icon}
+                                          <div className="scale-110 stroke-[2.5px]">{icon}</div>
                                    </div>
                                    <div className="flex-1 min-w-0">
-                                          <h4 className="font-bold text-[14px] text-foreground tracking-tight group-hover:text-primary transition-colors">{title}</h4>
-                                          <p className="text-[11px] font-semibold text-muted-foreground/60 uppercase tracking-widest">{subtitle}</p>
+                                          <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.25em] mb-1.5">{subtitle}</p>
+                                          <h4 className="text-xl font-black text-foreground tracking-tighter group-hover:text-primary transition-colors leading-none">{title}</h4>
                                    </div>
-                                   <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-primary transition-all">
-                                          <ChevronRight className="w-4 h-4" />
+                                   <div className="w-12 h-12 rounded-2xl bg-slate-50/50 border border-slate-100 flex items-center justify-center text-slate-200 group-hover:bg-primary group-hover:text-white group-hover:translate-x-1 transition-all duration-500">
+                                          <ArrowRight className="w-6 h-6 stroke-[3px]" />
                                    </div>
                             </div>
                      </Link>
