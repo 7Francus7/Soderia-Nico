@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, X, ShoppingBag, User, Box, Search, Trash2, Loader2, Minus, ChevronRight, Check, ArrowLeft, ArrowRight, UserCheck, PackageOpen } from "lucide-react";
+import { Plus, X, ShoppingBag, User, Box, Search, Trash2, Loader2, Minus, ChevronRight, Check, ArrowLeft, ArrowRight, UserCheck, PackageOpen, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createOrder } from "@/actions/orders";
 import { getClients } from "@/actions/clients";
