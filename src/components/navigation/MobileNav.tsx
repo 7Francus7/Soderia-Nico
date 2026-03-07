@@ -11,7 +11,6 @@ import {
        Banknote,
        Box,
        Settings,
-       MoreHorizontal,
        LayoutGrid
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -41,7 +40,7 @@ export default function MobileNav() {
 
        return (
               <>
-                     {/* iOS Floating Menu */}
+                     {/* Floating Menu */}
                      <AnimatePresence>
                             {showMore && (
                                    <div className="fixed inset-0 z-[150] lg:hidden">
@@ -49,15 +48,15 @@ export default function MobileNav() {
                                                  initial={{ opacity: 0 }}
                                                  animate={{ opacity: 1 }}
                                                  exit={{ opacity: 0 }}
-                                                 className="absolute inset-0 bg-black/10 backdrop-blur-[2px]"
+                                                 className="absolute inset-0 bg-black/20 backdrop-blur-sm"
                                                  onClick={() => setShowMore(false)}
                                           />
                                           <motion.div
-                                                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                                                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                                                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                                                 className="absolute bottom-24 right-4 w-56 bg-white/95 backdrop-blur-xl border border-border/50 rounded-[2rem] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex flex-col gap-1 overflow-hidden"
+                                                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                                 transition={{ duration: 0.2 }}
+                                                 className="absolute bottom-20 right-4 w-56 bg-card border border-border rounded-xl p-2 shadow-2xl flex flex-col gap-1 overflow-hidden"
                                                  onClick={(e) => e.stopPropagation()}
                                           >
                                                  {moreItems.map((item) => {
@@ -68,12 +67,12 @@ export default function MobileNav() {
                                                                       href={item.href}
                                                                       onClick={() => setShowMore(false)}
                                                                       className={cn(
-                                                                             "flex items-center justify-between px-5 py-3.5 rounded-2xl transition-all active:bg-slate-100",
+                                                                             "flex items-center justify-between px-4 py-3 rounded-lg transition-all active:bg-secondary",
                                                                              isActive ? "bg-primary/10 text-primary font-bold" : "text-foreground font-medium"
                                                                       )}
                                                                >
                                                                       <span className="text-sm tracking-tight">{item.name}</span>
-                                                                      <item.icon className={cn("w-4.5 h-4.5", isActive ? "text-primary" : "text-muted-foreground/50")} />
+                                                                      <item.icon className={cn("w-4 h-4", isActive ? "text-primary" : "text-muted-foreground")} />
                                                                </Link>
                                                         );
                                                  })}
@@ -82,9 +81,9 @@ export default function MobileNav() {
                             )}
                      </AnimatePresence>
 
-                     {/* iOS Tab Bar */}
+                     {/* Tab Bar Container */}
                      <div className="fixed bottom-0 left-0 right-0 z-[160] lg:hidden">
-                            <div className="mx-0 pb-[env(safe-area-inset-bottom)] bg-white/80 backdrop-blur-xl border-t border-border/40">
+                            <div className="mx-0 pb-[env(safe-area-inset-bottom)] bg-background/80 backdrop-blur-lg border-t border-border">
                                    <div className="flex items-center justify-around h-16 pt-1 max-w-md mx-auto">
                                           {primaryItems.map((item) => {
                                                  const isMoreButton = item.isMenu;
@@ -95,8 +94,8 @@ export default function MobileNav() {
                                                                key={item.name}
                                                                onClick={() => isMoreButton ? setShowMore(v => !v) : null}
                                                                className={cn(
-                                                                      "relative flex flex-col items-center justify-center gap-1 flex-1 h-full transition-all active:scale-90",
-                                                                      isActive ? "text-primary scale-105" : "text-muted-foreground/60"
+                                                                      "relative flex flex-col items-center justify-center gap-1 flex-1 h-full transition-all active:scale-95",
+                                                                      isActive ? "text-primary" : "text-muted-foreground"
                                                                )}
                                                         >
                                                                {!isMoreButton ? (
@@ -105,19 +104,19 @@ export default function MobileNav() {
 
                                                                <div className="relative">
                                                                       <item.icon className={cn(
-                                                                             "w-5.5 h-5.5 transition-all duration-300",
-                                                                             isActive ? "stroke-[2.5px]" : "stroke-[1.8px]",
-                                                                             isMoreButton && showMore ? "rotate-180" : ""
+                                                                             "w-5 h-5 transition-all duration-300",
+                                                                             isActive ? "stroke-[2.5px]" : "stroke-[2px]",
+                                                                             isMoreButton && showMore ? "rotate-90" : ""
                                                                       )} />
                                                                       {isActive && (
                                                                              <motion.div
                                                                                     layoutId="tab-active-dot"
-                                                                                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_rgba(37,123,244,0.5)]"
+                                                                                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"
                                                                              />
                                                                       )}
                                                                </div>
                                                                <span className={cn(
-                                                                      "text-[9px] font-bold uppercase tracking-[0.05em] transition-all",
+                                                                      "text-[9px] font-bold uppercase tracking-wider transition-all",
                                                                       isActive ? "opacity-100" : "opacity-60"
                                                                )}>
                                                                       {item.name}

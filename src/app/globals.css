@@ -68,32 +68,38 @@
 
 @layer base {
        :root {
-              /* iOS Full White Style */
-              --background: 0 0% 100%;
-              --foreground: 240 10% 2%;
+              /* Google Professional Light Theme */
+              --background: 210 40% 99%;
+              /* #F8FAFC approx */
+              --foreground: 222 47% 11%;
+              /* #111827 */
 
               --card: 0 0% 100%;
-              --card-foreground: 240 10% 2%;
+              --card-foreground: 222 47% 11%;
 
-              /* iOS Electric Blue Primary */
-              --primary: 211 100% 50%;
+              --primary: 217 89% 61%;
+              /* #4285F4 Google Blue */
               --primary-foreground: 0 0% 100%;
 
-              --secondary: 240 4.8% 96%;
-              --secondary-foreground: 240 6% 10%;
+              --secondary: 210 40% 96.1%;
+              /* #F1F5F9 */
+              --secondary-foreground: 222 47% 11%;
 
-              --muted: 240 4.8% 96%;
-              --muted-foreground: 240 5% 35%;
+              --muted: 210 40% 96.1%;
+              --muted-foreground: 215 16% 47%;
+              /* #6B7280 */
 
-              --border: 240 6% 90%;
-              --input: 240 6% 90%;
-              --ring: 211 100% 50%;
+              --border: 214 32% 91%;
+              /* #E5E7EB */
+              --input: 214 32% 91%;
+              --ring: 217 89% 61%;
 
-              /* iOS Radius */
-              --radius: 1rem;
+              /* Refined Radii */
+              --radius: 0.75rem;
+              /* 12px */
+              --radius-card: 1rem;
               /* 16px */
-              --radius-card: 1.8rem;
-              /* ~28px - 30px */
+              --radius-btn: 999px;
        }
 
        .dark {
