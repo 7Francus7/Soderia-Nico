@@ -208,3 +208,29 @@ export async function updateClientTag(id: number, tag: string | null) {
               return { success: false, error: error.message };
        }
 }
+
+export async function registerReturn(clientId: number, quantity: number, notes?: string) {
+       try {
+              const session: any = await getRequiredSession();
+              const userId = parseInt(session.user.id);
+
+              const result = await prisma.$transaction(async (tx) => {
+                     const client = await tx.client.update({
+                            where: { id: clientId },
+                            data: {
+                                   bottlesBalance: { decrement: quantity }
+                            }
+                     });
+
+                     return client;
+              });
+
+              revalidatePath("/clientes");
+              revalidatePath(`/clientes/${clientId}`);
+              revalidatePath("/cuentas");
+              return { success: true, data: result };
+       } catch (error: any) {
+              return { success: false, error: error.message };
+       }
+}
+
