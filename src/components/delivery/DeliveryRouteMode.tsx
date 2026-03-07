@@ -4,11 +4,12 @@ import { useState } from "react";
 import {
        CheckCircle2, Clock, XCircle, MapPin, User,
        ChevronRight, ChevronLeft, Package, DollarSign,
-       MessageCircle, Navigation
+       MessageCircle, Navigation, Phone
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface DeliveryStop {
        orderId: number;
@@ -45,7 +46,10 @@ export default function DeliveryRouteMode({ delivery, stops }: {
               // Auto-advance to next pending
               const nextPending = localStops.findIndex((s, i) => i > currentIdx && s.status === "pending");
               if (nextPending >= 0) {
-                     setTimeout(() => setCurrentIdx(nextPending), 600);
+                     setTimeout(() => {
+                            setCurrentIdx(nextPending);
+                            setShowItems(false);
+                     }, 600);
               }
        };
 
@@ -59,31 +63,34 @@ export default function DeliveryRouteMode({ delivery, stops }: {
        };
 
        const statusConfig = {
-              delivered: { icon: CheckCircle2, label: "Entregado", color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" },
-              absent: { icon: XCircle, label: "Ausente", color: "text-rose-400 bg-rose-400/10 border-rose-400/20" },
-              pending: { icon: Clock, label: "Pendiente", color: "text-amber-400 bg-amber-400/10 border-amber-400/20" },
+              delivered: { icon: CheckCircle2, label: "Entregado", color: "text-emerald-600 bg-emerald-50 border-emerald-100" },
+              absent: { icon: XCircle, label: "Ausente", color: "text-rose-600 bg-rose-50 border-rose-100" },
+              pending: { icon: Clock, label: "Pendiente", color: "text-amber-600 bg-amber-50 border-amber-100" },
        };
 
        return (
-              <div className="min-h-[calc(100vh-14rem)] flex flex-col text-white">
+              <div className="min-h-[calc(100vh-14rem)] flex flex-col">
 
-                     {/* PROGRESS BAR */}
-                     <div className="mb-6 space-y-2">
-                            <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-[0.3em] text-white/30">
-                                   <span>Paradas completadas</span>
-                                   <span>{deliveredCount} / {stops.length}</span>
+                     {/* Progress Header */}
+                     <div className="mb-6 space-y-2.5">
+                            <div className="flex justify-between items-center px-1">
+                                   <div className="flex items-center gap-2">
+                                          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Progreso del Reparto</span>
+                                   </div>
+                                   <span className="text-[10px] font-bold text-foreground bg-primary/10 px-2 py-0.5 rounded-full">{deliveredCount} / {stops.length} completados</span>
                             </div>
-                            <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-200/50">
                                    <motion.div
-                                          className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full"
+                                          className="h-full bg-primary rounded-full shadow-sm"
                                           animate={{ width: `${progress}%` }}
-                                          transition={{ duration: 0.5, ease: "easeOut" }}
+                                          transition={{ duration: 0.8, ease: "circOut" }}
                                    />
                             </div>
                      </div>
 
-                     {/* STOPS MINI MAP */}
-                     <div className="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-6">
+                     {/* Stops Mini Map */}
+                     <div className="flex gap-2 overflow-x-auto no-scrollbar pb-6 mb-2">
                             {localStops.map((stop, i) => {
                                    const cfg = statusConfig[stop.status];
                                    return (
@@ -91,104 +98,92 @@ export default function DeliveryRouteMode({ delivery, stops }: {
                                                  key={stop.orderId}
                                                  onClick={() => setCurrentIdx(i)}
                                                  className={cn(
-                                                        "shrink-0 w-10 h-10 rounded-xl border flex items-center justify-center transition-all",
-                                                        i === currentIdx ? "scale-110 ring-2 ring-white" : "opacity-50",
-                                                        stop.status === "delivered" ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-500"
-                                                               : stop.status === "absent" ? "bg-rose-500/20 border-rose-500/30 text-rose-400"
-                                                                      : "bg-white/5 border-white/10 text-white/40"
+                                                        "shrink-0 w-11 h-11 rounded-xl border flex items-center justify-center transition-all active:scale-95",
+                                                        i === currentIdx ? "ring-2 ring-primary ring-offset-2 border-primary bg-primary text-white shadow-lg" : "bg-white border-border text-muted-foreground hover:border-primary/40",
+                                                        i !== currentIdx && stop.status === "delivered" && "bg-emerald-50 border-emerald-100 text-emerald-600",
+                                                        i !== currentIdx && stop.status === "absent" && "bg-rose-50 border-rose-100 text-rose-600"
                                                  )}
                                           >
-                                                 <cfg.icon className="w-4 h-4" />
+                                                 {i === currentIdx ? (
+                                                        <span className="text-sm font-bold">{i + 1}</span>
+                                                 ) : (
+                                                        <cfg.icon className="w-4 h-4" />
+                                                 )}
                                           </button>
                                    );
                             })}
                      </div>
 
-                     {/* CURRENT STOP CARD */}
+                     {/* Current Stop */}
                      <AnimatePresence mode="wait">
                             <motion.div
                                    key={currentIdx}
-                                   initial={{ opacity: 0, x: 30 }}
-                                   animate={{ opacity: 1, x: 0 }}
-                                   exit={{ opacity: 0, x: -30 }}
-                                   transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                                   initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                                   animate={{ opacity: 1, scale: 1, y: 0 }}
+                                   exit={{ opacity: 0, scale: 0.98, y: -10 }}
                                    className="flex-1 space-y-4"
                             >
-                                   {/* Status + Number */}
-                                   <div className="flex items-center justify-between">
-                                          <div className="flex items-center gap-3">
-                                                 <div className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20">
-                                                        Parada {currentIdx + 1} de {stops.length}
-                                                 </div>
-                                          </div>
-                                          <div className={cn(
-                                                 "flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[9px] font-black uppercase tracking-wide",
-                                                 statusConfig[current.status].color
-                                          )}>
-                                                 {current.status === "delivered" ? <CheckCircle2 className="w-3 h-3" />
-                                                        : current.status === "absent" ? <XCircle className="w-3 h-3" />
-                                                               : <Clock className="w-3 h-3" />}
-                                                 {statusConfig[current.status].label}
-                                          </div>
-                                   </div>
-
-                                   {/* Client Info */}
-                                   <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 space-y-4">
-                                          <div className="flex items-start gap-4">
-                                                 <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
-                                                        <User className="w-7 h-7 text-white/30" />
-                                                 </div>
+                                   {/* Client Details Card */}
+                                   <div className="bg-white border border-border rounded-2xl p-6 card-shadow-md space-y-5">
+                                          <div className="flex items-start justify-between gap-4">
                                                  <div className="flex-1 min-w-0">
-                                                        <h2 className="text-2xl font-black tracking-tighter uppercase italic leading-tight">{current.clientName}</h2>
-                                                        <div className="flex items-center gap-2 text-white/40 text-xs font-bold mt-1">
-                                                               <MapPin className="w-3 h-3 shrink-0 text-primary" />
-                                                               <span className="truncate">{current.clientAddress}</span>
+                                                        <div className="flex items-center gap-2 mb-1.5 opacity-60">
+                                                               <div className={cn("px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-widest", statusConfig[current.status].color)}>
+                                                                      {statusConfig[current.status].label}
+                                                               </div>
+                                                               <span className="text-[10px] font-bold text-muted-foreground">Parada #{currentIdx + 1}</span>
                                                         </div>
-                                                        {current.clientPhone && (
-                                                               <div className="text-xs font-bold text-primary mt-1">{current.clientPhone}</div>
-                                                        )}
+                                                        <h2 className="text-2xl font-bold tracking-tight text-foreground leading-tight">{current.clientName}</h2>
+                                                        <div className="flex items-start gap-1.5 text-muted-foreground text-[11px] font-bold mt-2 uppercase tracking-tight">
+                                                               <MapPin className="w-3.5 h-3.5 mt-0.5 text-primary shrink-0" />
+                                                               <span>{current.clientAddress}</span>
+                                                        </div>
+                                                 </div>
+                                                 <div className="w-12 h-12 bg-slate-50 border border-slate-100 text-slate-400 rounded-xl flex items-center justify-center shrink-0 shadow-inner">
+                                                        <User className="w-6 h-6" />
                                                  </div>
                                           </div>
 
-                                          {/* Financials */}
+                                          {/* Financials Summary */}
                                           <div className="grid grid-cols-2 gap-3">
-                                                 <div className="bg-rose-500/5 border border-rose-500/10 rounded-xl p-3">
-                                                        <p className="text-[8px] font-black uppercase tracking-wide text-rose-400/60 mb-1">Deuda pendiente</p>
-                                                        <div className="text-xl font-black text-rose-400 tracking-tighter tabular-nums">
-                                                               ${current.clientBalance.toLocaleString()}
-                                                        </div>
+                                                 <div className="bg-rose-50 border border-rose-100 rounded-xl p-4 shadow-sm">
+                                                        <p className="text-[9px] font-bold uppercase tracking-widest text-rose-500/70 mb-1">Deuda Anterior</p>
+                                                        <div className="text-xl font-bold text-rose-600 tracking-tight tabular-nums">${current.clientBalance.toLocaleString()}</div>
                                                  </div>
-                                                 <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-                                                        <p className="text-[8px] font-black uppercase tracking-wide text-white/30 mb-1">Este pedido</p>
-                                                        <div className="text-xl font-black text-white tracking-tighter tabular-nums">
-                                                               ${current.totalAmount.toLocaleString()}
-                                                        </div>
+                                                 <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 shadow-sm">
+                                                        <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500/60 mb-1">Este Pedido</p>
+                                                        <div className="text-xl font-bold text-slate-700 tracking-tight tabular-nums">${current.totalAmount.toLocaleString()}</div>
                                                  </div>
                                           </div>
 
-                                          {/* Items */}
-                                          <div>
+                                          {/* Items Section */}
+                                          <div className="border-t border-border pt-4">
                                                  <button
-                                                        onClick={() => setShowItems(v => !v)}
-                                                        className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-white/30 hover:text-white transition-colors mb-2"
+                                                        onClick={() => setShowItems(!showItems)}
+                                                        className="w-full flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors py-1"
                                                  >
-                                                        <Package className="w-3 h-3" />
-                                                        {current.items.length} producto(s) a entregar
-                                                        <ChevronRight className={cn("w-3 h-3 transition-transform", showItems && "rotate-90")} />
+                                                        <div className="flex items-center gap-2">
+                                                               <Package className="w-3.5 h-3.5" />
+                                                               <span>Lista de Productos ({current.items.length})</span>
+                                                        </div>
+                                                        <ChevronRight className={cn("w-3.5 h-3.5 transition-transform", showItems && "rotate-90")} />
                                                  </button>
                                                  <AnimatePresence>
                                                         {showItems && (
                                                                <motion.div
-                                                                      initial={{ height: 0, opacity: 0 }}
-                                                                      animate={{ height: "auto", opacity: 1 }}
-                                                                      exit={{ height: 0, opacity: 0 }}
+                                                                      initial={{ height: 0 }}
+                                                                      animate={{ height: "auto" }}
+                                                                      exit={{ height: 0 }}
                                                                       className="overflow-hidden"
                                                                >
-                                                                      <div className="space-y-1.5 pt-1">
+                                                                      <div className="space-y-1.5 pt-3">
                                                                              {current.items.map((item, i) => (
-                                                                                    <div key={i} className="flex items-center justify-between px-3 py-2 bg-white/5 rounded-xl">
-                                                                                           <span className="text-sm font-bold text-white/70">{item.name}</span>
-                                                                                           <span className="text-sm font-black text-white">{item.qty}×</span>
+                                                                                    <div key={i} className="flex items-center justify-between px-3.5 py-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+                                                                                           <span className="text-xs font-bold text-slate-600">{item.name}</span>
+                                                                                           <div className="flex items-center gap-1.5">
+                                                                                                  <span className="text-[10px] font-bold text-slate-400">UNID.</span>
+                                                                                                  <span className="text-sm font-bold text-primary">{item.qty}</span>
+                                                                                           </div>
                                                                                     </div>
                                                                              ))}
                                                                       </div>
@@ -198,58 +193,61 @@ export default function DeliveryRouteMode({ delivery, stops }: {
                                           </div>
                                    </div>
 
-                                   {/* ACTION BUTTONS */}
+                                   {/* Main Actions */}
                                    {current.status === "pending" && (
-                                          <div className="space-y-3">
-                                                 {/* Deliver */}
-                                                 <button
+                                          <div className="space-y-3 pt-2">
+                                                 <Button
                                                         onClick={() => markStatus("delivered")}
-                                                        className="w-full h-16 rounded-[1.5rem] bg-emerald-500 hover:bg-emerald-400 text-white font-black text-lg uppercase tracking-widest flex items-center justify-center gap-3 transition-all active:scale-95 shadow-2xl shadow-emerald-500/30"
+                                                        className="w-full h-16 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-600/20 font-bold text-lg uppercase tracking-widest gap-3 active:scale-[0.98]"
                                                  >
                                                         <CheckCircle2 className="w-6 h-6" />
-                                                        ✓ ENTREGADO
-                                                 </button>
+                                                        CONFIRMAR ENTREGA
+                                                 </Button>
 
                                                  <div className="grid grid-cols-2 gap-3">
-                                                        <button
+                                                        <Button
                                                                onClick={() => markStatus("absent")}
-                                                               className="h-12 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:bg-rose-500/10 hover:border-rose-500/20 hover:text-rose-400 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
+                                                               variant="ghost"
+                                                               className="h-14 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 hover:bg-rose-100 font-bold text-xs uppercase tracking-widest gap-2 shadow-sm"
                                                         >
                                                                <XCircle className="w-4 h-4" />
-                                                               Ausente
-                                                        </button>
-                                                        <button
+                                                               AUSENTE
+                                                        </Button>
+                                                        <Button
                                                                onClick={handleWhatsApp}
-                                                               className="h-12 rounded-xl bg-[#25D366]/10 border border-[#25D366]/20 text-[#25D366] hover:bg-[#25D366]/20 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
+                                                               variant="ghost"
+                                                               className="h-14 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-600 hover:bg-emerald-100 font-bold text-xs uppercase tracking-widest gap-2 shadow-sm"
                                                         >
                                                                <MessageCircle className="w-4 h-4" />
-                                                               WhatsApp
-                                                        </button>
+                                                               WHATSAPP
+                                                        </Button>
                                                  </div>
                                           </div>
                                    )}
                             </motion.div>
                      </AnimatePresence>
 
-                     {/* NAV ARROWS */}
-                     <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
-                            <button
+                     {/* Navigation Footer */}
+                     <div className="mt-6 pt-5 border-t border-border flex items-center justify-between sticky bottom-0 bg-background/80 backdrop-blur-md pb-4">
+                            <Button
                                    onClick={() => setCurrentIdx(i => Math.max(0, i - 1))}
                                    disabled={currentIdx === 0}
-                                   className="h-12 px-5 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-white disabled:opacity-20 transition-all flex items-center gap-2 text-xs font-black uppercase tracking-wider"
+                                   variant="ghost"
+                                   className="h-11 px-4 rounded-xl border border-border bg-white text-muted-foreground text-[10px] font-bold uppercase tracking-widest gap-2"
                             >
-                                   <ChevronLeft className="w-4 h-4" /> Anterior
-                            </button>
-                            <span className="text-[9px] font-black uppercase tracking-widest text-white/20">
-                                   {currentIdx + 1} / {stops.length}
-                            </span>
-                            <button
+                                   <ChevronLeft className="w-3.5 h-3.5" /> Anterior
+                            </Button>
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+                                   Parada {currentIdx + 1} / {stops.length}
+                            </div>
+                            <Button
                                    onClick={() => setCurrentIdx(i => Math.min(stops.length - 1, i + 1))}
                                    disabled={currentIdx === stops.length - 1}
-                                   className="h-12 px-5 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-white disabled:opacity-20 transition-all flex items-center gap-2 text-xs font-black uppercase tracking-wider"
+                                   variant="ghost"
+                                   className="h-11 px-4 rounded-xl border border-border bg-white text-muted-foreground text-[10px] font-bold uppercase tracking-widest gap-2"
                             >
-                                   Siguiente <ChevronRight className="w-4 h-4" />
-                            </button>
+                                   Siguiente <ChevronRight className="w-3.5 h-3.5" />
+                            </Button>
                      </div>
               </div>
        );

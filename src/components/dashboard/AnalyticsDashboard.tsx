@@ -40,20 +40,20 @@ export default function AnalyticsDashboard() {
        }
 
        return (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                      {/* Sales Chart */}
-                     <Card className="p-8 border-border bg-card rounded-2xl shadow-sm overflow-hidden group">
-                            <div className="flex justify-between items-start mb-10">
+                     <Card className="p-4 sm:p-5 border-border bg-card rounded-xl shadow-sm overflow-hidden group">
+                            <div className="flex justify-between items-center mb-4">
                                    <div>
-                                          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Volumen de Ventas</p>
-                                          <h3 className="text-2xl font-semibold tracking-tight">Relleno Semanal</h3>
+                                          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Volumen de Ventas</p>
+                                          <h3 className="text-sm font-semibold mt-0.5">Relleno Semanal</h3>
                                    </div>
-                                   <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary border border-primary/10">
-                                          <TrendingUp className="w-5 h-5" />
+                                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                                          <TrendingUp className="w-4 h-4" />
                                    </div>
                             </div>
 
-                            <div className="h-[300px] w-full">
+                            <div className="h-[180px] sm:h-[200px] w-full">
                                    <ResponsiveContainer width="100%" height="100%">
                                           <AreaChart data={data}>
                                                  <defs>
@@ -94,18 +94,18 @@ export default function AnalyticsDashboard() {
                      </Card>
 
                      {/* Collections Chart */}
-                     <Card className="p-8 border-border bg-card rounded-2xl shadow-sm overflow-hidden group">
-                            <div className="flex justify-between items-start mb-10">
+                     <Card className="p-4 sm:p-5 border-border bg-card rounded-xl shadow-sm overflow-hidden group">
+                            <div className="flex justify-between items-center mb-4">
                                    <div>
-                                          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Flujo Monedero</p>
-                                          <h3 className="text-2xl font-semibold tracking-tight">Cobranzas Directas</h3>
+                                          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Flujo Monedero</p>
+                                          <h3 className="text-sm font-semibold mt-0.5">Cobranzas Directas</h3>
                                    </div>
-                                   <div className="w-10 h-10 bg-emerald-500/5 rounded-xl flex items-center justify-center text-emerald-600 border border-emerald-500/10">
-                                          <DollarSign className="w-5 h-5" />
+                                   <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600">
+                                          <DollarSign className="w-4 h-4" />
                                    </div>
                             </div>
 
-                            <div className="h-[300px] w-full">
+                            <div className="h-[180px] sm:h-[200px] w-full">
                                    <ResponsiveContainer width="100%" height="100%">
                                           <BarChart data={data}>
                                                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />

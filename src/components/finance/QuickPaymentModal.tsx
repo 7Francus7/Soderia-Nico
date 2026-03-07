@@ -33,68 +33,68 @@ export default function QuickPaymentModal({ client, onClose }: { client: any; on
        return (
               <AnimatePresence>
                      {client && (
-                            <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-6 overflow-hidden">
+                            <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
                                    {/* Backdrop */}
                                    <motion.div
                                           initial={{ opacity: 0 }}
                                           animate={{ opacity: 1 }}
                                           exit={{ opacity: 0 }}
                                           onClick={onClose}
-                                          className="absolute inset-0 bg-black/95 backdrop-blur-2xl"
+                                          className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
                                    />
 
                                    {/* Modal Container */}
                                    <motion.div
-                                          initial={{ y: 50, opacity: 0, scale: 0.95 }}
-                                          animate={{ y: 0, opacity: 1, scale: 1 }}
-                                          exit={{ y: 50, opacity: 0, scale: 0.95 }}
-                                          className="relative bg-neutral-900 w-full max-w-md rounded-t-[3rem] sm:rounded-[3.5rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col text-white"
+                                          initial={{ y: "100%" }}
+                                          animate={{ y: 0 }}
+                                          exit={{ y: "100%" }}
+                                          className="relative bg-background w-full max-w-md rounded-t-2xl sm:rounded-2xl border-t sm:border border-border shadow-2xl overflow-hidden flex flex-col"
                                    >
                                           {/* Header */}
-                                          <div className="p-10 pb-6 flex justify-between items-center relative z-10">
-                                                 <div className="flex items-center gap-6">
-                                                        <div className="w-16 h-16 bg-emerald-500 text-white rounded-[2rem] flex items-center justify-center shadow-2xl shadow-emerald-500/40">
-                                                               <DollarSign className="w-8 h-8" />
+                                          <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-white sticky top-0 z-20">
+                                                 <div className="flex items-center gap-4">
+                                                        <div className="w-10 h-10 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center shadow-sm">
+                                                               <DollarSign className="w-5 h-5" />
                                                         </div>
                                                         <div>
-                                                               <h3 className="text-3xl font-black italic uppercase tracking-tighter leading-none">Caja Rápida</h3>
-                                                               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mt-3">{client.name}</p>
+                                                               <h3 className="text-lg font-bold text-foreground leading-none">Caja Rápida</h3>
+                                                               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mt-1">{client.name}</p>
                                                         </div>
                                                  </div>
-                                                 <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full w-14 h-14 hover:bg-white/5 border border-white/5">
-                                                        <X className="w-8 h-8" />
-                                                 </Button>
+                                                 <button onClick={onClose} className="rounded-full w-9 h-9 border border-border flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors">
+                                                        <X className="w-5 h-5" />
+                                                 </button>
                                           </div>
 
-                                          <div className="p-10 space-y-10 relative z-10">
-                                                 {/* High Impact Amount Input */}
-                                                 <div className="bg-white/5 p-12 rounded-[3.5rem] border border-white/10 text-center relative overflow-hidden group">
-                                                        <div className="absolute top-0 left-0 w-full h-1.5 bg-emerald-500 animate-pulse" />
-                                                        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-4">Monto a Percibir</p>
-                                                        <div className="flex items-center justify-center text-8xl font-black tracking-tighter text-white">
-                                                               <span className="text-3xl text-emerald-500/40 mt-4 mr-2">$</span>
+                                          <div className="p-6 space-y-6">
+                                                 {/* Amount Input */}
+                                                 <div className="bg-slate-50 border border-slate-100 p-8 rounded-2xl text-center relative overflow-hidden shadow-inner">
+                                                        <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
+                                                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-2">Monto a Percibir</p>
+                                                        <div className="flex items-center justify-center text-5xl font-bold tracking-tight text-foreground">
+                                                               <span className="text-xl text-muted-foreground/30 mr-1">$</span>
                                                                <input
                                                                       type="number"
                                                                       autoFocus
                                                                       value={amount || ''}
                                                                       onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-                                                                      className="bg-transparent border-none focus:outline-none w-64 text-center tabular-nums"
+                                                                      className="bg-transparent border-none focus:outline-none w-48 text-center tabular-nums placeholder:text-slate-200"
                                                                       placeholder="0"
                                                                />
                                                         </div>
 
                                                         <button
                                                                onClick={setFullPayment}
-                                                               className="mt-8 px-8 py-4 rounded-[1.5rem] bg-white/5 text-emerald-500 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-emerald-500 hover:text-white transition-all active:scale-95 border border-emerald-500/10"
+                                                               className="mt-6 px-4 py-2 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-100 transition-all active:scale-95 border border-emerald-100"
                                                         >
                                                                Liquidar Deuda: ${client.balance.toLocaleString()}
                                                         </button>
                                                  </div>
 
-                                                 <div className="flex gap-6">
+                                                 <div className="flex gap-3 pt-2">
                                                         <Button
                                                                variant="ghost"
-                                                               className="flex-1 h-20 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-white/5 text-white/30 hover:text-white"
+                                                               className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-border"
                                                                onClick={onClose}
                                                         >
                                                                Cerrar
@@ -102,14 +102,12 @@ export default function QuickPaymentModal({ client, onClose }: { client: any; on
                                                         <Button
                                                                disabled={loading || amount <= 0}
                                                                onClick={handlePayment}
-                                                               variant="action"
-                                                               size="xl"
-                                                               className="flex-[2] shadow-2xl shadow-emerald-500/20 active:scale-95 group"
+                                                               className="flex-[2] h-12 bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 rounded-xl font-bold text-xs uppercase tracking-widest active:scale-95 group"
                                                         >
-                                                               {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : (
-                                                                      <span className="flex items-center gap-3">
-                                                                             CONFIRMAR
-                                                                             <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                                                               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                                                                      <span className="flex items-center gap-2">
+                                                                             CONFIRMAR PAGO
+                                                                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                                                       </span>
                                                                )}
                                                         </Button>

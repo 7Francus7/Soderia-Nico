@@ -17,16 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
        }
 
        return (
-              <div className="flex min-h-screen bg-black font-sans selection:bg-white selection:text-black overflow-x-hidden">
-                     {/* PREMIUM BACKGROUND EFFECTS */}
-                     <div className="fixed inset-0 pointer-events-none z-0">
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.02),transparent_100%)]" />
-                            <div
-                                   className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none mix-blend-overlay"
-                                   style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
-                            />
-                     </div>
-
+              <div className="flex min-h-screen bg-background font-sans overflow-x-hidden">
                      {/* Desktop Sidebar */}
                      <Sidebar />
 
@@ -35,20 +26,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
                      {/* Main Content */}
                      <main className={cn(
-                            "flex-1 relative z-10 transition-all duration-700 ease-in-out",
+                            "flex-1 relative z-10 transition-all duration-300",
                             // Mobile: top padding for header + bottom padding for nav
-                            "pt-14 pb-24 lg:pb-0",
+                            "pt-14 pb-20 lg:pb-0",
                             // Desktop: left margin for sidebar, no top padding
-                            "lg:ml-80 lg:pt-0"
+                            "lg:ml-64 lg:pt-0"
                      )}>
-                            <div className="max-w-[1920px] mx-auto min-h-screen">
+                            <div className="max-w-[1600px] mx-auto min-h-screen">
                                    <AnimatePresence mode="wait">
                                           <motion.div
                                                  key={pathname}
-                                                 initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
-                                                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                                                 exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
-                                                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                                                 initial={{ opacity: 0, y: 6 }}
+                                                 animate={{ opacity: 1, y: 0 }}
+                                                 exit={{ opacity: 0, y: -6 }}
+                                                 transition={{ duration: 0.2, ease: "easeOut" }}
                                                  className="h-full"
                                           >
                                                  {children}

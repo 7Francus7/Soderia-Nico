@@ -42,53 +42,52 @@ export default function NewProductButton() {
               <>
                      <Button
                             onClick={() => setIsOpen(true)}
-                            variant="premium"
                             size="lg"
-                            className="shadow-2xl group"
+                            className="shadow-lg shadow-primary/20 rounded-xl px-6 flex items-center gap-2 font-bold tracking-tight"
                      >
-                            <Plus className="w-5 h-5 mr-3 group-hover:rotate-90 transition-all duration-500" />
-                            NUEVO PRODUCTO
+                            <Plus className="w-5 h-5" />
+                            <span>NUEVO PRODUCTO</span>
                      </Button>
 
                      <AnimatePresence>
                             {isOpen && (
-                                   <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-6 text-white overflow-hidden">
-                                          {/* Backdrop with extreme blur */}
+                                   <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
+                                          {/* Backdrop */}
                                           <motion.div
                                                  initial={{ opacity: 0 }}
                                                  animate={{ opacity: 1 }}
                                                  exit={{ opacity: 0 }}
                                                  onClick={() => setIsOpen(false)}
-                                                 className="absolute inset-0 bg-black/95 backdrop-blur-3xl"
+                                                 className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
                                           />
 
                                           <motion.div
-                                                 initial={{ y: 50, opacity: 0, scale: 0.95 }}
-                                                 animate={{ y: 0, opacity: 1, scale: 1 }}
-                                                 exit={{ y: 50, opacity: 0, scale: 0.95 }}
-                                                 className="relative w-full max-w-lg bg-neutral-950/40 sm:rounded-[4rem] border border-white/10 shadow-[0_0_80px_rgba(0,0,0,1)] overflow-hidden flex flex-col"
+                                                 initial={{ y: "100%" }}
+                                                 animate={{ y: 0 }}
+                                                 exit={{ y: "100%" }}
+                                                 className="relative w-full max-w-lg bg-background sm:rounded-2xl border-t sm:border border-border shadow-2xl overflow-hidden flex flex-col"
                                           >
-                                                 <div className="p-10 pb-6 flex justify-between items-center relative z-10">
-                                                        <div className="flex items-center gap-6">
-                                                               <div className="w-16 h-16 bg-white text-black rounded-[2rem] flex items-center justify-center shadow-2xl shadow-white/20">
-                                                                      <Box className="w-8 h-8" />
+                                                 <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-white sticky top-0 z-20">
+                                                        <div className="flex items-center gap-4">
+                                                               <div className="w-10 h-10 bg-primary/10 flex items-center justify-center rounded-lg text-primary">
+                                                                      <Box className="w-5 h-5" />
                                                                </div>
                                                                <div>
-                                                                      <h3 className="text-3xl font-black italic uppercase tracking-tighter leading-none">Catálogo</h3>
-                                                                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mt-3">Nuevo Item de Venta</p>
+                                                                      <h3 className="text-lg font-bold text-foreground">Nuevo Producto</h3>
+                                                                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Catálogo de ventas</p>
                                                                </div>
                                                         </div>
-                                                        <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="rounded-full w-14 h-14 hover:bg-white/5 border border-white/5">
-                                                               <X className="w-8 h-8" />
+                                                        <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="rounded-full w-9 h-9 border border-border">
+                                                               <X className="w-5 h-5" />
                                                         </Button>
                                                  </div>
 
-                                                 <form onSubmit={handleSubmit} className="p-10 space-y-8 relative z-10">
-                                                        <div className="space-y-6">
-                                                               <div className="space-y-4">
-                                                                      <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Descripción del Producto</label>
+                                                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                                                        <div className="space-y-4">
+                                                               <div className="space-y-1.5 px-1">
+                                                                      <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Descripción del Producto</label>
                                                                       <div className="relative group">
-                                                                             <Box className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-white/20 group-focus-within:text-white transition-colors" />
+                                                                             <Box className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                                                                              <input
                                                                                     type="text"
                                                                                     required
@@ -96,75 +95,75 @@ export default function NewProductButton() {
                                                                                     value={formData.name}
                                                                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                                                                     placeholder="Ej: Sifón 1.5L pack x6"
-                                                                                    className="w-full h-20 bg-white/5 border border-white/10 rounded-[2rem] pl-16 pr-8 font-bold text-xl text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all placeholder:text-white/10"
+                                                                                    className="w-full h-12 bg-muted/50 border border-border rounded-xl pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm"
                                                                              />
                                                                       </div>
                                                                </div>
 
-                                                               <div className="grid grid-cols-2 gap-6">
-                                                                      <div className="space-y-4">
-                                                                             <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Código / SKU</label>
+                                                               <div className="grid grid-cols-2 gap-4">
+                                                                      <div className="space-y-1.5 px-1">
+                                                                             <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Código / SKU</label>
                                                                              <div className="relative group">
-                                                                                    <Hash className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-white transition-colors" />
+                                                                                    <Hash className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground transition-colors group-focus-within:text-primary" />
                                                                                     <input
                                                                                            type="text"
                                                                                            required
                                                                                            value={formData.code}
                                                                                            onChange={(e) => setFormData({ ...formData, code: e.target.value })}
                                                                                            placeholder="SKU"
-                                                                                           className="w-full h-16 bg-white/5 border border-white/10 rounded-[1.5rem] pl-14 pr-6 font-bold text-lg text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all placeholder:text-white/10"
+                                                                                           className="w-full h-11 bg-muted/50 border border-border rounded-xl pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm"
                                                                                     />
                                                                              </div>
                                                                       </div>
 
-                                                                      <div className="space-y-4">
-                                                                             <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Precio</label>
+                                                                      <div className="space-y-1.5 px-1">
+                                                                             <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Precio</label>
                                                                              <div className="relative group">
-                                                                                    <DollarSign className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-white transition-colors" />
+                                                                                    <DollarSign className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground transition-colors group-focus-within:text-primary" />
                                                                                     <input
                                                                                            type="number"
                                                                                            required
                                                                                            value={formData.price || ''}
                                                                                            onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
                                                                                            placeholder="0.00"
-                                                                                           className="w-full h-16 bg-white/5 border border-white/10 rounded-[1.5rem] pl-14 pr-6 font-bold text-lg text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all placeholder:text-white/10 tabular-nums"
+                                                                                           className="w-full h-11 bg-muted/50 border border-border rounded-xl pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm tabular-nums"
                                                                                     />
                                                                              </div>
                                                                       </div>
                                                                </div>
 
-                                                               <div className="space-y-4">
-                                                                      <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Configuración</label>
-                                                                      <div className="flex p-2 bg-black/60 rounded-[2rem] border border-white/10">
+                                                               <div className="space-y-1.5 px-1">
+                                                                      <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Tipo de Envase</label>
+                                                                      <div className="flex p-1 bg-muted rounded-xl border border-border">
                                                                              <button
                                                                                     type="button"
                                                                                     onClick={() => setFormData({ ...formData, isReturnable: true })}
                                                                                     className={cn(
-                                                                                           "flex-1 flex items-center justify-center gap-3 py-6 rounded-[1.5rem] font-black uppercase text-[10px] tracking-widest transition-all",
-                                                                                           formData.isReturnable ? "bg-white text-black shadow-xl" : "text-white/30 hover:bg-white/5"
+                                                                                           "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold uppercase text-[9px] tracking-widest transition-all",
+                                                                                           formData.isReturnable ? "bg-white text-primary shadow-sm border border-border" : "text-muted-foreground hover:bg-white/50"
                                                                                     )}
                                                                              >
-                                                                                    <PackageCheck className="w-4 h-4" /> Es Retornable
+                                                                                    <PackageCheck className="w-3.5 h-3.5" /> Retornable
                                                                              </button>
                                                                              <button
                                                                                     type="button"
                                                                                     onClick={() => setFormData({ ...formData, isReturnable: false })}
                                                                                     className={cn(
-                                                                                           "flex-1 flex items-center justify-center gap-3 py-6 rounded-[1.5rem] font-black uppercase text-[10px] tracking-widest transition-all",
-                                                                                           !formData.isReturnable ? "bg-white text-black shadow-xl" : "text-white/30 hover:bg-white/5"
+                                                                                           "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold uppercase text-[9px] tracking-widest transition-all",
+                                                                                           !formData.isReturnable ? "bg-white text-primary shadow-sm border border-border" : "text-muted-foreground hover:bg-white/50"
                                                                                     )}
                                                                              >
-                                                                                    <Plus className="w-4 h-4" /> Descartable
+                                                                                    <Plus className="w-3.5 h-3.5 rotate-45" /> Descartable
                                                                              </button>
                                                                       </div>
                                                                </div>
                                                         </div>
 
-                                                        <div className="flex gap-6 pt-4">
+                                                        <div className="flex gap-3 pt-2">
                                                                <Button
                                                                       type="button"
                                                                       variant="ghost"
-                                                                      className="flex-1 h-20 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-white/5 text-white/30 hover:text-white"
+                                                                      className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-border"
                                                                       onClick={() => setIsOpen(false)}
                                                                >
                                                                       Cancelar
@@ -172,14 +171,12 @@ export default function NewProductButton() {
                                                                <Button
                                                                       type="submit"
                                                                       disabled={loading}
-                                                                      variant="action"
-                                                                      size="xl"
-                                                                      className="flex-[2] shadow-2xl shadow-primary/40 group active:scale-95"
+                                                                      className="flex-[2] h-12 shadow-lg shadow-primary/20 rounded-xl font-bold text-xs uppercase tracking-widest"
                                                                >
-                                                                      {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : (
-                                                                             <span className="flex items-center gap-3">
+                                                                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                                                                             <span className="flex items-center gap-2">
                                                                                     CREAR PRODUCTO
-                                                                                    <Plus className="w-6 h-6 group-hover:scale-125 transition-transform" />
+                                                                                    <Plus className="w-4 h-4" />
                                                                              </span>
                                                                       )}
                                                                </Button>

@@ -3,65 +3,50 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ChevronRight, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { QuickActionCardProps } from "@/types/dashboard";
 import { motion } from "framer-motion";
 
 export function QuickActionCard({ title, subtitle, icon, href, color }: QuickActionCardProps) {
-       const colors = {
-              blue: "border-blue-500/10 hover:bg-blue-500/[0.03]",
-              sky: "border-sky-500/10 hover:bg-sky-500/[0.03]",
-              rose: "border-rose-500/10 hover:bg-rose-500/[0.03]",
-              emerald: "border-emerald-500/10 hover:bg-emerald-500/[0.03]",
+       const iconColors = {
+              blue: "bg-blue-100 text-blue-600",
+              sky: "bg-sky-100 text-sky-600",
+              rose: "bg-rose-100 text-rose-600",
+              emerald: "bg-emerald-100 text-emerald-600",
        };
 
-       const iconColors = {
-              blue: "bg-blue-500/10 text-blue-400",
-              sky: "bg-sky-500/10 text-sky-400",
-              rose: "bg-rose-500/10 text-rose-400",
-              emerald: "bg-emerald-500/10 text-emerald-400",
+       const hoverBorder = {
+              blue: "hover:border-blue-200",
+              sky: "hover:border-sky-200",
+              rose: "hover:border-rose-200",
+              emerald: "hover:border-emerald-200",
        };
 
        return (
               <motion.div
-                     whileHover={{ y: -5 }}
+                     whileHover={{ y: -2 }}
                      whileTap={{ scale: 0.98 }}
-                     initial={{ opacity: 0, y: 20 }}
+                     initial={{ opacity: 0, y: 8 }}
                      whileInView={{ opacity: 1, y: 0 }}
                      viewport={{ once: true }}
-                     className="h-full"
+                     transition={{ duration: 0.2 }}
               >
-                     <Link href={href} className="group block h-full">
+                     <Link href={href} className="group block">
                             <div className={cn(
-                                   "p-8 h-full rounded-[2.5rem] border bg-neutral-950/40 backdrop-blur-3xl transition-all duration-500 hover:shadow-2xl hover:border-white/20 flex flex-col justify-between group overflow-hidden relative",
-                                   colors[color]
+                                   "flex items-center gap-3 p-4 rounded-xl border bg-white card-shadow hover:card-shadow-md transition-all duration-200",
+                                   hoverBorder[color]
                             )}>
-                                   {/* Decorative Background Element */}
-                                   <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/[0.02] rounded-full blur-3xl group-hover:bg-white/[0.05] transition-all duration-700" />
-
-                                   <div className="flex justify-between items-start relative z-10 mb-8">
-                                          <div className={cn(
-                                                 "w-16 h-16 rounded-[1.5rem] flex items-center justify-center transition-all duration-500 shadow-xl group-hover:scale-110 group-hover:rotate-6",
-                                                 iconColors[color]
-                                          )}>
-                                                 {icon}
-                                          </div>
-                                          <div className="w-12 h-12 rounded-full border border-white/5 flex items-center justify-center opacity-30 group-hover:opacity-100 group-hover:bg-white group-hover:text-black transition-all">
-                                                 <ArrowRight className="w-5 h-5" />
-                                          </div>
+                                   <div className={cn(
+                                          "w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 group-hover:scale-105",
+                                          iconColors[color]
+                                   )}>
+                                          {icon}
                                    </div>
-
-                                   <div className="relative z-10">
-                                          <h4 className="font-black text-2xl tracking-tighter text-white mb-2 uppercase italic group-hover:translate-x-2 transition-transform duration-500">
-                                                 {title}
-                                          </h4>
-                                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 group-hover:text-white/60 transition-colors">
-                                                 {subtitle}
-                                          </p>
+                                   <div className="flex-1 min-w-0">
+                                          <h4 className="font-semibold text-sm text-foreground">{title}</h4>
+                                          <p className="text-xs text-muted-foreground">{subtitle}</p>
                                    </div>
-
-                                   {/* Animated Border Reveal */}
-                                   <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/10 rounded-[2.5rem] transition-all duration-700 pointer-events-none" />
+                                   <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all duration-200 shrink-0" />
                             </div>
                      </Link>
               </motion.div>

@@ -30,32 +30,29 @@ export default function MobileHeader() {
 
        return (
               <>
-                     <header className="fixed top-0 left-0 right-0 h-14 bg-black/95 backdrop-blur-xl border-b border-white/5 z-[90] flex items-center justify-between px-4 lg:hidden">
+                     <header className="fixed top-0 left-0 right-0 h-14 bg-white border-b border-border z-[90] flex items-center justify-between px-4 lg:hidden">
                             <Link href="/" className="flex items-center gap-2.5">
-                                   <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center text-black shadow-sm shrink-0">
+                                   <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white shrink-0">
                                           <Droplets className="w-4 h-4" />
                                    </div>
-                                   <div className="flex flex-col leading-none">
-                                          <span className="text-sm font-black tracking-tight text-white uppercase italic">Sodería Nico</span>
-                                          <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">v2.5.0</span>
-                                   </div>
+                                   <span className="text-sm font-semibold text-foreground">Sodería Nico</span>
                             </Link>
 
                             <div className="flex items-center gap-2">
-                                   <div className="w-7 h-7 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                                          <UserCircle className="w-5 h-5 text-white/30" />
+                                   <div className="w-7 h-7 rounded-full bg-muted border border-border flex items-center justify-center">
+                                          <UserCircle className="w-4 h-4 text-muted-foreground" />
                                    </div>
                                    <button
                                           onClick={() => setDrawerOpen(true)}
-                                          className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 text-white/50 hover:text-white transition-colors"
+                                          className="w-8 h-8 flex items-center justify-center rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                                           aria-label="Abrir menú"
                                    >
-                                          <Menu className="w-5 h-5" />
+                                          <Menu className="w-4 h-4" />
                                    </button>
                             </div>
                      </header>
 
-                     {/* Full Drawer Navigation - alternative to mobile nav for quick access */}
+                     {/* Drawer Navigation */}
                      <AnimatePresence>
                             {drawerOpen && (
                                    <>
@@ -63,40 +60,41 @@ export default function MobileHeader() {
                                                  initial={{ opacity: 0 }}
                                                  animate={{ opacity: 1 }}
                                                  exit={{ opacity: 0 }}
-                                                 className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm lg:hidden"
+                                                 className="fixed inset-0 z-[110] bg-black/30 backdrop-blur-sm lg:hidden"
                                                  onClick={() => setDrawerOpen(false)}
                                           />
                                           <motion.div
                                                  initial={{ x: "100%" }}
                                                  animate={{ x: 0 }}
                                                  exit={{ x: "100%" }}
-                                                 transition={{ type: "spring", damping: 30, stiffness: 300 }}
-                                                 className="fixed top-0 right-0 bottom-0 w-72 bg-black/98 backdrop-blur-3xl border-l border-white/5 z-[120] flex flex-col lg:hidden"
+                                                 transition={{ type: "spring", damping: 28, stiffness: 280 }}
+                                                 className="fixed top-0 right-0 bottom-0 w-64 bg-white border-l border-border z-[120] flex flex-col lg:hidden"
                                           >
                                                  {/* Drawer Header */}
-                                                 <div className="flex items-center justify-between p-6 border-b border-white/5">
+                                                 <div className="flex items-center justify-between px-4 py-4 border-b border-border">
                                                         <div className="flex items-center gap-3">
-                                                               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-black shrink-0">
-                                                                      <Droplets className="w-5 h-5" />
+                                                               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white shrink-0">
+                                                                      <Droplets className="w-4 h-4" />
                                                                </div>
                                                                <div>
-                                                                      <p className="text-sm font-black text-white uppercase tracking-tight italic">{session?.user?.name || "Administrador"}</p>
-                                                                      <div className="flex items-center gap-1 mt-0.5">
-                                                                             <ShieldCheck className="w-2.5 h-2.5 text-emerald-500" />
-                                                                             <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">Admin</span>
+                                                                      <p className="text-sm font-semibold text-foreground">{session?.user?.name || "Administrador"}</p>
+                                                                      <div className="flex items-center gap-1">
+                                                                             <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                                                                             <span className="text-[10px] text-muted-foreground">Admin</span>
                                                                       </div>
                                                                </div>
                                                         </div>
                                                         <button
                                                                onClick={() => setDrawerOpen(false)}
-                                                               className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors"
+                                                               className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                                                         >
-                                                               <X className="w-4 h-4" />
+                                                               <X className="w-3.5 h-3.5" />
                                                         </button>
                                                  </div>
 
                                                  {/* Nav Links */}
-                                                 <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+                                                 <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+                                                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">Módulos</p>
                                                         {navItems.map((item) => {
                                                                const isActive = pathname === item.href;
                                                                return (
@@ -105,24 +103,25 @@ export default function MobileHeader() {
                                                                              href={item.href}
                                                                              onClick={() => setDrawerOpen(false)}
                                                                              className={cn(
-                                                                                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-xs font-black uppercase tracking-widest",
+                                                                                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 text-sm font-medium",
                                                                                     isActive
-                                                                                           ? "bg-white text-black"
-                                                                                           : "text-white/40 hover:bg-white/5 hover:text-white"
+                                                                                           ? "bg-primary/10 text-primary"
+                                                                                           : "text-muted-foreground hover:bg-muted hover:text-foreground"
                                                                              )}
                                                                       >
-                                                                             <item.icon className={cn("w-4 h-4", isActive ? "text-black" : "text-white/30")} />
+                                                                             <item.icon className={cn("w-4 h-4 shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />
                                                                              {item.name}
+                                                                             {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
                                                                       </Link>
                                                                );
                                                         })}
                                                  </nav>
 
                                                  {/* Sign Out */}
-                                                 <div className="p-4 border-t border-white/5">
+                                                 <div className="p-3 border-t border-border">
                                                         <button
                                                                onClick={() => signOut()}
-                                                               className="flex items-center gap-3 px-4 py-3 w-full rounded-xl bg-rose-500/5 border border-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all duration-300 text-xs font-black uppercase tracking-widest"
+                                                               className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-destructive hover:bg-destructive/8 transition-all duration-150 text-sm font-medium"
                                                         >
                                                                <LogOut className="w-4 h-4" />
                                                                Cerrar Sesión

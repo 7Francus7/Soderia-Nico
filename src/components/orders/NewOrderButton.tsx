@@ -1,7 +1,7 @@
 "use strict";
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Plus, X, ShoppingBag, User, Box, Search, Trash2, Loader2, Minus, ChevronRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createOrder } from "@/actions/orders";
@@ -65,11 +65,13 @@ export default function NewOrderButton() {
               }));
        };
 
-       const removeItem = (productId: number) => {
-              setOrderItems(orderItems.filter(item => item.productId !== productId));
+       const reset = () => {
+              setStep(1);
+              setSelectedClient(null);
+              setOrderItems([]);
+              setNotes("");
+              setSearch("");
        };
-
-       const total = orderItems.reduce((acc, item) => acc + (item.quantity * item.unitPrice), 0);
 
        const handleSubmit = async () => {
               if (!selectedClient || orderItems.length === 0) return;
@@ -94,72 +96,56 @@ export default function NewOrderButton() {
               }
        };
 
-       const reset = () => {
-              setStep(1);
-              setSelectedClient(null);
-              setOrderItems([]);
-              setNotes("");
-              setSearch("");
-       };
-
        const filteredClients = clients.filter(c =>
               c.name.toLowerCase().includes(search.toLowerCase()) ||
               c.address.toLowerCase().includes(search.toLowerCase())
        );
 
+       const total = orderItems.reduce((acc, item) => acc + (item.quantity * item.unitPrice), 0);
+
        return (
               <>
                      <Button
                             onClick={() => setIsOpen(true)}
-                            variant="premium"
                             size="lg"
-                            className="shadow-[0_20px_50px_rgba(255,255,255,0.1)] group"
+                            className="shadow-lg shadow-primary/20 rounded-xl px-6 flex items-center gap-2 font-bold tracking-tight"
                      >
-                            <Plus className="w-5 h-5 mr-3 group-hover:rotate-90 transition-transform duration-500" />
-                            NUEVO PEDIDO
+                            <Plus className="w-5 h-5" />
+                            <span>NUEVO PEDIDO</span>
                      </Button>
 
                      <AnimatePresence>
                             {isOpen && (
-                                   <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-6 overflow-hidden">
+                                   <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
                                           {/* Backdrop */}
                                           <motion.div
                                                  initial={{ opacity: 0 }}
                                                  animate={{ opacity: 1 }}
                                                  exit={{ opacity: 0 }}
                                                  onClick={() => setIsOpen(false)}
-                                                 className="absolute inset-0 bg-black/90 backdrop-blur-2xl"
+                                                 className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
                                           />
 
                                           {/* Modal Container */}
                                           <motion.div
-                                                 initial={{ y: "100%", opacity: 0, scale: 0.9 }}
-                                                 animate={{ y: 0, opacity: 1, scale: 1 }}
-                                                 exit={{ y: "100%", opacity: 0, scale: 0.9 }}
+                                                 initial={{ y: "100%" }}
+                                                 animate={{ y: 0 }}
+                                                 exit={{ y: "100%" }}
                                                  transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                                                 className="relative w-full max-w-4xl h-screen sm:h-[85vh] bg-neutral-950/50 sm:rounded-[4rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col"
+                                                 className="relative w-full max-w-4xl h-[95vh] sm:h-[85vh] bg-background sm:rounded-2xl border-t sm:border border-border shadow-2xl overflow-hidden flex flex-col"
                                           >
-                                                 {/* Header Decoration */}
-                                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-1 bg-white/10 rounded-full mt-4 block sm:hidden" />
-
                                                  {/* Header */}
-                                                 <div className="p-10 pb-6 flex justify-between items-center relative z-10">
-                                                        <div className="flex items-center gap-6">
-                                                               <div className="w-16 h-16 bg-white flex items-center justify-center rounded-[2rem] shadow-2xl shadow-white/20">
-                                                                      <ShoppingBag className="w-8 h-8 text-black" />
+                                                 <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-white sticky top-0 z-20">
+                                                        <div className="flex items-center gap-4">
+                                                               <div className="w-10 h-10 bg-primary/10 flex items-center justify-center rounded-lg text-primary">
+                                                                      <ShoppingBag className="w-5 h-5" />
                                                                </div>
                                                                <div>
-                                                                      <h3 className="text-3xl font-black tracking-tight uppercase italic text-white leading-none">REGISTRO DE PEDIDO</h3>
-                                                                      <div className="flex items-center gap-4 mt-3">
-                                                                             <div className="flex items-center gap-2">
-                                                                                    <div className={cn("w-2 h-2 rounded-full", step === 1 ? "bg-white animate-pulse" : "bg-white/20")} />
-                                                                                    <span className={cn("text-[10px] font-black uppercase tracking-[0.3em]", step === 1 ? "text-white" : "text-white/20")}>Selección Cliente</span>
-                                                                             </div>
-                                                                             <ChevronRight className="w-4 h-4 text-white/10" />
-                                                                             <div className="flex items-center gap-2">
-                                                                                    <div className={cn("w-2 h-2 rounded-full", step === 2 ? "bg-white animate-pulse" : "bg-white/20")} />
-                                                                                    <span className={cn("text-[10px] font-black uppercase tracking-[0.3em]", step === 2 ? "text-white" : "text-white/20")}>Productos</span>
-                                                                             </div>
+                                                                      <h3 className="text-lg font-bold text-foreground">Crear Pedido</h3>
+                                                                      <div className="flex items-center gap-2 mt-0.5">
+                                                                             <div className={cn("px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider", step === 1 ? "bg-primary text-white" : "bg-muted text-muted-foreground")}>Paso 1</div>
+                                                                             <ChevronRight className="w-3 h-3 text-muted-foreground/40" />
+                                                                             <div className={cn("px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider", step === 2 ? "bg-primary text-white" : "bg-muted text-muted-foreground")}>Paso 2</div>
                                                                       </div>
                                                                </div>
                                                         </div>
@@ -167,167 +153,130 @@ export default function NewOrderButton() {
                                                                variant="ghost"
                                                                size="icon"
                                                                onClick={() => { setIsOpen(false); reset(); }}
-                                                               className="rounded-full w-14 h-14 hover:bg-white/5 border border-white/5 text-white"
+                                                               className="rounded-full w-9 h-9 border border-border"
                                                         >
-                                                               <X className="w-8 h-8" />
+                                                               <X className="w-5 h-5" />
                                                         </Button>
                                                  </div>
 
                                                  {/* Body Content */}
-                                                 <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar relative z-10">
+                                                 <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
 
                                                         {/* STEP 1: CLIENT PICKER */}
                                                         {step === 1 && (
                                                                <motion.div
-                                                                      initial={{ opacity: 0, x: -20 }}
+                                                                      initial={{ opacity: 0, x: -10 }}
                                                                       animate={{ opacity: 1, x: 0 }}
-                                                                      className="space-y-8"
+                                                                      className="space-y-4"
                                                                >
-                                                                      <div className="relative group">
-                                                                             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-white/20 group-focus-within:text-white transition-colors" />
+                                                                      <div className="relative">
+                                                                             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                                                              <input
                                                                                     type="text"
-                                                                                    placeholder="Busca un cliente por nombre, calle o número..."
+                                                                                    placeholder="Buscar cliente por nombre o dirección..."
                                                                                     autoFocus
                                                                                     value={search}
                                                                                     onChange={(e) => setSearch(e.target.value)}
-                                                                                    className="w-full h-20 bg-white/5 border border-white/10 rounded-[2rem] pl-16 pr-8 font-bold text-xl text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all placeholder:text-white/10"
+                                                                                    className="w-full h-12 bg-muted/50 border border-border rounded-xl pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm"
                                                                              />
                                                                       </div>
 
-                                                                      <div className="grid grid-cols-1 gap-4">
+                                                                      <div className="grid grid-cols-1 gap-2">
                                                                              {filteredClients.slice(0, 10).map(client => (
                                                                                     <button
                                                                                            key={client.id}
                                                                                            onClick={() => { setSelectedClient(client); setStep(2); setSearch(""); }}
-                                                                                           className="w-full flex items-center justify-between p-7 bg-white/5 border border-white/5 rounded-[2.5rem] hover:bg-white/10 hover:border-white/20 transition-all group text-left relative overflow-hidden active:scale-[0.98]"
+                                                                                           className="w-full flex items-center justify-between p-4 bg-white border border-border rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all group text-left shadow-sm active:scale-[0.99]"
                                                                                     >
-                                                                                           <div className="flex items-center gap-6 relative z-10">
-                                                                                                  <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-white/20 group-hover:text-white group-hover:bg-white/20 transition-all">
-                                                                                                         <User className="w-7 h-7" />
+                                                                                           <div className="flex items-center gap-4">
+                                                                                                  <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-white transition-all">
+                                                                                                         <User className="w-5 h-5" />
                                                                                                   </div>
                                                                                                   <div>
-                                                                                                         <div className="font-black text-2xl text-white tracking-tight">{client.name}</div>
-                                                                                                         <div className="text-xs font-bold text-white/30 uppercase tracking-[0.2em] mt-1">{client.address}</div>
+                                                                                                         <div className="font-bold text-base text-foreground">{client.name}</div>
+                                                                                                         <div className="text-[11px] font-medium text-muted-foreground truncate max-w-[200px]">{client.address}</div>
                                                                                                   </div>
                                                                                            </div>
-                                                                                           <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all relative z-10">
-                                                                                                  <ChevronRight className="w-6 h-6" />
-                                                                                           </div>
+                                                                                           <ChevronRight className="w-5 h-5 text-muted-foreground/30 group-hover:text-primary transition-all" />
                                                                                     </button>
                                                                              ))}
                                                                              {search && filteredClients.length === 0 && (
-                                                                                    <div className="flex flex-col items-center justify-center py-20 opacity-20">
-                                                                                           <Search className="w-16 h-16 mb-4" />
-                                                                                           <p className="font-black uppercase tracking-[0.3em] text-sm">No hay resultados para "{search}"</p>
+                                                                                    <div className="flex flex-col items-center justify-center py-12 text-muted-foreground/40">
+                                                                                           <Search className="w-12 h-12 mb-3" />
+                                                                                           <p className="font-bold uppercase tracking-widest text-[10px]">Sin resultados</p>
                                                                                     </div>
                                                                              )}
                                                                       </div>
                                                                </motion.div>
                                                         )}
 
-                                                        {/* STEP 2: PRODUCT SELECTION & CART */}
+                                                        {/* STEP 2: PRODUCTS */}
                                                         {step === 2 && (
                                                                <motion.div
-                                                                      initial={{ opacity: 0, x: 20 }}
+                                                                      initial={{ opacity: 0, x: 10 }}
                                                                       animate={{ opacity: 1, x: 0 }}
-                                                                      className="grid grid-cols-1 lg:grid-cols-12 gap-10"
+                                                                      className="grid grid-cols-1 lg:grid-cols-2 gap-6"
                                                                >
-                                                                      {/* Left Side: Client Info & Catalog */}
-                                                                      <div className="lg:col-span-7 space-y-10">
-                                                                             <div className="p-8 bg-white/5 border border-white/10 rounded-[3rem] flex items-center justify-between group">
-                                                                                    <div className="flex items-center gap-6">
-                                                                                           <div className="w-14 h-14 bg-white text-black rounded-2xl flex items-center justify-center">
-                                                                                                  <User className="w-7 h-7" />
-                                                                                           </div>
-                                                                                           <div>
-                                                                                                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-1">Cliente Seleccionado</p>
-                                                                                                  <p className="font-black text-2xl tracking-tighter text-white">{selectedClient.name}</p>
-                                                                                           </div>
-                                                                                    </div>
-                                                                                    <Button
-                                                                                           variant="ghost"
-                                                                                           className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest hover:bg-white/10 text-white/60 hover:text-white"
-                                                                                           onClick={() => setStep(1)}
-                                                                                    >
-                                                                                           CAMBIAR
-                                                                                    </Button>
+                                                                      {/* Products List */}
+                                                                      <div className="space-y-4">
+                                                                             <div className="flex items-center justify-between px-1">
+                                                                                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Productos</h4>
+                                                                                    <button onClick={() => setStep(1)} className="text-[10px] font-bold text-primary uppercase tracking-widest hover:underline">Cambiar Cliente</button>
                                                                              </div>
-
-                                                                             <div className="space-y-6">
-                                                                                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 px-4">Catálogo de Productos</h4>
-                                                                                    <div className="grid grid-cols-1 gap-4 overflow-y-auto max-h-[40vh] pr-4 custom-scrollbar">
-                                                                                           {products.map(product => {
-                                                                                                  const inCart = orderItems.find(i => i.productId === product.id);
-                                                                                                  return (
-                                                                                                         <button
-                                                                                                                key={product.id}
-                                                                                                                onClick={() => addItem(product)}
-                                                                                                                className={cn(
-                                                                                                                       "w-full flex items-center justify-between p-6 rounded-[2.5rem] transition-all group active:scale-[0.98] border",
-                                                                                                                       inCart ? "bg-white/10 border-white/30" : "bg-white/5 border-white/5 hover:border-white/20 hover:bg-white/[0.07]"
-                                                                                                                )}
-                                                                                                         >
-                                                                                                                <div className="flex items-center gap-5">
-                                                                                                                       <div className={cn(
-                                                                                                                              "w-14 h-14 rounded-2xl flex items-center justify-center transition-all",
-                                                                                                                              inCart ? "bg-white text-black" : "bg-black/40 text-white/20 group-hover:text-white"
-                                                                                                                       )}>
-                                                                                                                              {inCart ? <Check className="w-7 h-7" /> : <Box className="w-7 h-7" />}
-                                                                                                                       </div>
-                                                                                                                       <div className="text-left">
-                                                                                                                              <div className="font-black text-lg text-white group-hover:translate-x-1 transition-transform">{product.name}</div>
-                                                                                                                              <div className="font-black text-2xl text-white/50 tracking-tighter">${product.price.toLocaleString()}</div>
-                                                                                                                       </div>
+                                                                             <div className="space-y-2 max-h-[40vh] overflow-y-auto pr-1">
+                                                                                    {products.map(product => {
+                                                                                           const inCart = orderItems.find(i => i.productId === product.id);
+                                                                                           return (
+                                                                                                  <button
+                                                                                                         key={product.id}
+                                                                                                         onClick={() => addItem(product)}
+                                                                                                         className={cn(
+                                                                                                                "w-full flex items-center justify-between p-3 rounded-xl transition-all border shadow-sm",
+                                                                                                                inCart ? "bg-primary/5 border-primary/30" : "bg-white border-border hover:border-primary/50"
+                                                                                                         )}
+                                                                                                  >
+                                                                                                         <div className="flex items-center gap-3">
+                                                                                                                <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center transition-all", inCart ? "bg-primary text-white" : "bg-muted text-muted-foreground")}>
+                                                                                                                       <Box className="w-5 h-5" />
                                                                                                                 </div>
-                                                                                                                <div className={cn(
-                                                                                                                       "w-12 h-12 rounded-2xl border flex items-center justify-center transition-all",
-                                                                                                                       inCart ? "bg-white border-white text-black" : "border-white/10 group-hover:bg-white group-hover:text-black"
-                                                                                                                )}>
-                                                                                                                       <Plus className="w-6 h-6" />
+                                                                                                                <div className="text-left">
+                                                                                                                       <div className="font-bold text-sm text-foreground">{product.name}</div>
+                                                                                                                       <div className="text-[11px] font-bold text-primary">${product.price.toLocaleString()}</div>
                                                                                                                 </div>
-                                                                                                         </button>
-                                                                                                  );
-                                                                                           })}
-                                                                                    </div>
+                                                                                                         </div>
+                                                                                                         <div className={cn("w-8 h-8 rounded-lg border flex items-center justify-center transition-all", inCart ? "bg-primary border-primary text-white" : "border-border text-muted-foreground")}>
+                                                                                                                <Plus className="w-4 h-4" />
+                                                                                                         </div>
+                                                                                                  </button>
+                                                                                           );
+                                                                                    })}
                                                                              </div>
                                                                       </div>
 
-                                                                      {/* Right Side: Cart Summary */}
-                                                                      <div className="lg:col-span-5 flex flex-col gap-6">
-                                                                             <div className="flex-1 bg-white/[0.03] border border-white/10 rounded-[3.5rem] p-10 flex flex-col relative overflow-hidden">
-                                                                                    <div className="absolute top-0 right-0 p-10 opacity-5">
-                                                                                           <ShoppingBag className="w-40 h-40" />
-                                                                                    </div>
-
-                                                                                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 mb-8 relative z-10">Resumen del Carrito</h4>
-
-                                                                                    <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar relative z-10">
+                                                                      {/* Cart Summary */}
+                                                                      <div className="space-y-4">
+                                                                             <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-1">Pedido Actual</h4>
+                                                                             <div className="bg-muted/30 border border-border rounded-2xl p-4 flex flex-col min-h-[300px]">
+                                                                                    <div className="flex-1 space-y-2 mb-4">
                                                                                            {orderItems.length === 0 ? (
-                                                                                                  <div className="h-full flex flex-col items-center justify-center opacity-10 text-center py-20">
-                                                                                                         <ShoppingBag className="w-20 h-20 mb-4" />
-                                                                                                         <p className="font-black uppercase tracking-[0.2em] text-xs">Añade productos para ver el total</p>
+                                                                                                  <div className="h-full flex flex-col items-center justify-center text-muted-foreground/30 py-10 opacity-60">
+                                                                                                         <ShoppingBag className="w-12 h-12 mb-2" />
+                                                                                                         <p className="text-[10px] font-bold uppercase tracking-widest text-center">Carrito vacío</p>
                                                                                                   </div>
                                                                                            ) : (
                                                                                                   orderItems.map(item => (
-                                                                                                         <div key={item.productId} className="flex justify-between items-center bg-white/5 p-5 rounded-[2rem] border border-white/5 group hover:border-white/20 transition-all">
+                                                                                                         <div key={item.productId} className="flex justify-between items-center bg-white p-3 rounded-lg border border-border shadow-sm">
                                                                                                                 <div className="flex flex-col">
-                                                                                                                       <span className="text-lg font-black text-white">{item.name}</span>
-                                                                                                                       <span className="text-sm font-bold text-white/30 uppercase tracking-widest">${(item.quantity * item.unitPrice).toLocaleString()}</span>
+                                                                                                                       <span className="text-sm font-bold text-foreground">{item.name}</span>
+                                                                                                                       <span className="text-[10px] font-bold text-primary">${(item.quantity * item.unitPrice).toLocaleString()}</span>
                                                                                                                 </div>
-                                                                                                                <div className="flex items-center gap-4 bg-black/60 p-2 rounded-[1.5rem] border border-white/5">
-                                                                                                                       <button
-                                                                                                                              onClick={() => updateQty(item.productId, -1)}
-                                                                                                                              className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 text-white transition-all active:scale-90"
-                                                                                                                       >
-                                                                                                                              <Minus className="w-5 h-5" />
+                                                                                                                <div className="flex items-center gap-2 bg-muted p-1 rounded-lg">
+                                                                                                                       <button onClick={() => updateQty(item.productId, -1)} className="w-7 h-7 bg-white rounded border border-border flex items-center justify-center text-foreground hover:bg-slate-50 transition-all shadow-sm">
+                                                                                                                              <Minus className="w-3.5 h-3.5" />
                                                                                                                        </button>
-                                                                                                                       <span className="text-xl font-black w-6 text-center text-white">{item.quantity}</span>
-                                                                                                                       <button
-                                                                                                                              onClick={() => updateQty(item.productId, 1)}
-                                                                                                                              className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 text-white transition-all active:scale-90"
-                                                                                                                       >
-                                                                                                                              <Plus className="w-5 h-5" />
+                                                                                                                       <span className="text-sm font-bold w-6 text-center text-foreground">{item.quantity}</span>
+                                                                                                                       <button onClick={() => updateQty(item.productId, 1)} className="w-7 h-7 bg-white rounded border border-border flex items-center justify-center text-foreground hover:bg-slate-50 transition-all shadow-sm">
+                                                                                                                              <Plus className="w-3.5 h-3.5" />
                                                                                                                        </button>
                                                                                                                 </div>
                                                                                                          </div>
@@ -335,26 +284,26 @@ export default function NewOrderButton() {
                                                                                            )}
                                                                                     </div>
 
-                                                                                    <div className="mt-10 pt-10 border-t border-white/10 relative z-10">
+                                                                                    <div className="pt-4 border-t border-border mt-auto">
                                                                                            <div className="flex justify-between items-end">
                                                                                                   <div>
-                                                                                                         <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mb-2">Total Final</p>
-                                                                                                         <p className="text-6xl font-black tracking-tighter text-white leading-none">${total.toLocaleString()}</p>
+                                                                                                         <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total a Pagar</p>
+                                                                                                         <p className="text-3xl font-bold tracking-tight text-foreground leading-none">${total.toLocaleString()}</p>
                                                                                                   </div>
-                                                                                                  <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center text-white ring-8 ring-white/[0.02]">
-                                                                                                         <Check className="w-8 h-8" />
+                                                                                                  <div className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+                                                                                                         <Check className="w-6 h-6" />
                                                                                                   </div>
                                                                                            </div>
                                                                                     </div>
                                                                              </div>
 
-                                                                             <div className="space-y-4">
-                                                                                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 px-4">Notas para el Chofer / Observaciones</label>
+                                                                             <div className="space-y-2">
+                                                                                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-1">Observaciones</label>
                                                                                     <textarea
-                                                                                           placeholder="Instrucciones adicionales..."
+                                                                                           placeholder="Notas para el chofer..."
                                                                                            value={notes}
                                                                                            onChange={(e) => setNotes(e.target.value)}
-                                                                                           className="w-full h-32 bg-white/5 border border-white/10 rounded-[2.5rem] p-8 text-lg font-bold text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all resize-none placeholder:text-white/10 lg:h-32"
+                                                                                           className="w-full h-24 bg-white border border-border rounded-xl p-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary shadow-sm resize-none"
                                                                                     />
                                                                              </div>
                                                                       </div>
@@ -362,11 +311,11 @@ export default function NewOrderButton() {
                                                         )}
                                                  </div>
 
-                                                 {/* Sticky Footer Action Bar */}
-                                                 <div className="p-10 bg-black/40 backdrop-blur-3xl border-t border-white/10 flex gap-6 relative z-20">
+                                                 {/* Footer */}
+                                                 <div className="p-4 border-t border-border bg-white flex gap-3 sticky bottom-0 z-20">
                                                         <Button
                                                                variant="ghost"
-                                                               className="flex-1 h-20 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-white/5 text-white/40 hover:text-white"
+                                                               className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-border"
                                                                onClick={() => { setIsOpen(false); reset(); }}
                                                         >
                                                                Cancelar
@@ -375,19 +324,9 @@ export default function NewOrderButton() {
                                                                <Button
                                                                       disabled={loading || orderItems.length === 0}
                                                                       onClick={handleSubmit}
-                                                                      variant="action"
-                                                                      size="xl"
-                                                                      className="flex-[2.5] shadow-2xl shadow-primary/40 relative overflow-hidden group"
+                                                                      className="flex-[2] h-12 shadow-lg shadow-primary/20 rounded-xl font-bold text-xs uppercase tracking-widest"
                                                                >
-                                                                      <span className="relative z-10">
-                                                                             {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : "CONFIRMAR PEDIDO"}
-                                                                      </span>
-                                                                      {/* Animated Background for the button */}
-                                                                      <motion.div
-                                                                             animate={{ x: ["-100%", "100%"] }}
-                                                                             transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                                                                             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
-                                                                      />
+                                                                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "CONFIRMAR PEDIDO"}
                                                                </Button>
                                                         )}
                                                  </div>

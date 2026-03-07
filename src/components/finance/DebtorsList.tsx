@@ -38,23 +38,28 @@ export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] 
        return (
               <div className="space-y-4">
                      {/* Search */}
-                     <div className="relative group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-white transition-colors" />
-                            <input
-                                   type="text"
-                                   placeholder="Filtrar por nombre o dirección..."
-                                   value={search}
-                                   onChange={(e) => setSearch(e.target.value)}
-                                   className="w-full bg-white/5 border border-white/10 rounded-2xl h-12 pl-11 pr-4 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-white/15 transition-all text-white placeholder:text-white/20"
-                            />
+                     <div className="flex items-center gap-2 max-w-md">
+                            <div className="relative group flex-1">
+                                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+                                   <input
+                                          type="text"
+                                          placeholder="Filtrar morosos por nombre o dirección..."
+                                          value={search}
+                                          onChange={(e) => setSearch(e.target.value)}
+                                          className="w-full h-11 bg-white border border-border rounded-xl pl-10 pr-4 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60 shadow-sm"
+                                   />
+                            </div>
+                            <div className="px-3 h-11 rounded-xl bg-muted border border-border flex items-center justify-center shrink-0">
+                                   <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{filtered.length}</span>
+                            </div>
                      </div>
 
                      {/* List */}
-                     <div className="space-y-3">
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {filtered.length === 0 ? (
-                                   <div className="py-16 text-center bg-white/5 border border-white/10 rounded-[2rem]">
-                                          <CheckCircle className="w-12 h-12 text-emerald-500/30 mx-auto mb-4" />
-                                          <p className="text-base font-black text-white/30 italic uppercase tracking-widest">¡Todos al día!</p>
+                                   <div className="col-span-full py-16 text-center bg-white border border-dashed border-border rounded-xl">
+                                          <CheckCircle className="w-10 h-10 text-emerald-500/30 mx-auto mb-3" />
+                                          <p className="font-semibold text-muted-foreground/40 text-sm italic">¡Todos los clientes están al día!</p>
                                    </div>
                             ) : (
                                    filtered.map((client, idx) => (
@@ -71,57 +76,58 @@ export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] 
                      </div>
 
                      {/* Summary Modal */}
-                     {summaryClient && (
-                            <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-xl text-white">
-                                   <div className="bg-card w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden">
-                                          <div className="p-5 flex justify-between items-center border-b border-white/5">
-                                                 <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary">
-                                                               <Eye className="w-5 h-5" />
+                     <AnimatePresence>
+                            {summaryClient && (
+                                   <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
+                                          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setSummaryClient(null)} />
+                                          <div className="relative bg-white w-full max-w-sm rounded-t-2xl sm:rounded-2xl border-t sm:border border-border shadow-2xl overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300">
+                                                 <div className="px-5 py-4 flex justify-between items-center border-b border-border bg-slate-50">
+                                                        <div className="flex items-center gap-3">
+                                                               <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center text-primary border border-primary/20">
+                                                                      <Eye className="w-4.5 h-4.5" />
+                                                               </div>
+                                                               <div>
+                                                                      <h3 className="text-base font-bold text-foreground leading-none">Detalles de Deuda</h3>
+                                                                      <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mt-1">{summaryClient.name}</p>
+                                                               </div>
                                                         </div>
-                                                        <div>
-                                                               <h3 className="text-lg font-black italic uppercase tracking-tighter">Detalles</h3>
-                                                               <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">{summaryClient.name}</p>
-                                                        </div>
-                                                 </div>
-                                                 <Button variant="ghost" size="icon" onClick={() => setSummaryClient(null)} className="rounded-xl hover:bg-white/5">
-                                                        <X className="w-5 h-5" />
-                                                 </Button>
-                                          </div>
-
-                                          <div className="p-5 space-y-5">
-                                                 <div className="grid grid-cols-2 gap-3">
-                                                        <div className="bg-rose-500/10 p-4 rounded-xl border border-rose-500/20 relative overflow-hidden">
-                                                               <div className="absolute top-0 left-0 w-full h-0.5 bg-rose-500/40" />
-                                                               <p className="text-[9px] font-black uppercase tracking-[0.2em] text-rose-500 mb-1">Saldo Deudor</p>
-                                                               <div className="text-2xl font-black text-white tracking-tighter">${summaryClient.balance.toLocaleString()}</div>
-                                                        </div>
-                                                        <div className="bg-amber-500/10 p-4 rounded-xl border border-amber-500/20 relative overflow-hidden">
-                                                               <div className="absolute top-0 left-0 w-full h-0.5 bg-amber-500/40" />
-                                                               <p className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-500 mb-1">Envases</p>
-                                                               <div className="text-2xl font-black text-white tracking-tighter">{summaryClient.bottlesBalance} <span className="text-xs opacity-30">unid.</span></div>
-                                                        </div>
-                                                 </div>
-
-                                                 <div className="space-y-2">
-                                                        <Link href={`/clientes/${summaryClient.id}`} className="block">
-                                                               <Button variant="ghost" className="w-full h-12 rounded-xl border border-white/10 font-black uppercase tracking-widest text-xs hover:bg-white/5">
-                                                                      <ArrowRight className="w-4 h-4 mr-2 text-primary" />
-                                                                      Ver Historial Completo
-                                                               </Button>
-                                                        </Link>
-                                                        <Button
-                                                               onClick={() => handleWhatsApp(summaryClient)}
-                                                               className="w-full h-12 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-black uppercase tracking-widest text-sm border-none"
-                                                        >
-                                                               <MessageCircle className="w-4 h-4 mr-2" />
-                                                               Enviar por WhatsApp
+                                                        <Button variant="ghost" size="icon" onClick={() => setSummaryClient(null)} className="rounded-full w-8 h-8 border border-border">
+                                                               <X className="w-4 h-4" />
                                                         </Button>
+                                                 </div>
+
+                                                 <div className="p-5 space-y-4">
+                                                        <div className="grid grid-cols-2 gap-3">
+                                                               <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 relative overflow-hidden group">
+                                                                      <p className="text-[9px] font-bold uppercase tracking-widest text-rose-500/70 mb-1">Saldo Deudor</p>
+                                                                      <div className="text-2xl font-bold text-rose-600 tracking-tight tabular-nums">${summaryClient.balance.toLocaleString()}</div>
+                                                               </div>
+                                                               <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 relative overflow-hidden">
+                                                                      <p className="text-[9px] font-bold uppercase tracking-widest text-amber-500/70 mb-1">Envases</p>
+                                                                      <div className="text-2xl font-bold text-amber-600 tracking-tight tabular-nums">{summaryClient.bottlesBalance} <span className="text-[10px] text-amber-500/40">unid.</span></div>
+                                                               </div>
+                                                        </div>
+
+                                                        <div className="space-y-2">
+                                                               <Link href={`/clientes/${summaryClient.id}`} className="block">
+                                                                      <Button variant="outline" className="w-full h-11 rounded-xl border-border font-bold uppercase tracking-widest text-[10px] hover:bg-muted group">
+                                                                             Ver Historial Completo
+                                                                             <ArrowRight className="w-3.5 h-3.5 ml-2 text-primary group-hover:translate-x-0.5 transition-transform" />
+                                                                      </Button>
+                                                               </Link>
+                                                               <Button
+                                                                      onClick={() => handleWhatsApp(summaryClient)}
+                                                                      className="w-full h-11 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-emerald-500/10 border-none group"
+                                                               >
+                                                                      <MessageCircle className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform" />
+                                                                      Enviar por WhatsApp
+                                                               </Button>
+                                                        </div>
                                                  </div>
                                           </div>
                                    </div>
-                            </div>
-                     )}
+                            )}
+                     </AnimatePresence>
 
                      <QuickPaymentModal
                             client={selectedClient}
@@ -134,60 +140,58 @@ export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] 
 function DebtorCard({ client, idx, onPay, onDetail, onWhatsApp }: any) {
        return (
               <div
-                     className="bg-card border border-white/5 rounded-[1.75rem] sm:rounded-[2rem] p-4 sm:p-6 hover:border-white/15 transition-all group shadow-xl shadow-black/10"
+                     className="bg-white border border-border rounded-xl p-4 sm:p-5 card-shadow hover:card-shadow-md transition-all group animate-fade-in-up"
                      style={{ animationDelay: `${idx * 0.04}s` }}
               >
                      {/* Top row: avatar + info + amounts */}
-                     <div className="flex items-start gap-3 sm:gap-5">
-                            <div className="w-10 h-10 sm:w-14 sm:h-14 bg-white/5 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 border border-white/5 group-hover:bg-white/10 transition-colors">
-                                   <User className="w-5 h-5 sm:w-7 sm:h-7 text-white/20 group-hover:text-white transition-colors" />
+                     <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-muted rounded-lg flex items-center justify-center shrink-0 border border-border group-hover:bg-primary group-hover:text-white transition-all">
+                                   <User className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground/50 group-hover:text-white transition-colors" />
                             </div>
 
                             <div className="flex-1 min-w-0">
-                                   <h3 className="text-base sm:text-xl font-black tracking-tighter text-white truncate">{client.name}</h3>
-                                   <div className="text-[9px] sm:text-xs font-bold text-white/30 italic mt-0.5 truncate">{client.address}</div>
-                                   {client.phone && <div className="text-[9px] font-black text-primary uppercase tracking-wider mt-1">{client.phone}</div>}
+                                   <h3 className="text-base font-bold text-foreground leading-tight truncate">{client.name}</h3>
+                                   <div className="text-[10px] font-medium text-muted-foreground truncate opacity-70 mt-0.5">{client.address}</div>
+                                   {client.phone && <div className="text-[9px] font-bold text-primary uppercase tracking-wider mt-1">{client.phone}</div>}
                             </div>
 
-                            {/* Amounts - right aligned */}
+                            {/* Amounts */}
                             <div className="text-right shrink-0">
                                    {client.bottlesBalance !== 0 && (
-                                          <div className="mb-1">
-                                                 <p className="text-[8px] font-black uppercase tracking-wide text-amber-500">Envases</p>
+                                          <div className="mb-0.5">
                                                  <div className={cn(
-                                                        "text-sm font-black tracking-tighter",
-                                                        client.bottlesBalance > 0 ? "text-white" : "text-emerald-500"
+                                                        "text-[11px] font-bold tracking-tight",
+                                                        client.bottlesBalance > 0 ? "text-amber-500" : "text-emerald-500"
                                                  )}>
-                                                        {client.bottlesBalance > 0 ? `+${client.bottlesBalance}` : client.bottlesBalance}
+                                                        {client.bottlesBalance > 0 ? `+${client.bottlesBalance}` : client.bottlesBalance} <span className="text-[8px] opacity-40">ENV.</span>
                                                  </div>
                                           </div>
                                    )}
-                                   <p className="text-[8px] font-black uppercase tracking-wide text-rose-500">Deuda</p>
-                                   <div className="text-xl sm:text-2xl font-black tracking-tighter text-white">
+                                   <div className="text-lg sm:text-xl font-bold text-rose-500 tracking-tight tabular-nums">
                                           ${client.balance.toLocaleString()}
                                    </div>
                             </div>
                      </div>
 
                      {/* Action buttons */}
-                     <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5">
+                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
                             <Button
                                    onClick={onDetail}
-                                   variant="outline"
-                                   className="h-9 w-9 rounded-xl border-white/10 hover:bg-white/5 text-white/40 hover:text-white transition-all p-0"
+                                   variant="ghost"
+                                   className="h-9 w-9 rounded-lg bg-muted border border-border text-muted-foreground hover:bg-white hover:text-primary transition-all p-0"
                             >
                                    <Eye className="w-4 h-4" />
                             </Button>
                             <Button
                                    onClick={onWhatsApp}
-                                   variant="outline"
-                                   className="h-9 w-9 rounded-xl border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 transition-all p-0"
+                                   variant="ghost"
+                                   className="h-9 w-9 rounded-lg bg-muted border border-border text-emerald-600 hover:bg-emerald-50 hover:border-emerald-100 transition-all p-0"
                             >
                                    <MessageCircle className="w-4 h-4" />
                             </Button>
                             <Button
                                    onClick={onPay}
-                                   className="flex-1 h-9 rounded-xl bg-white hover:bg-white/90 text-black font-black uppercase tracking-widest text-xs border-none active:scale-95"
+                                   className="flex-1 h-9 rounded-lg font-bold uppercase tracking-widest text-[10px] shadow-sm active:scale-95"
                             >
                                    <DollarSign className="w-3.5 h-3.5 mr-1" />
                                    COBRAR

@@ -42,158 +42,155 @@ export default function NewCashMovementButton() {
               <>
                      <Button
                             onClick={() => setIsOpen(true)}
-                            variant="premium"
                             size="lg"
-                            className="w-full md:w-auto shadow-2xl group"
+                            className="w-full md:w-auto shadow-lg shadow-primary/20 rounded-xl px-6 flex items-center gap-2 font-bold tracking-tight"
                      >
-                            <Plus className="w-5 h-5 mr-3 group-hover:rotate-180 transition-transform duration-500" />
-                            NUEVO MOVIMIENTO
+                            <Plus className="w-5 h-5" />
+                            <span>NUEVO MOVIMIENTO</span>
                      </Button>
 
                      <AnimatePresence>
                             {isOpen && (
-                                   <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-6 text-white overflow-hidden">
+                                   <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
                                           {/* Backdrop */}
                                           <motion.div
                                                  initial={{ opacity: 0 }}
                                                  animate={{ opacity: 1 }}
                                                  exit={{ opacity: 0 }}
                                                  onClick={() => setIsOpen(false)}
-                                                 className="absolute inset-0 bg-black/95 backdrop-blur-3xl"
+                                                 className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
                                           />
 
                                           <motion.div
-                                                 initial={{ y: 100, opacity: 0, scale: 0.9 }}
-                                                 animate={{ y: 0, opacity: 1, scale: 1 }}
-                                                 exit={{ y: 100, opacity: 0, scale: 0.9 }}
-                                                 className="relative w-full max-w-xl bg-neutral-950/50 sm:rounded-[4rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col"
+                                                 initial={{ y: "100%" }}
+                                                 animate={{ y: 0 }}
+                                                 exit={{ y: "100%" }}
+                                                 className="relative w-full max-w-lg bg-background sm:rounded-2xl border-t sm:border border-border shadow-2xl overflow-hidden flex flex-col"
                                           >
-                                                 <div className="p-10 pb-4 flex justify-between items-center relative z-10">
-                                                        <div className="flex items-center gap-6">
-                                                               <div className="w-16 h-16 bg-white text-black rounded-[2rem] flex items-center justify-center shadow-2xl shadow-white/20">
-                                                                      <Wallet className="w-8 h-8" />
+                                                 <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-white sticky top-0 z-20">
+                                                        <div className="flex items-center gap-4">
+                                                               <div className="w-10 h-10 bg-primary/10 flex items-center justify-center rounded-lg text-primary border border-primary/20">
+                                                                      <Wallet className="w-5 h-5" />
                                                                </div>
                                                                <div>
-                                                                      <h3 className="text-3xl font-black italic uppercase tracking-tighter leading-none">Caja Diaria</h3>
-                                                                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mt-3">Registro de movimiento</p>
+                                                                      <h3 className="text-lg font-bold text-foreground">Caja Diaria</h3>
+                                                                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mt-1">Registrar movimiento</p>
                                                                </div>
                                                         </div>
-                                                        <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="rounded-full w-14 h-14 hover:bg-white/5 border border-white/5">
-                                                               <X className="w-8 h-8" />
-                                                        </Button>
+                                                        <button onClick={() => setIsOpen(false)} className="rounded-full w-9 h-9 border border-border flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors">
+                                                               <X className="w-5 h-5" />
+                                                        </button>
                                                  </div>
 
-                                                 <form onSubmit={handleSubmit} className="p-10 space-y-10 relative z-10">
-                                                        {/* Massive Amount Display */}
-                                                        <div className="bg-white/5 p-12 rounded-[3.5rem] border border-white/10 text-center relative overflow-hidden group">
-                                                               <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                               <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-4">Importe a Registrar</p>
-                                                               <div className="flex items-center justify-center text-8xl font-black tracking-tighter text-white">
-                                                                      <span className="text-3xl text-white/20 mt-4 mr-2 font-mono">$</span>
+                                                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                                                        {/* Amount Input */}
+                                                        <div className="bg-slate-50 border border-slate-100 p-8 rounded-2xl text-center relative overflow-hidden shadow-inner">
+                                                               <div className="absolute top-0 left-0 w-full h-1 bg-primary" />
+                                                               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-2">Importe a Registrar</p>
+                                                               <div className="flex items-center justify-center text-5xl font-bold tracking-tight text-foreground">
+                                                                      <span className="text-xl text-muted-foreground/30 mr-1">$</span>
                                                                       <input
                                                                              type="number"
                                                                              autoFocus
                                                                              required
                                                                              value={formData.amount || ''}
                                                                              onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
-                                                                             className="bg-transparent border-none focus:outline-none w-64 text-center tabular-nums"
+                                                                             className="bg-transparent border-none focus:outline-none w-48 text-center tabular-nums placeholder:text-slate-200"
                                                                              placeholder="0"
                                                                       />
                                                                </div>
                                                         </div>
 
-                                                        {/* Tabs for Type and Method */}
-                                                        <div className="space-y-10">
-                                                               <div className="grid grid-cols-2 gap-10">
-                                                                      <div className="space-y-4">
-                                                                             <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Dirección Flujo</label>
-                                                                             <div className="flex p-2 bg-black/60 rounded-[2rem] border border-white/10">
+                                                        {/* Selectors */}
+                                                        <div className="space-y-4">
+                                                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                      <div className="space-y-1.5 px-1">
+                                                                             <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Flujo</label>
+                                                                             <div className="flex p-1 bg-muted rounded-xl border border-border">
                                                                                     <button
                                                                                            type="button"
                                                                                            onClick={() => setFormData({ ...formData, type: "INCOME" })}
                                                                                            className={cn(
-                                                                                                  "flex-1 flex items-center justify-center gap-3 py-5 rounded-[1.5rem] font-black uppercase text-[10px] tracking-widest transition-all",
-                                                                                                  formData.type === "INCOME" ? "bg-emerald-500 text-white shadow-xl shadow-emerald-500/20" : "text-white/30 hover:bg-white/5"
+                                                                                                  "flex-1 flex items-center justify-center gap-2 py-2 rounded-lg font-bold uppercase text-[9px] tracking-widest transition-all",
+                                                                                                  formData.type === "INCOME" ? "bg-white text-emerald-600 shadow-sm border border-border" : "text-muted-foreground hover:bg-white/50"
                                                                                            )}
                                                                                     >
-                                                                                           <ArrowUpRight className="w-4 h-4" /> Ingreso
+                                                                                           <ArrowUpRight className="w-3.5 h-3.5" /> Ingreso
                                                                                     </button>
                                                                                     <button
                                                                                            type="button"
                                                                                            onClick={() => setFormData({ ...formData, type: "EXPENSE" })}
                                                                                            className={cn(
-                                                                                                  "flex-1 flex items-center justify-center gap-3 py-5 rounded-[1.5rem] font-black uppercase text-[10px] tracking-widest transition-all",
-                                                                                                  formData.type === "EXPENSE" ? "bg-rose-500 text-white shadow-xl shadow-rose-500/20" : "text-white/30 hover:bg-white/5"
+                                                                                                  "flex-1 flex items-center justify-center gap-2 py-2 rounded-lg font-bold uppercase text-[9px] tracking-widest transition-all",
+                                                                                                  formData.type === "EXPENSE" ? "bg-white text-rose-600 shadow-sm border border-border" : "text-muted-foreground hover:bg-white/50"
                                                                                            )}
                                                                                     >
-                                                                                           <ArrowDownLeft className="w-4 h-4" /> Egreso
+                                                                                           <ArrowDownLeft className="w-3.5 h-3.5" /> Egreso
                                                                                     </button>
                                                                              </div>
                                                                       </div>
 
-                                                                      <div className="space-y-4">
-                                                                             <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Medio de Pago</label>
-                                                                             <div className="flex p-2 bg-black/60 rounded-[2rem] border border-white/10">
+                                                                      <div className="space-y-1.5 px-1">
+                                                                             <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Método</label>
+                                                                             <div className="flex p-1 bg-muted rounded-xl border border-border">
                                                                                     <button
                                                                                            type="button"
                                                                                            onClick={() => setFormData({ ...formData, paymentMethod: "CASH" })}
                                                                                            className={cn(
-                                                                                                  "flex-1 flex items-center justify-center gap-3 py-5 rounded-[1.5rem] font-black uppercase text-[10px] tracking-widest transition-all",
-                                                                                                  formData.paymentMethod === "CASH" ? "bg-white text-black shadow-xl shadow-white/10" : "text-white/30 hover:bg-white/5"
+                                                                                                  "flex-1 flex items-center justify-center gap-2 py-2 rounded-lg font-bold uppercase text-[9px] tracking-widest transition-all",
+                                                                                                  formData.paymentMethod === "CASH" ? "bg-white text-primary shadow-sm border border-border" : "text-muted-foreground hover:bg-white/50"
                                                                                            )}
                                                                                     >
-                                                                                           <Banknote className="w-4 h-4" /> Efectivo
+                                                                                           <Banknote className="w-3.5 h-3.5" /> Efectivo
                                                                                     </button>
                                                                                     <button
                                                                                            type="button"
                                                                                            onClick={() => setFormData({ ...formData, paymentMethod: "TRANSFER" })}
                                                                                            className={cn(
-                                                                                                  "flex-1 flex items-center justify-center gap-3 py-5 rounded-[1.5rem] font-black uppercase text-[10px] tracking-widest transition-all",
-                                                                                                  formData.paymentMethod === "TRANSFER" ? "bg-white text-black shadow-xl shadow-white/10" : "text-white/30 hover:bg-white/5"
+                                                                                                  "flex-1 flex items-center justify-center gap-2 py-2 rounded-lg font-bold uppercase text-[9px] tracking-widest transition-all",
+                                                                                                  formData.paymentMethod === "TRANSFER" ? "bg-white text-primary shadow-sm border border-border" : "text-muted-foreground hover:bg-white/50"
                                                                                            )}
                                                                                     >
-                                                                                           <CreditCard className="w-4 h-4" /> Digital
+                                                                                           <CreditCard className="w-3.5 h-3.5" /> Digital
                                                                                     </button>
                                                                              </div>
                                                                       </div>
                                                                </div>
 
-                                                               <div className="space-y-4">
-                                                                      <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Concepto del Movimiento</label>
+                                                               <div className="space-y-1.5 px-1">
+                                                                      <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Concepto del Movimiento</label>
                                                                       <div className="relative group">
-                                                                             <ReceiptText className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-white/20 group-focus-within:text-white transition-colors" />
+                                                                             <ReceiptText className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                                                                              <input
                                                                                     type="text"
                                                                                     required
                                                                                     value={formData.concept}
                                                                                     onChange={(e) => setFormData({ ...formData, concept: e.target.value })}
                                                                                     placeholder="Ej: Venta de sifones sueltos, Pago flete..."
-                                                                                    className="w-full h-20 bg-white/5 border border-white/10 rounded-[2rem] pl-16 pr-8 font-bold text-xl text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all placeholder:text-white/10 tabular-nums"
+                                                                                    className="w-full h-12 bg-muted/50 border border-border rounded-xl pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm"
                                                                              />
                                                                       </div>
                                                                </div>
                                                         </div>
 
-                                                        <div className="flex gap-6 pt-6">
+                                                        <div className="flex gap-3 pt-2">
                                                                <Button
                                                                       type="button"
                                                                       variant="ghost"
-                                                                      className="flex-1 h-20 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-white/5 text-white/30 hover:text-white"
+                                                                      className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-border"
                                                                       onClick={() => setIsOpen(false)}
                                                                >
-                                                                      Cerrar
+                                                                      Cancelar
                                                                </Button>
                                                                <Button
                                                                       type="submit"
                                                                       disabled={loading}
-                                                                      variant="action"
-                                                                      size="xl"
-                                                                      className="flex-[2] shadow-2xl shadow-primary/40 group active:scale-95"
+                                                                      className="flex-[2] h-12 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 rounded-xl font-bold text-xs uppercase tracking-widest active:scale-95 transition-all group"
                                                                >
-                                                                      {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : (
-                                                                             <span className="flex items-center gap-3">
-                                                                                    REGISTRAR MOVIMIENTO
-                                                                                    <Check className="w-7 h-7 group-hover:scale-125 transition-transform" />
+                                                                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                                                                             <span className="flex items-center gap-2">
+                                                                                    CONFIRMAR REGISTRO
+                                                                                    <Check className="w-4 h-4 group-hover:scale-110 transition-transform" />
                                                                              </span>
                                                                       )}
                                                                </Button>

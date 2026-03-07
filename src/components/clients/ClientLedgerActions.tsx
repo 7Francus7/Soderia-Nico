@@ -69,122 +69,119 @@ export default function ClientLedgerActions({ client }: { client: any }) {
 
        return (
               <>
-                     <div className="flex flex-wrap gap-4 w-full md:w-auto">
+                     <div className="flex flex-wrap gap-2 w-full md:w-auto">
                             <Button
                                    variant="outline"
                                    onClick={() => setModal("summary")}
-                                   className="flex-1 md:flex-none h-16 px-10 rounded-[2rem] border-white/10 text-white/40 hover:text-white"
+                                   className="flex-1 md:flex-none h-11 px-6 rounded-xl border-border text-muted-foreground hover:bg-muted font-bold text-xs uppercase tracking-wider"
                             >
-                                   <FileText className="w-5 h-5 mr-3" />
+                                   <FileText className="w-4 h-4 mr-2" />
                                    RESUMEN
                             </Button>
                             <Button
                                    variant="outline"
                                    onClick={() => setModal("charge")}
-                                   className="flex-1 md:flex-none h-16 px-10 rounded-[2rem] border-rose-500/20 text-rose-500 hover:bg-rose-500/10"
+                                   className="flex-1 md:flex-none h-11 px-6 rounded-xl border-rose-100 text-rose-500 hover:bg-rose-50 font-bold text-xs uppercase tracking-wider"
                             >
-                                   <PlusCircle className="w-5 h-5 mr-3" />
+                                   <PlusCircle className="w-4 h-4 mr-2" />
                                    CARGO
                             </Button>
                             <Button
                                    onClick={() => setModal("payment")}
-                                   variant="premium"
                                    size="lg"
-                                   className="flex-1 md:flex-none px-12"
+                                   className="flex-1 md:flex-none h-11 px-8 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-primary/20"
                             >
-                                   <Banknote className="w-6 h-6 mr-3" />
+                                   <Banknote className="w-4 h-4 mr-2" />
                                    COBRAR
                             </Button>
                      </div>
 
                      <AnimatePresence>
                             {(modal === "payment" || modal === "charge") && (
-                                   <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-6 overflow-hidden">
+                                   <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
                                           <motion.div
                                                  initial={{ opacity: 0 }}
                                                  animate={{ opacity: 1 }}
                                                  exit={{ opacity: 0 }}
                                                  onClick={() => setModal(null)}
-                                                 className="absolute inset-0 bg-black/95 backdrop-blur-3xl"
+                                                 className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
                                           />
 
                                           <motion.div
-                                                 initial={{ y: 50, opacity: 0 }}
-                                                 animate={{ y: 0, opacity: 1 }}
-                                                 exit={{ y: 50, opacity: 0 }}
-                                                 className="relative w-full max-w-lg bg-neutral-900 sm:rounded-[4rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col text-white"
+                                                 initial={{ y: "100%" }}
+                                                 animate={{ y: 0 }}
+                                                 exit={{ y: "100%" }}
+                                                 className="relative w-full max-w-lg bg-background sm:rounded-2xl border-t sm:border border-border shadow-2xl overflow-hidden flex flex-col"
                                           >
-                                                 <div className="p-10 pb-6 flex justify-between items-center">
-                                                        <div className="flex items-center gap-6">
+                                                 <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-white sticky top-0 z-20">
+                                                        <div className="flex items-center gap-4">
                                                                <div className={cn(
-                                                                      "w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-2xl transition-all",
-                                                                      modal === "payment" ? "bg-emerald-500 text-white shadow-emerald-500/20" : "bg-rose-500 text-white shadow-rose-500/20"
+                                                                      "w-10 h-10 rounded-lg flex items-center justify-center shadow-sm border",
+                                                                      modal === "payment" ? "bg-emerald-50 border-emerald-100 text-emerald-600" : "bg-rose-50 border-rose-100 text-rose-600"
                                                                )}>
-                                                                      {modal === "payment" ? <ArrowDownLeft className="w-8 h-8" /> : <ArrowUpRight className="w-8 h-8" />}
+                                                                      {modal === "payment" ? <ArrowDownLeft className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
                                                                </div>
                                                                <div>
-                                                                      <h3 className="text-3xl font-black italic uppercase tracking-tighter leading-none">
-                                                                             {modal === "payment" ? "Registro Pago" : "Cargar Deuda"}
+                                                                      <h3 className="text-lg font-bold text-foreground">
+                                                                             {modal === "payment" ? "Registrar Pago" : "Registrar Cargo"}
                                                                       </h3>
-                                                                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mt-3">{client.name}</p>
+                                                                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">{client.name}</p>
                                                                </div>
                                                         </div>
-                                                        <Button variant="ghost" size="icon" onClick={() => setModal(null)} className="rounded-full w-14 h-14 hover:bg-white/5 border border-white/5">
-                                                               <X className="w-8 h-8" />
+                                                        <Button variant="ghost" size="icon" onClick={() => setModal(null)} className="rounded-full w-9 h-9 border border-border">
+                                                               <X className="w-5 h-5" />
                                                         </Button>
                                                  </div>
 
-                                                 <div className="p-10 space-y-10">
-                                                        <div className="bg-white/5 p-12 rounded-[3.5rem] border border-white/10 text-center relative overflow-hidden">
+                                                 <div className="p-6 space-y-6">
+                                                        <div className="bg-slate-50 border border-slate-100 p-8 rounded-2xl text-center relative overflow-hidden shadow-inner">
                                                                <div className={cn(
-                                                                      "absolute top-0 left-0 w-full h-1.5",
+                                                                      "absolute top-0 left-0 w-full h-1",
                                                                       modal === "payment" ? "bg-emerald-500" : "bg-rose-500"
                                                                )} />
-                                                               <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-4">Monto de Operación</p>
-                                                               <div className="flex items-center justify-center text-8xl font-black tracking-tighter text-white">
-                                                                      <span className="text-3xl text-white/20 mt-4 mr-2">$</span>
+                                                               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-2">Ingresa el monto</p>
+                                                               <div className="flex items-center justify-center text-5xl font-bold tracking-tight text-foreground">
+                                                                      <span className="text-xl text-muted-foreground/30 mr-1">$</span>
                                                                       <input
                                                                              type="number"
                                                                              autoFocus
                                                                              required
                                                                              value={amount || ''}
                                                                              onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-                                                                             className="bg-transparent border-none focus:outline-none w-64 text-center tabular-nums"
+                                                                             className="bg-transparent border-none focus:outline-none w-48 text-center tabular-nums placeholder:text-slate-200"
                                                                              placeholder="0"
                                                                       />
                                                                </div>
                                                         </div>
 
-                                                        <div className="space-y-4">
-                                                               <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Motivo / Concepto</label>
+                                                        <div className="space-y-1.5 px-1">
+                                                               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Motivo / Concepto</label>
                                                                <div className="relative group">
-                                                                      <Info className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-white/20 group-focus-within:text-white transition-colors" />
+                                                                      <Info className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                                                                       <input
                                                                              type="text"
                                                                              value={description}
                                                                              onChange={(e) => setDescription(e.target.value)}
                                                                              placeholder={modal === "payment" ? "Ej: Saldo mes de enero" : "Ej: Concepto varios"}
-                                                                             className="w-full h-20 bg-white/5 border border-white/10 rounded-[2.5rem] pl-16 pr-8 font-bold text-xl text-white focus:outline-none focus:ring-4 focus:ring-white/10 transition-all placeholder:text-white/10"
+                                                                             className="w-full h-12 bg-muted/50 border border-border rounded-xl pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm"
                                                                       />
                                                                </div>
                                                         </div>
 
-                                                        <div className="flex gap-6">
-                                                               <Button variant="ghost" className="flex-1 h-20 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-white/5 text-white/30 hover:text-white" onClick={() => setModal(null)}>Cancelar</Button>
+                                                        <div className="flex gap-3 pt-2">
+                                                               <Button variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-border" onClick={() => setModal(null)}>Cancelar</Button>
                                                                <Button
                                                                       disabled={loading || amount <= 0}
                                                                       onClick={handleAction}
-                                                                      variant="action"
-                                                                      size="xl"
                                                                       className={cn(
-                                                                             "flex-[2.5] shadow-2xl active:scale-95",
-                                                                             modal === "payment" ? "shadow-emerald-500/10" : "bg-rose-500 hover:bg-rose-600 shadow-rose-500/20"
+                                                                             "flex-[2] h-12 shadow-lg rounded-xl font-bold text-xs uppercase tracking-widest",
+                                                                             modal === "payment" ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20" : "bg-rose-600 hover:bg-rose-700 shadow-rose-600/20"
                                                                       )}
                                                                >
-                                                                      {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : (
-                                                                             <span className="flex items-center gap-3">
+                                                                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                                                                             <span className="flex items-center gap-2">
                                                                                     {modal === "payment" ? "REGISTRAR PAGO" : "CONFIRMAR CARGO"}
-                                                                                    <Check className="w-7 h-7" />
+                                                                                    <Check className="w-4 h-4" />
                                                                              </span>
                                                                       )}
                                                                </Button>
@@ -195,61 +192,62 @@ export default function ClientLedgerActions({ client }: { client: any }) {
                             )}
 
                             {modal === "summary" && (
-                                   <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-6 overflow-hidden">
+                                   <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
                                           <motion.div
                                                  initial={{ opacity: 0 }}
                                                  animate={{ opacity: 1 }}
                                                  exit={{ opacity: 0 }}
                                                  onClick={() => setModal(null)}
-                                                 className="absolute inset-0 bg-black/95 backdrop-blur-3xl"
+                                                 className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
                                           />
 
                                           <motion.div
                                                  initial={{ y: "100%" }}
                                                  animate={{ y: 0 }}
                                                  exit={{ y: "100%" }}
-                                                 className="relative w-full max-w-xl h-screen sm:h-[85vh] bg-neutral-900 sm:rounded-[4rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col text-white"
+                                                 className="relative w-full max-w-xl h-[95vh] sm:h-[85vh] bg-background sm:rounded-2xl border-t sm:border border-border shadow-2xl overflow-hidden flex flex-col"
                                           >
-                                                 <div className="p-10 pb-6 flex justify-between items-center relative z-10">
-                                                        <div className="flex items-center gap-6">
-                                                               <div className="w-16 h-16 bg-white text-black rounded-[2rem] flex items-center justify-center shadow-2xl">
-                                                                      <FileText className="w-8 h-8" />
+                                                 <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-white sticky top-0 z-20">
+                                                        <div className="flex items-center gap-4">
+                                                               <div className="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center rounded-lg shadow-sm">
+                                                                      <FileText className="w-5 h-5" />
                                                                </div>
                                                                <div>
-                                                                      <h3 className="text-3xl font-black italic uppercase tracking-tighter leading-none">Resumen Global</h3>
-                                                                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mt-3">{client.name}</p>
+                                                                      <h3 className="text-lg font-bold text-foreground">Estado de Cuenta</h3>
+                                                                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">{client.name}</p>
                                                                </div>
                                                         </div>
-                                                        <Button variant="ghost" size="icon" onClick={() => setModal(null)} className="rounded-full w-14 h-14 hover:bg-white/5 border border-white/5">
-                                                               <X className="w-8 h-8" />
+                                                        <Button variant="ghost" size="icon" onClick={() => setModal(null)} className="rounded-full w-9 h-9 border border-border">
+                                                               <X className="w-5 h-5" />
                                                         </Button>
                                                  </div>
 
-                                                 <div className="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar relative z-10">
-                                                        <div className="flex flex-col sm:flex-row justify-between gap-8 p-10 bg-white/5 rounded-[3.5rem] border border-white/10 relative overflow-hidden group">
-                                                               <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
-                                                               <div className="relative z-10">
-                                                                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-2">Saldo a la Fecha</p>
-                                                                      <div className="text-7xl font-black tracking-tighter text-white tabular-nums">${client.balance.toLocaleString()}</div>
+                                                 <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                               <div className="p-5 bg-white border border-border rounded-xl shadow-sm relative overflow-hidden group">
+                                                                      <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
+                                                                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Saldo a la Fecha</p>
+                                                                      <div className="text-4xl font-bold tracking-tight text-foreground tabular-nums">${client.balance.toLocaleString()}</div>
                                                                </div>
-                                                               <div className="relative z-10 sm:text-right flex flex-col justify-end">
-                                                                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500 mb-2">Envases</p>
-                                                                      <div className="text-4xl font-black tracking-tighter text-white tabular-nums">{client.bottlesBalance} <span className="text-xs opacity-30">UNID.</span></div>
+                                                               <div className="p-5 bg-white border border-border rounded-xl shadow-sm relative overflow-hidden">
+                                                                      <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
+                                                                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Envases</p>
+                                                                      <div className="text-4xl font-bold tracking-tight text-foreground tabular-nums">{client.bottlesBalance} <span className="text-xs text-muted-foreground/40 font-medium">U.</span></div>
                                                                </div>
                                                         </div>
 
-                                                        <div className="space-y-6">
-                                                               <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 px-6">Historial de Operaciones</h4>
-                                                               <div className="grid grid-cols-1 gap-4">
+                                                        <div className="space-y-3">
+                                                               <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-1">Últimos Movimientos</h4>
+                                                               <div className="space-y-2">
                                                                       {client.transactions?.slice(0, 15).map((tx: any) => (
-                                                                             <div key={tx.id} className="flex justify-between items-center p-7 bg-white/5 rounded-[2.5rem] border border-white/5 hover:border-white/20 transition-all group">
+                                                                             <div key={tx.id} className="flex justify-between items-center p-4 bg-white rounded-xl border border-border shadow-sm group hover:border-primary/50 transition-all">
                                                                                     <div className="min-w-0">
-                                                                                           <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-2">{new Date(tx.createdAt).toLocaleDateString()}</div>
-                                                                                           <div className="font-black text-2xl text-white group-hover:translate-x-2 transition-transform tracking-tight">{tx.concept}</div>
+                                                                                           <div className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest mb-0.5">{new Date(tx.createdAt).toLocaleDateString()}</div>
+                                                                                           <div className="font-bold text-base text-foreground truncate">{tx.concept}</div>
                                                                                     </div>
                                                                                     <div className={cn(
-                                                                                           "font-black text-3xl tracking-tighter text-right tabular-nums",
-                                                                                           tx.type === "DEBIT" ? "text-rose-500" : "text-emerald-500"
+                                                                                           "font-bold text-xl tracking-tight text-right tabular-nums",
+                                                                                           tx.type === "DEBIT" ? "text-rose-600" : "text-emerald-600"
                                                                                     )}>
                                                                                            {tx.type === "DEBIT" ? "+" : "-"}${tx.amount.toLocaleString()}
                                                                                     </div>
@@ -259,14 +257,14 @@ export default function ClientLedgerActions({ client }: { client: any }) {
                                                         </div>
                                                  </div>
 
-                                                 <div className="p-10 bg-black/40 border-t border-white/10 relative z-20">
+                                                 <div className="p-4 bg-slate-50 border-t border-border sticky bottom-0 z-20">
                                                         <Button
                                                                onClick={handleWhatsAppSummary}
-                                                               className="w-full h-24 rounded-[3rem] bg-[#25D366] hover:bg-[#20bd5a] text-white font-black uppercase tracking-[0.2em] text-base shadow-2xl transition-all active:scale-95 border-none group"
+                                                               className="w-full h-14 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold uppercase tracking-widest text-sm shadow-lg shadow-emerald-500/20 transition-all active:scale-95 border-none group"
                                                         >
-                                                               <Share2 className="w-7 h-7 mr-4 group-hover:rotate-12 transition-transform" />
-                                                               ENVIAR RESUMEN POR WHATSAPP
-                                                               <ArrowRight className="w-6 h-6 ml-4 group-hover:translate-x-2 transition-transform" />
+                                                               <Share2 className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform" />
+                                                               COMPARTIR POR WHATSAPP
+                                                               <ArrowRight className="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" />
                                                         </Button>
                                                  </div>
                                           </motion.div>

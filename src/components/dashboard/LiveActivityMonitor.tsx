@@ -28,15 +28,15 @@ export default function LiveActivityMonitor() {
        const [isLive, setIsLive] = useState(true);
 
        return (
-              <Card className="rounded-2xl border border-border bg-card overflow-hidden flex flex-col h-[600px] shadow-sm">
+              <Card className="rounded-xl border border-border bg-white overflow-hidden flex flex-col shadow-sm" style={{ maxHeight: '320px' }}>
                      {/* Header */}
-                     <div className="p-6 border-b border-border bg-muted/30 flex items-center justify-between">
+                     <div className="px-4 py-3 border-b border-border flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                   <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                                          <Activity className="w-5 h-5" />
+                                   <div className="w-7 h-7 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                                          <Activity className="w-3.5 h-3.5" />
                                    </div>
                                    <div>
-                                          <h3 className="font-semibold text-base leading-none mb-1">Actividad Reciente</h3>
+                                          <h3 className="font-semibold text-xs leading-none mb-1">Actividad</h3>
                                           <div className="flex items-center gap-1.5">
                                                  <div className={cn("w-1.5 h-1.5 rounded-full", isLive ? "bg-emerald-500 animate-pulse" : "bg-slate-400")} />
                                                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
@@ -55,14 +55,14 @@ export default function LiveActivityMonitor() {
                      </div>
 
                      {/* Activities List */}
-                     <div className="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar">
+                     <div className="flex-1 overflow-y-auto p-2 space-y-0.5 no-scrollbar">
                             <AnimatePresence initial={false}>
                                    {activities.map((activity) => (
                                           <motion.div
                                                  key={activity.id}
                                                  initial={{ opacity: 0, y: 10 }}
                                                  animate={{ opacity: 1, y: 0 }}
-                                                 className="group flex items-center gap-4 p-4 hover:bg-muted/50 rounded-xl border border-transparent hover:border-border transition-all cursor-pointer"
+                                                 className="group flex items-center gap-3 p-2.5 hover:bg-muted/50 rounded-lg border border-transparent hover:border-border transition-all cursor-pointer"
                                           >
                                                  <div className={cn(
                                                         "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border border-border/50 bg-background",
@@ -93,7 +93,7 @@ export default function LiveActivityMonitor() {
                      </div>
 
                      {/* Footer */}
-                     <div className="p-4 border-t border-border bg-muted/10">
+                     <div className="p-2 border-t border-border">
                             <div className="relative">
                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                                    <input

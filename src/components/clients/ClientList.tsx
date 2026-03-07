@@ -62,37 +62,37 @@ export default function ClientList({ initialClients }: { initialClients: any[] }
                      <div className="flex flex-col gap-3">
                             {/* Search Bar */}
                             <div className="relative group">
-                                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-white transition-colors" />
+                                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                                    <input
                                           type="text"
-                                          placeholder="Filtrar por nombre, calle..."
+                                          placeholder="Buscar clientes por nombre, dirección..."
                                           defaultValue={currentSearch}
                                           onChange={(e) => handleSearch(e.target.value)}
-                                          className="w-full h-14 bg-neutral-900/40 backdrop-blur-3xl border border-white/5 rounded-2xl pl-12 pr-4 font-bold text-base text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all placeholder:text-white/20"
+                                          className="w-full h-11 bg-white border border-border rounded-xl pl-10 pr-4 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder:text-muted-foreground/60 shadow-sm"
                                    />
                             </div>
 
                             {/* Controls Row */}
-                            <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
+                            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
                                    {/* View Toggle */}
-                                   <div className="flex bg-black/40 p-1.5 rounded-xl border border-white/5 shadow-xl backdrop-blur-md shrink-0">
+                                   <div className="flex bg-muted p-1 rounded-lg border border-border shrink-0">
                                           <button
                                                  onClick={() => setViewMode("grid")}
                                                  className={cn(
-                                                        "p-2.5 rounded-lg transition-all duration-300",
-                                                        viewMode === "grid" ? "bg-white text-black shadow-lg" : "text-white/30 hover:text-white/60"
+                                                        "p-1.5 rounded-md transition-all duration-200",
+                                                        viewMode === "grid" ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
                                                  )}
                                           >
-                                                 <LayoutGrid className="w-4 h-4" />
+                                                 <LayoutGrid className="w-3.5 h-3.5" />
                                           </button>
                                           <button
                                                  onClick={() => setViewMode("table")}
                                                  className={cn(
-                                                        "p-2.5 rounded-lg transition-all duration-300",
-                                                        viewMode === "table" ? "bg-white text-black shadow-lg" : "text-white/30 hover:text-white/60"
+                                                        "p-1.5 rounded-md transition-all duration-200",
+                                                        viewMode === "table" ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
                                                  )}
                                           >
-                                                 <List className="w-4 h-4" />
+                                                 <List className="w-3.5 h-3.5" />
                                           </button>
                                    </div>
 
@@ -100,16 +100,16 @@ export default function ClientList({ initialClients }: { initialClients: any[] }
                                    <button
                                           onClick={toggleSort}
                                           className={cn(
-                                                 "h-10 px-5 rounded-xl border font-black text-[9px] uppercase tracking-widest transition-all duration-300 whitespace-nowrap shrink-0",
+                                                 "h-9 px-4 rounded-lg border text-[10px] font-bold uppercase tracking-wider transition-all duration-200 whitespace-nowrap shrink-0",
                                                  currentSort === "debt"
-                                                        ? "bg-rose-500 border-rose-500 text-white shadow-rose-500/20"
-                                                        : "bg-white/5 border-white/10 text-white/40 hover:text-white hover:bg-white/10"
+                                                        ? "bg-rose-50 border-rose-200 text-rose-600 shadow-sm"
+                                                        : "bg-white border-border text-muted-foreground hover:bg-muted hover:text-foreground"
                                           )}
                                    >
                                           {currentSort === "debt" ? "▼ Mayor Deuda" : "A–Z Nombre"}
                                    </button>
 
-                                   <div className="ml-auto shrink-0 text-[9px] font-black uppercase tracking-widest text-white/20">
+                                   <div className="ml-auto shrink-0 text-[10px] font-medium text-muted-foreground/60">
                                           {filteredClients.length} cliente{filteredClients.length !== 1 ? "s" : ""}
                                    </div>
                             </div>
@@ -121,20 +121,20 @@ export default function ClientList({ initialClients }: { initialClients: any[] }
                                    <motion.div
                                           initial={{ opacity: 0 }}
                                           animate={{ opacity: 1 }}
-                                          className="py-20 text-center rounded-[2rem] bg-neutral-900/20 border border-dashed border-white/10"
+                                          className="py-16 text-center rounded-xl bg-white border border-dashed border-border"
                                    >
-                                          <Users className="w-12 h-12 mx-auto mb-4 text-white/5" />
-                                          <p className="font-black uppercase tracking-[0.25em] text-white/20 text-sm">Sin resultados</p>
+                                          <Users className="w-10 h-10 mx-auto mb-3 text-muted-foreground/20" />
+                                          <p className="font-semibold text-muted-foreground/40 text-sm italic">No se encontraron clientes</p>
                                    </motion.div>
                             ) : viewMode === "grid" ? (
-                                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                           {filteredClients.map((client, idx) => (
                                                  <motion.div
                                                         key={client.id}
                                                         layout
-                                                        initial={{ opacity: 0, scale: 0.95 }}
+                                                        initial={{ opacity: 0, scale: 0.98 }}
                                                         animate={{ opacity: 1, scale: 1 }}
-                                                        transition={{ duration: 0.3, delay: idx * 0.03 }}
+                                                        transition={{ duration: 0.2, delay: idx * 0.02 }}
                                                  >
                                                         <ClientGridCard client={client} />
                                                  </motion.div>
@@ -142,46 +142,46 @@ export default function ClientList({ initialClients }: { initialClients: any[] }
                                    </div>
                             ) : (
                                    /* Table view - scrollable on mobile */
-                                   <div className="border border-white/5 rounded-[2rem] overflow-hidden bg-neutral-950/40 backdrop-blur-3xl shadow-2xl">
+                                   <div className="border border-border rounded-xl overflow-hidden bg-white shadow-sm">
                                           <div className="overflow-x-auto">
-                                                 <table className="w-full text-left min-w-[500px]">
-                                                        <thead className="bg-white/5">
-                                                               <tr>
-                                                                      <th className="p-4 sm:p-6 text-[9px] font-black text-white/30 uppercase tracking-[0.35em]">Cliente</th>
-                                                                      <th className="p-4 sm:p-6 text-[9px] font-black text-white/30 uppercase tracking-[0.35em]">Balance</th>
-                                                                      <th className="p-4 sm:p-6 text-[9px] font-black text-white/30 uppercase tracking-[0.35em] hidden sm:table-cell">Envases</th>
-                                                                      <th className="p-4 sm:p-6 text-right"></th>
+                                                 <table className="w-full text-left">
+                                                        <thead>
+                                                               <tr className="bg-muted/50 border-b border-border">
+                                                                      <th className="p-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                                                                      <th className="p-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Balance</th>
+                                                                      <th className="p-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider hidden sm:table-cell">Envases</th>
+                                                                      <th className="p-4 text-right"></th>
                                                                </tr>
                                                         </thead>
-                                                        <tbody className="divide-y divide-white/5">
+                                                        <tbody className="divide-y divide-border">
                                                                {filteredClients.map((client) => (
-                                                                      <tr key={client.id} className="group hover:bg-white/[0.02] transition-colors">
-                                                                             <td className="p-4 sm:p-6">
+                                                                      <tr key={client.id} className="group hover:bg-muted/30 transition-colors">
+                                                                             <td className="p-4">
                                                                                     <Link href={`/clientes/${client.id}`} className="block">
-                                                                                           <div className="font-black text-base sm:text-xl text-white italic group-hover:translate-x-2 transition-transform duration-300">{client.name}</div>
-                                                                                           <div className="text-[9px] uppercase tracking-[0.2em] text-white/20 flex items-center gap-1.5 mt-1">
-                                                                                                  <MapPin className="w-2.5 h-2.5 text-white/40 shrink-0" />
+                                                                                           <div className="font-semibold text-sm text-foreground">{client.name}</div>
+                                                                                           <div className="text-[10px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                                                                                                  <MapPin className="w-3 h-3 shrink-0 opacity-60" />
                                                                                                   <span className="truncate max-w-[140px]">{client.address}</span>
                                                                                            </div>
                                                                                     </Link>
                                                                              </td>
-                                                                             <td className="p-4 sm:p-6">
+                                                                             <td className="p-4">
                                                                                     <div className={cn(
-                                                                                           "text-lg sm:text-2xl font-black tracking-tighter tabular-nums",
-                                                                                           client.balance > 0 ? "text-rose-500" : "text-emerald-500"
+                                                                                           "text-sm font-bold tabular-nums",
+                                                                                           client.balance > 0 ? "text-rose-600" : "text-emerald-600"
                                                                                     )}>
                                                                                            ${client.balance.toLocaleString()}
                                                                                     </div>
                                                                              </td>
-                                                                             <td className="p-4 sm:p-6 hidden sm:table-cell">
-                                                                                    <div className="text-lg font-black text-white/40 tracking-tighter">
-                                                                                           {client.bottlesBalance} <span className="text-[9px] uppercase tracking-widest opacity-30">unid</span>
+                                                                             <td className="p-4 hidden sm:table-cell">
+                                                                                    <div className="text-sm font-medium text-muted-foreground">
+                                                                                           {client.bottlesBalance} <span className="text-[10px] opacity-60">unid</span>
                                                                                     </div>
                                                                              </td>
-                                                                             <td className="p-4 sm:p-6 text-right">
+                                                                             <td className="p-4 text-right">
                                                                                     <Link href={`/clientes/${client.id}`}>
-                                                                                           <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full border border-white/5 hover:bg-white hover:text-black transition-all">
-                                                                                                  <ChevronRight className="w-4 h-4" />
+                                                                                           <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full border border-border hover:bg-primary/10 hover:text-primary transition-all">
+                                                                                                  <ChevronRight className="w-3.5 h-3.5" />
                                                                                            </Button>
                                                                                     </Link>
                                                                              </td>
@@ -203,55 +203,51 @@ function ClientGridCard({ client }: any) {
        return (
               <Link href={`/clientes/${client.id}`} className="block h-full group">
                      <div className={cn(
-                            "p-5 sm:p-7 h-full rounded-[2rem] sm:rounded-[2.5rem] border bg-neutral-900/40 backdrop-blur-3xl transition-all duration-500 hover:border-white/10 flex flex-col justify-between overflow-hidden relative",
-                            hasDebt ? "border-rose-500/20" : "border-white/5"
+                            "p-4 sm:p-5 h-full rounded-xl border bg-white transition-all duration-200 card-shadow hover:card-shadow-md flex flex-col justify-between overflow-hidden relative",
+                            hasDebt ? "border-rose-100 ring-1 ring-rose-50/50" : "border-border"
                      )}>
                             {/* Header */}
-                            <div className="flex justify-between items-start mb-6 relative z-10">
-                                   <div className="space-y-2 min-w-0 flex-1 pr-3">
-                                          <div className="flex items-center gap-2 flex-wrap">
-                                                 <div className={cn("w-1.5 h-1.5 rounded-full shrink-0", hasDebt ? "bg-rose-500" : "bg-emerald-500")} />
-                                                 <span className="text-[9px] font-black uppercase tracking-[0.25em] text-white/20">#{client.id}</span>
+                            <div className="flex justify-between items-start mb-4 relative z-10">
+                                   <div className="space-y-1.5 min-w-0 flex-1 pr-2">
+                                          <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                                                 <div className={cn("w-1.5 h-1.5 rounded-full shrink-0", hasDebt ? "bg-rose-500 animate-pulse" : "bg-emerald-500")} />
+                                                 <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider">#{client.id}</span>
                                                  <ClientTagBadge tag={client.tag} size="sm" />
                                           </div>
-                                          <h3 className="text-xl sm:text-2xl font-black tracking-tighter text-white uppercase italic leading-tight group-hover:scale-[1.02] origin-left transition-transform duration-300">
+                                          <h3 className="text-base sm:text-lg font-bold text-foreground leading-tight truncate">
                                                  {client.name}
                                           </h3>
-                                          <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.15em] text-white/30">
-                                                 <MapPin className="w-3 h-3 text-primary shrink-0" />
+                                          <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground lowercase tracking-tight">
+                                                 <MapPin className="w-3 h-3 text-primary shrink-0 opacity-70" />
                                                  <span className="truncate">{client.address}</span>
                                           </div>
                                    </div>
-                                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-white/40 group-hover:bg-white group-hover:text-black transition-all shrink-0">
-                                          <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                                   <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shrink-0">
+                                          <ArrowUpRight className="w-4 h-4" />
                                    </div>
                             </div>
 
                             {/* Stats */}
-                            <div className="grid grid-cols-2 gap-3 relative z-10">
+                            <div className="grid grid-cols-2 gap-2 relative z-10">
                                    <div className={cn(
-                                          "p-4 rounded-xl border flex flex-col justify-between transition-all duration-500",
-                                          hasDebt ? "bg-rose-500/10 border-rose-500/20 text-rose-500" : "bg-white/5 border-white/10 text-white/60"
+                                          "p-3 rounded-lg border flex flex-col justify-between transition-all duration-200",
+                                          hasDebt ? "bg-rose-50/50 border-rose-100 text-rose-600" : "bg-muted border-border text-foreground"
                                    )}>
-                                          <DollarSign className="w-4 h-4 mb-3 opacity-40" />
+                                          <DollarSign className="w-3.5 h-3.5 mb-2 opacity-50" />
                                           <div>
-                                                 <div className="text-[8px] font-black uppercase tracking-widest opacity-40 mb-1">Saldo</div>
-                                                 <div className="text-lg font-black tracking-tighter tabular-nums">${client.balance.toLocaleString()}</div>
+                                                 <div className="text-[8px] font-bold uppercase tracking-widest opacity-60 mb-0.5">Saldo</div>
+                                                 <div className="text-base font-bold tracking-tight tabular-nums">${client.balance.toLocaleString()}</div>
                                           </div>
                                    </div>
-                                   <div className="p-4 rounded-xl border border-white/10 bg-white/5 text-white/60 flex flex-col justify-between">
-                                          <Package className="w-4 h-4 mb-3 opacity-40" />
+                                   <div className="p-3 rounded-lg border border-border bg-muted/60 text-foreground flex flex-col justify-between">
+                                          <Package className="w-3.5 h-3.5 mb-2 opacity-50" />
                                           <div>
-                                                 <div className="text-[8px] font-black uppercase tracking-widest opacity-40 mb-1">Envases</div>
-                                                 <div className="text-lg font-black tracking-tighter tabular-nums">{client.bottlesBalance}</div>
+                                                 <div className="text-[8px] font-bold uppercase tracking-widest opacity-60 mb-0.5">Envases</div>
+                                                 <div className="text-base font-bold tracking-tight tabular-nums">{client.bottlesBalance}</div>
                                           </div>
                                    </div>
                             </div>
-
-                            {/* Gloss */}
-                            <div className="absolute top-0 -left-full w-1/2 h-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent skew-x-12 transition-all duration-700 group-hover:left-[150%]" />
                      </div>
               </Link>
        );
 }
-

@@ -25,74 +25,78 @@ export default function ProductList({ initialProducts }: { initialProducts: any[
        };
 
        return (
-              <div className="space-y-8">
+              <div className="space-y-4">
                      {/* Search */}
-                     <div className="relative group max-w-md">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                            <input
-                                   type="text"
-                                   placeholder="Buscar por nombre o código..."
-                                   value={search}
-                                   onChange={(e) => setSearch(e.target.value)}
-                                   className="w-full bg-card/60 backdrop-blur-xl border border-white/10 rounded-2xl h-14 pl-12 pr-4 font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-xl"
-                            />
+                     <div className="flex items-center gap-2 max-w-sm">
+                            <div className="relative group flex-1">
+                                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+                                   <input
+                                          type="text"
+                                          placeholder="Buscar productos..."
+                                          value={search}
+                                          onChange={(e) => setSearch(e.target.value)}
+                                          className="w-full h-11 bg-white border border-border rounded-xl pl-10 pr-4 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60 shadow-sm"
+                                   />
+                            </div>
+                            <div className="px-3 h-11 rounded-xl bg-muted border border-border flex items-center justify-center shrink-0">
+                                   <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{filtered.length}</span>
+                            </div>
                      </div>
 
                      {/* Grid */}
-                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                             {filtered.length === 0 ? (
-                                   <div className="col-span-full py-20 text-center bg-card/40 border border-white/10 rounded-[2.5rem] glass-card opacity-50">
-                                          No se encontraron productos.
+                                   <div className="col-span-full py-16 text-center bg-white border border-dashed border-border rounded-xl">
+                                          <Package className="w-10 h-10 mx-auto mb-3 text-muted-foreground/20" />
+                                          <p className="font-semibold text-muted-foreground/40 text-sm italic">No hay productos disponibles</p>
                                    </div>
                             ) : (
                                    filtered.map((product, idx) => (
                                           <Card
                                                  key={product.id}
-                                                 className="group overflow-hidden rounded-[2.5rem] border border-white/5 bg-card hover:border-primary/20 transition-all hover:scale-[1.02] animate-fade-in-up shadow-2xl shadow-black/5"
+                                                 className="group overflow-hidden rounded-xl border border-border bg-white hover:border-primary/40 transition-all card-shadow hover:card-shadow-md animate-fade-in-up"
                                                  style={{ animationDelay: `${idx * 0.05}s` }}
                                           >
-                                                 <div className="p-8 pb-4">
-                                                        <div className="flex justify-between items-start mb-6">
+                                                 <div className="p-5">
+                                                        <div className="flex justify-between items-start mb-4">
                                                                <div className="space-y-1">
-                                                                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-3 py-1 rounded-full">
+                                                                      <span className="text-[9px] font-bold uppercase tracking-widest text-primary bg-primary/5 px-2 py-0.5 rounded-md border border-primary/10">
                                                                              {product.code}
                                                                       </span>
-                                                                      <h3 className="text-2xl font-black tracking-tight pt-2 group-hover:text-primary transition-colors">
+                                                                      <h3 className="text-base font-bold text-foreground leading-tight pt-1">
                                                                              {product.name}
                                                                       </h3>
                                                                </div>
                                                                {product.isReturnable ? (
-                                                                      <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-2xl flex items-center justify-center shrink-0" title="Retornable">
-                                                                             <Droplets className="w-6 h-6" />
+                                                                      <div className="w-8 h-8 bg-amber-50 text-amber-500 rounded-lg flex items-center justify-center shrink-0 border border-amber-100" title="Retornable">
+                                                                             <Droplets className="w-4 h-4" />
                                                                       </div>
                                                                ) : (
-                                                                      <div className="w-12 h-12 bg-blue-500/20 text-blue-500 rounded-2xl flex items-center justify-center shrink-0" title="Descartable">
-                                                                             <FlaskConical className="w-6 h-6" />
+                                                                      <div className="w-8 h-8 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center shrink-0 border border-blue-100" title="Descartable">
+                                                                             <FlaskConical className="w-4 h-4" />
                                                                       </div>
                                                                )}
                                                         </div>
 
-                                                        <div className="text-4xl font-black tracking-tighter mb-6">
-                                                               ${product.price.toLocaleString()}
+                                                        <div className="text-2xl font-bold text-foreground tracking-tight mb-4 tabular-nums">
+                                                               <span className="text-xs text-muted-foreground font-medium mr-0.5 opacity-50">$</span>{product.price.toLocaleString()}
                                                         </div>
-                                                 </div>
 
-                                                 <div className="px-8 pb-8 flex items-center justify-between border-t border-white/5 pt-6 bg-muted/5">
-                                                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">
-                                                               {product.isReturnable ? "Sujeto a devolución" : "Envase descartable"}
-                                                        </span>
-                                                        <div className="flex gap-2">
-                                                               <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5">
-                                                                      <Edit className="w-5 h-5" />
-                                                               </Button>
-                                                               <Button
-                                                                      variant="ghost"
-                                                                      size="icon"
-                                                                      onClick={() => handleDelete(product.id)}
-                                                                      className="h-10 w-10 rounded-xl hover:bg-rose-500/10 hover:text-rose-500"
-                                                               >
-                                                                      <Trash2 className="w-5 h-5" />
-                                                               </Button>
+                                                        <div className="flex items-center justify-between pt-4 border-t border-border">
+                                                               <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/50 italic">
+                                                                      {product.isReturnable ? "Sujeto a devolución" : "Envase descartable"}
+                                                               </span>
+                                                               <div className="flex gap-1.5">
+                                                                      <button className="h-8 w-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground hover:bg-primary/5 hover:border-primary/20 hover:text-primary transition-all active:scale-95">
+                                                                             <Edit className="w-3.5 h-3.5" />
+                                                                      </button>
+                                                                      <button
+                                                                             onClick={() => handleDelete(product.id)}
+                                                                             className="h-8 w-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground hover:bg-rose-50 hover:border-rose-100 hover:text-rose-500 transition-all active:scale-95"
+                                                                      >
+                                                                             <Trash2 className="w-3.5 h-3.5" />
+                                                                      </button>
+                                                               </div>
                                                         </div>
                                                  </div>
                                           </Card>
