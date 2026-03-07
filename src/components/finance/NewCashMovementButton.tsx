@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function NewCashMovementButton() {
        const [isOpen, setIsOpen] = useState(false);
        const [loading, setLoading] = useState(false);
+       const [idempotencyKey, setIdempotencyKey] = useState("");
        const [formData, setFormData] = useState({
               amount: 0,
               type: "INCOME",
@@ -19,27 +20,26 @@ export default function NewCashMovementButton() {
               paymentMethod: "CASH"
        });
 
+       const openModal = () => {
+              setIsOpen(true);
+              setIdempotencyKey(`cash-${Date.now()}`);
+       };
+
        const handleSubmit = async (e: React.FormEvent) => {
               e.preventDefault();
               if (formData.amount <= 0 || !formData.concept) {
-                     toast.error("Importe y concepto son obligatorios", {
-                            style: { borderRadius: '1rem', fontWeight: '800' }
-                     });
+                     toast.error("Importe y concepto son obligatorios");
                      return;
               }
 
               setLoading(true);
-              const result = await createCashMovement(formData);
+              const result = await createCashMovement({ ...formData, idempotencyKey });
               if (result.success) {
-                     toast.success("¡Movimiento registrado!", {
-                            style: { borderRadius: '1rem', fontWeight: '800' }
-                     });
+                     toast.success("¡Movimiento registrado!");
                      setIsOpen(false);
                      setFormData({ amount: 0, type: "INCOME", concept: "", paymentMethod: "CASH" });
               } else {
-                     toast.error("Error: " + result.error, {
-                            style: { borderRadius: '1rem', fontWeight: '800' }
-                     });
+                     toast.error("Error: " + result.error);
               }
               setLoading(false);
        };
@@ -47,7 +47,7 @@ export default function NewCashMovementButton() {
        return (
               <>
                      <Button
-                            onClick={() => setIsOpen(true)}
+                            onClick={openModal}
                             className="h-14 bg-primary text-white shadow-xl shadow-primary/25 rounded-2xl px-10 flex items-center gap-3 active:scale-95 transition-all text-sm font-black uppercase tracking-widest"
                      >
                             <Plus className="w-5.5 h-5.5 stroke-[3px]" />
@@ -57,7 +57,6 @@ export default function NewCashMovementButton() {
                      <AnimatePresence>
                             {isOpen && (
                                    <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 lg:p-10">
-                                          {/* Backdrop Overlay */}
                                           <motion.div
                                                  initial={{ opacity: 0 }}
                                                  animate={{ opacity: 1 }}
@@ -66,7 +65,6 @@ export default function NewCashMovementButton() {
                                                  className="absolute inset-0 bg-black/40 backdrop-blur-[8px]"
                                           />
 
-                                          {/* iOS Style Modal Container */}
                                           <motion.div
                                                  initial={{ y: "100%" }}
                                                  animate={{ y: 0 }}
@@ -74,7 +72,6 @@ export default function NewCashMovementButton() {
                                                  transition={{ type: "spring", damping: 30, stiffness: 300, mass: 1 }}
                                                  className="relative w-full max-w-xl h-[92vh] lg:h-auto bg-white rounded-t-[3rem] lg:rounded-[3rem] shadow-[0_-25px_80px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden"
                                           >
-                                                 {/* Swipe Handle & Header */}
                                                  <div className="flex flex-col items-center pt-3 pb-8 sticky top-0 bg-white/95 backdrop-blur-md z-30">
                                                         <div className="w-12 h-1.5 bg-slate-100 rounded-full mb-8" />
                                                         <div className="w-full px-10 flex items-center justify-between">
@@ -93,7 +90,6 @@ export default function NewCashMovementButton() {
 
                                                  <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-10 pb-32">
                                                         <div className="space-y-10">
-                                                               {/* Amount Input Section */}
                                                                <div className="bg-slate-50/50 border-2 border-slate-50 p-12 lg:p-16 rounded-[3rem] text-center relative overflow-hidden shadow-inner group">
                                                                       <div className="absolute top-0 left-0 w-full h-1.5 bg-primary/20 group-focus-within:bg-primary transition-colors" />
                                                                       <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 mb-6 group-focus-within:text-primary transition-colors">Importe a Registrar ($)</p>
@@ -110,7 +106,6 @@ export default function NewCashMovementButton() {
                                                                       </div>
                                                                </div>
 
-                                                               {/* Selectors Area */}
                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                                       <div className="space-y-3 px-1">
                                                                              <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Dirección del Flujo</label>
@@ -165,7 +160,6 @@ export default function NewCashMovementButton() {
                                                                       </div>
                                                                </div>
 
-                                                               {/* Concept Info Section */}
                                                                <div className="space-y-4 pt-4">
                                                                       <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 px-2 flex items-center gap-2">
                                                                              <ReceiptText className="w-4 h-4" /> Concepto Detallado
@@ -184,7 +178,6 @@ export default function NewCashMovementButton() {
                                                         </div>
                                                  </form>
 
-                                                 {/* Action Bar Sticky iOS Style */}
                                                  <div className="absolute bottom-0 left-0 right-0 p-10 pt-4 pb-14 bg-white/90 backdrop-blur-xl border-t border-slate-100 z-40 flex gap-4">
                                                         <Button
                                                                type="button"

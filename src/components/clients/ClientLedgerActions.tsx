@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Banknote, PlusCircle, X, Loader2, FileText, Share2, ArrowUpRight, ArrowDownLeft, Info, Check, ArrowRight, Wallet, History, MessageCircle } from "lucide-react";
+import { Banknote, PlusCircle, X, Loader2, FileText, Check, MessageCircle, History, Info } from "lucide-react";
 import { registerPayment, registerCharge } from "@/actions/clients";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -14,36 +14,43 @@ export default function ClientLedgerActions({ client }: { client: any }) {
        const [loading, setLoading] = useState(false);
        const [amount, setAmount] = useState<number>(0);
        const [description, setDescription] = useState("");
+       const [paymentMethod, setPaymentMethod] = useState<"CASH" | "TRANSFER">("CASH");
+       const [idempotencyKey, setIdempotencyKey] = useState("");
+
+       const openModal = (type: "payment" | "charge" | "summary") => {
+              setModal(type);
+              if (type !== "summary") {
+                     setIdempotencyKey(`${type}-${client.id}-${Date.now()}`);
+              }
+       };
 
        const handleAction = async () => {
               if (amount <= 0) {
-                     toast.error("El monto debe ser mayor a 0", {
-                            style: { borderRadius: '1rem', fontWeight: '800' }
-                     });
+                     toast.error("El monto debe ser mayor a 0");
                      return;
               }
 
               setLoading(true);
               try {
                      const action = modal === "payment" ? registerPayment : registerCharge;
-                     const result = await action(client.id, amount, description);
+                     const result = await action({
+                            clientId: client.id,
+                            amount,
+                            description: description || undefined,
+                            paymentMethod: modal === "payment" ? paymentMethod : undefined,
+                            idempotencyKey
+                     });
 
                      if (result.success) {
-                            toast.success(modal === "payment" ? "¡Pago registrado con éxito!" : "Cargo registrado", {
-                                   style: { borderRadius: '1rem', fontWeight: '800' }
-                            });
+                            toast.success(modal === "payment" ? "¡Pago registrado con éxito!" : "Cargo registrado");
                             setModal(null);
                             setAmount(0);
                             setDescription("");
                      } else {
-                            toast.error("Error: " + result.error, {
-                                   style: { borderRadius: '1rem', fontWeight: '800' }
-                            });
+                            toast.error("Error: " + result.error);
                      }
               } catch (e) {
-                     toast.error("Error en la conexión", {
-                            style: { borderRadius: '1rem', fontWeight: '800' }
-                     });
+                     toast.error("Error en la conexión");
               } finally {
                      setLoading(false);
               }
@@ -72,9 +79,7 @@ export default function ClientLedgerActions({ client }: { client: any }) {
 
               const url = `https://wa.me/${client.phone?.replace(/[^0-9]/g, '') || ''}?text=${encodeURIComponent(message)}`;
               window.open(url, '_blank');
-              toast.success("Resumen compartido", {
-                     style: { borderRadius: '1rem', fontWeight: '800' }
-              });
+              toast.success("Resumen compartido");
        };
 
        return (
@@ -82,7 +87,7 @@ export default function ClientLedgerActions({ client }: { client: any }) {
                      <div className="flex flex-wrap gap-4 w-full md:w-auto">
                             <Button
                                    variant="ghost"
-                                   onClick={() => setModal("summary")}
+                                   onClick={() => openModal("summary")}
                                    className="h-14 flex-1 md:flex-none px-6 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 hover:bg-slate-100 font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all"
                             >
                                    <FileText className="w-5 h-5 mr-3 opacity-40" />
@@ -90,14 +95,14 @@ export default function ClientLedgerActions({ client }: { client: any }) {
                             </Button>
                             <Button
                                    variant="ghost"
-                                   onClick={() => setModal("charge")}
+                                   onClick={() => openModal("charge")}
                                    className="h-14 flex-1 md:flex-none px-6 rounded-2xl bg-rose-50 border border-rose-100/50 text-rose-500 hover:bg-rose-100 font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all"
                             >
                                    <PlusCircle className="w-5 h-5 mr-3" />
                                    Cargar Importe
                             </Button>
                             <Button
-                                   onClick={() => setModal("payment")}
+                                   onClick={() => openModal("payment")}
                                    className="h-14 flex-1 md:flex-none px-10 rounded-2xl bg-primary text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-primary/25 active:scale-95 transition-all"
                             >
                                    <Banknote className="w-5 h-5 mr-3" />
@@ -106,7 +111,6 @@ export default function ClientLedgerActions({ client }: { client: any }) {
                      </div>
 
                      <AnimatePresence>
-                            {/* Payment / Charge Modal */}
                             {(modal === "payment" || modal === "charge") && (
                                    <div className="fixed inset-0 z-[300] flex items-end sm:items-center justify-center p-0 lg:p-10">
                                           <motion.div
@@ -124,7 +128,6 @@ export default function ClientLedgerActions({ client }: { client: any }) {
                                                  transition={{ type: "spring", damping: 30, stiffness: 300 }}
                                                  className="relative w-full max-w-xl bg-white rounded-t-[3rem] lg:rounded-[3rem] shadow-[0_-25px_80px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden"
                                           >
-                                                 {/* Modal Header */}
                                                  <div className="flex flex-col items-center pt-3 pb-8 sticky top-0 bg-white/95 backdrop-blur-md z-30">
                                                         <div className="w-12 h-1.5 bg-slate-100 rounded-full mb-8" />
                                                         <div className="w-full px-10 flex items-center justify-between">
@@ -145,7 +148,6 @@ export default function ClientLedgerActions({ client }: { client: any }) {
 
                                                  <form onSubmit={(e) => { e.preventDefault(); handleAction(); }} className="flex-1 overflow-y-auto px-10 pb-32 scrollbar-hide">
                                                         <div className="space-y-10">
-                                                               {/* Amount Input */}
                                                                <div className={cn(
                                                                       "p-12 lg:p-16 rounded-[3rem] border-2 text-center relative overflow-hidden transition-all group",
                                                                       modal === "payment" ? "bg-emerald-50/30 border-emerald-50" : "bg-rose-50/30 border-rose-50"
@@ -165,7 +167,30 @@ export default function ClientLedgerActions({ client }: { client: any }) {
                                                                       </div>
                                                                </div>
 
-                                                               {/* Reason Input */}
+                                                               {modal === "payment" && (
+                                                                      <div className="space-y-4">
+                                                                             <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 px-2">Método de Cobro</label>
+                                                                             <div className="flex p-1 bg-slate-50 rounded-2xl border border-slate-100">
+                                                                                    <button
+                                                                                           type="button"
+                                                                                           onClick={() => setPaymentMethod("CASH")}
+                                                                                           className={cn(
+                                                                                                  "flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                                                                                  paymentMethod === "CASH" ? "bg-white text-primary shadow-sm" : "text-slate-400"
+                                                                                           )}
+                                                                                    >Efectivo</button>
+                                                                                    <button
+                                                                                           type="button"
+                                                                                           onClick={() => setPaymentMethod("TRANSFER")}
+                                                                                           className={cn(
+                                                                                                  "flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                                                                                  paymentMethod === "TRANSFER" ? "bg-white text-primary shadow-sm" : "text-slate-400"
+                                                                                           )}
+                                                                                    >Transferencia</button>
+                                                                             </div>
+                                                                      </div>
+                                                               )}
+
                                                                <div className="space-y-4">
                                                                       <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 px-2 flex items-center gap-2">
                                                                              <Info className="w-4 h-4" /> Motivo del Ajuste
@@ -183,7 +208,6 @@ export default function ClientLedgerActions({ client }: { client: any }) {
                                                         </div>
                                                  </form>
 
-                                                 {/* Action Bar Sticky */}
                                                  <div className="absolute bottom-0 left-0 right-0 p-10 pt-4 pb-14 bg-white/90 backdrop-blur-xl border-t border-slate-100 z-40 flex gap-4">
                                                         <Button
                                                                type="button"
@@ -214,7 +238,6 @@ export default function ClientLedgerActions({ client }: { client: any }) {
                                    </div>
                             )}
 
-                            {/* Summary Modal */}
                             {modal === "summary" && (
                                    <div className="fixed inset-0 z-[300] flex items-end sm:items-center justify-center p-0 lg:p-10">
                                           <motion.div
@@ -289,7 +312,6 @@ export default function ClientLedgerActions({ client }: { client: any }) {
                                                         </div>
                                                  </div>
 
-                                                 {/* Share Action Bar Sticky */}
                                                  <div className="absolute bottom-0 left-0 right-0 p-10 pt-4 pb-14 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-40">
                                                         <Button
                                                                onClick={handleWhatsAppSummary}

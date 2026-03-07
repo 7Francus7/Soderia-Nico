@@ -5,18 +5,18 @@ import NewCashMovementButton from "@/components/finance/NewCashMovementButton";
 import CierreDiario from "@/components/finance/CierreDiario";
 import { cn } from "@/lib/utils";
 import { BalanceCard } from "@/components/finance/BalanceCard";
+import { getARStartOfDay, getAREndOfDay, getARRelativeDate } from "@/lib/date-utils";
 
 export default async function CajaPage() {
-       const today = new Date();
-       today.setHours(0, 0, 0, 0);
-       const tomorrow = new Date(today);
-       tomorrow.setDate(tomorrow.getDate() + 1);
+       // SOLUCIÓN TIMEZONE: Obtenemos el rango exacto de hoy en Argentina (UTC-3)
+       const start = getARStartOfDay();
+       const end = getAREndOfDay();
 
        const movements = await prisma.cashMovement.findMany({
               where: {
                      createdAt: {
-                            gte: today,
-                            lt: tomorrow
+                            gte: start,
+                            lte: end
                      }
               },
               orderBy: { createdAt: "desc" }
@@ -37,7 +37,7 @@ export default async function CajaPage() {
        }, { income: 0, expense: 0, cash: 0, digital: 0 });
 
        const balance = totals.income - totals.expense;
-       const currentDateLabel = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+       const currentDateLabel = getARRelativeDate();
 
        return (
               <div className="flex flex-col min-h-screen bg-background text-foreground animate-fade-in pb-32">
@@ -86,7 +86,7 @@ export default async function CajaPage() {
 
                                           <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-8">
                                                  <div className="space-y-4 text-center sm:text-left">
-                                                        <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Total en Tiempo Real</p>
+                                                        <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Total en Tiempo Real (Argentina)</p>
                                                         <h2 className={cn(
                                                                "text-6xl sm:text-7xl font-bold tracking-tight tabular-nums leading-none",
                                                                balance >= 0 ? "text-emerald-500" : "text-rose-500"
@@ -98,7 +98,7 @@ export default async function CajaPage() {
                                                                       <TrendingUp className="w-3.5 h-3.5 text-primary" />
                                                                       <span className="text-[10px] font-bold text-foreground uppercase tracking-wider">{movements.length} Operaciones</span>
                                                                </div>
-                                                               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Sincronizado</span>
+                                                               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest italic tracking-tight opacity-70">Log Localizado UTC-3</span>
                                                         </div>
                                                  </div>
 
@@ -110,7 +110,7 @@ export default async function CajaPage() {
                                                         <div className="h-2 w-32 bg-border rounded-full overflow-hidden">
                                                                <div className="h-full bg-primary/40 w-2/3" />
                                                         </div>
-                                                        <span className="text-[9px] font-bold text-muted-foreground uppercase">Integridad de Datos OK</span>
+                                                        <span className="text-[9px] font-bold text-muted-foreground uppercase">Integridad de Fechas OK</span>
                                                  </div>
                                           </div>
                                    </div>

@@ -1,17 +1,18 @@
-import { Truck } from "lucide-react";
+import { Truck, Droplets } from "lucide-react";
 
 export default function Loading() {
        return (
-              <div className="min-h-screen flex flex-col items-center justify-center bg-background">
-                     <div className="relative">
-                            <div className="w-24 h-24 bg-primary/20 rounded-[2rem] flex items-center justify-center animate-pulse">
-                                   <Truck className="w-10 h-10 text-primary animate-bounce" />
+              <div className="min-h-[80vh] flex flex-col items-center justify-center bg-background">
+                     <div className="relative mb-8">
+                            <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center border border-primary/10">
+                                   <Truck className="w-8 h-8 text-primary animate-pulse" />
                             </div>
-                            <div className="absolute inset-0 border-4 border-primary/30 border-t-primary rounded-[2rem] animate-spin" />
+                            <div className="absolute -inset-1 border-2 border-primary/20 border-t-primary rounded-2xl animate-spin" />
                      </div>
-                     <p className="mt-8 text-lg font-black tracking-widest uppercase animate-pulse">
-                            Cargando Logística...
-                     </p>
+                     <div className="flex flex-col items-center gap-2">
+                            <h2 className="text-sm font-bold tracking-widest uppercase text-foreground">Sodería <span className="text-primary">NICO</span></h2>
+                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em] animate-pulse">Sincronizando Logística</p>
+                     </div>
               </div>
        );
 }

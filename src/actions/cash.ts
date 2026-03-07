@@ -3,11 +3,15 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { authOptions, getRequiredSession } from "@/lib/auth";
+import { cashMovementSchema } from "@/schemas/cash";
+import { getARStartOfDay, getAREndOfDay } from "@/lib/date-utils";
+import { withIdempotency } from "@/lib/idempotency";
 
 export async function getCashMovements(date?: Date) {
        try {
-              const startOfDay = date ? new Date(date.setHours(0, 0, 0, 0)) : new Date(new Date().setHours(0, 0, 0, 0));
-              const endOfDay = date ? new Date(date.setHours(23, 59, 59, 999)) : new Date(new Date().setHours(23, 59, 59, 999));
+              const startOfDay = getARStartOfDay(date || new Date());
+              const endOfDay = getAREndOfDay(date || new Date());
 
               const movements = await prisma.cashMovement.findMany({
                      where: {
@@ -24,20 +28,29 @@ export async function getCashMovements(date?: Date) {
        }
 }
 
-export async function createCashMovement(data: { amount: number; type: string; concept: string; paymentMethod: string }) {
+export async function createCashMovement(rawData: any) {
        try {
-              const movement = await prisma.cashMovement.create({
-                     data: {
-                            amount: data.amount,
-                            type: data.type,
-                            concept: data.concept,
-                            paymentMethod: data.paymentMethod,
-                     }
+              const session: any = await getRequiredSession();
+              const userId = parseInt(session.user.id);
+
+              const validated = cashMovementSchema.safeParse(rawData);
+              if (!validated.success) {
+                     return { success: false, error: validated.error.issues[0].message };
+              }
+              const { idempotencyKey, ...data } = validated.data;
+
+              const result = await withIdempotency(idempotencyKey, userId, async (tx) => {
+                     return await tx.cashMovement.create({
+                            data: {
+                                   ...data,
+                                   createdBy: userId,
+                            }
+                     });
               });
 
               revalidatePath("/caja");
               revalidatePath("/");
-              return { success: true, data: movement };
+              return { success: true, data: result };
        } catch (error: any) {
               return { success: false, error: error.message };
        }

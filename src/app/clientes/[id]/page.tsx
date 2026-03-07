@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import ClientLedgerActions from "@/components/clients/ClientLedgerActions";
 import ClientNotesEditor from "@/components/clients/ClientNotesEditor";
 import ClientTagSelector, { ClientTagBadge } from "@/components/clients/ClientTagSelector";
+import { formatAR } from "@/lib/date-utils";
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
        const { id } = await params;
@@ -193,7 +194,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                                                                              </div>
                                                                              <div className="text-[10px] font-black text-slate-300 mt-1 uppercase tracking-widest opacity-60">
                                                                                     <Calendar className="w-3 h-3 inline mr-1.5" />
-                                                                                    {new Date(order.createdAt).toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                                                                                    {formatAR(order.createdAt, "dd 'de' MMMM, yyyy")}
                                                                              </div>
                                                                       </div>
                                                                </div>
@@ -244,7 +245,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                                                                              {tx.type === "DEBIT" ? "+" : "-"}${tx.amount.toLocaleString()}
                                                                       </div>
                                                                       <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] opacity-40 px-4">
-                                                                             {new Date(tx.createdAt).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
+                                                                             {formatAR(tx.createdAt, "dd MMM")}
                                                                       </div>
                                                                </div>
                                                         </div>

@@ -2,15 +2,18 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { authOptions, getRequiredSession } from "@/lib/auth";
 import { clientSchema, updateClientSchema } from "@/schemas/client";
+import { clientTransactionSchema } from "@/schemas/client-transaction";
+import { withIdempotency } from "@/lib/idempotency";
 
 export async function getClients(search?: string, sortByDebt: boolean = false) {
        try {
               const clients = await prisma.client.findMany({
                      where: search ? {
                             OR: [
-                                   { name: { contains: search } },
-                                   { address: { contains: search } },
+                                   { name: { contains: search, mode: 'insensitive' } },
+                                   { address: { contains: search, mode: 'insensitive' } },
                             ]
                      } : {},
                      orderBy: sortByDebt ? { balance: "desc" } : { name: "asc" },
@@ -23,6 +26,7 @@ export async function getClients(search?: string, sortByDebt: boolean = false) {
 
 export async function createClient(rawData: any) {
        try {
+              await getRequiredSession();
               const validated = clientSchema.safeParse(rawData);
               if (!validated.success) {
                      return { success: false, error: validated.error.issues[0].message };
@@ -52,6 +56,7 @@ export async function createClient(rawData: any) {
 
 export async function updateClient(id: number, rawData: any) {
        try {
+              await getRequiredSession();
               const validated = updateClientSchema.safeParse(rawData);
               if (!validated.success) {
                      return { success: false, error: validated.error.issues[0].message };
@@ -70,64 +75,90 @@ export async function updateClient(id: number, rawData: any) {
        }
 }
 
-export async function deleteClient(id: number) {
+export async function registerPayment(rawData: any) {
        try {
-              await prisma.client.delete({ where: { id } });
-              revalidatePath("/clientes");
-              return { success: true };
-       } catch (error: any) {
-              return { success: false, error: error.message };
-       }
-}
+              const session: any = await getRequiredSession();
+              const userId = parseInt(session.user.id);
 
-export async function updateClientNotes(id: number, notes: string) {
-       try {
-              await prisma.client.update({
-                     where: { id },
-                     data: { notes },
-              });
-              revalidatePath(`/clientes/${id}`);
-              return { success: true };
-       } catch (error: any) {
-              return { success: false, error: error.message };
-       }
-}
+              const validated = clientTransactionSchema.safeParse(rawData);
+              if (!validated.success) {
+                     return { success: false, error: validated.error.issues[0].message };
+              }
+              const { clientId, amount, description, paymentMethod, idempotencyKey } = validated.data;
 
-export async function updateClientTag(id: number, tag: string | null) {
-       try {
-              await prisma.client.update({
-                     where: { id },
-                     data: { tag },
-              });
-              revalidatePath("/clientes");
-              revalidatePath(`/clientes/${id}`);
-              return { success: true };
-       } catch (error: any) {
-              return { success: false, error: error.message };
-       }
-}
-
-export async function registerPayment(clientId: number, amount: number, description?: string) {
-       try {
-              const result = await prisma.$transaction(async (tx) => {
-                     await tx.clientTransaction.create({
+              const result = await withIdempotency(idempotencyKey, userId, async (tx) => {
+                     const transaction = await tx.clientTransaction.create({
                             data: {
                                    clientId,
                                    type: "CREDIT",
                                    amount,
                                    concept: "Pago recibido",
-                                   description: description || "Pago a cuenta",
+                                   description: description || `Pago a cuenta via ${paymentMethod}`,
+                                   createdBy: userId,
                             }
                      });
 
-                     const client = await tx.client.update({
+                     await tx.client.update({
                             where: { id: clientId },
                             data: {
                                    balance: { decrement: amount }
                             }
                      });
 
-                     return client;
+                     await tx.cashMovement.create({
+                            data: {
+                                   amount,
+                                   type: "INCOME",
+                                   concept: `Cobranza Cliente (ID: ${clientId})`,
+                                   paymentMethod: paymentMethod || "CASH",
+                                   createdBy: userId,
+                            }
+                     });
+
+                     return { transactionId: transaction.id };
+              });
+
+              revalidatePath("/clientes");
+              revalidatePath(`/clientes/${clientId}`);
+              revalidatePath("/caja");
+              revalidatePath("/");
+              return { success: true, data: result };
+       } catch (error: any) {
+              return { success: false, error: error.message };
+       }
+}
+
+export async function registerCharge(rawData: any) {
+       try {
+              const session: any = await getRequiredSession();
+              const userId = parseInt(session.user.id);
+
+              const validated = clientTransactionSchema.safeParse(rawData);
+              if (!validated.success) {
+                     return { success: false, error: validated.error.issues[0].message };
+              }
+              const { clientId, amount, description, idempotencyKey } = validated.data;
+
+              const result = await withIdempotency(idempotencyKey, userId, async (tx) => {
+                     const transaction = await tx.clientTransaction.create({
+                            data: {
+                                   clientId,
+                                   type: "DEBIT",
+                                   amount,
+                                   concept: "Cargo manual",
+                                   description: description || "Cargo extra realizado por administración",
+                                   createdBy: userId,
+                            }
+                     });
+
+                     await tx.client.update({
+                            where: { id: clientId },
+                            data: {
+                                   balance: { increment: amount }
+                            }
+                     });
+
+                     return { transactionId: transaction.id };
               });
 
               revalidatePath("/clientes");
@@ -138,32 +169,12 @@ export async function registerPayment(clientId: number, amount: number, descript
        }
 }
 
-export async function registerCharge(clientId: number, amount: number, description?: string) {
+export async function deleteClient(id: number) {
        try {
-              const result = await prisma.$transaction(async (tx) => {
-                     await tx.clientTransaction.create({
-                            data: {
-                                   clientId,
-                                   type: "DEBIT",
-                                   amount,
-                                   concept: "Cargo manual",
-                                   description: description || "Cargo extra",
-                            }
-                     });
-
-                     const client = await tx.client.update({
-                            where: { id: clientId },
-                            data: {
-                                   balance: { increment: amount }
-                            }
-                     });
-
-                     return client;
-              });
-
+              await getRequiredSession();
+              await prisma.client.delete({ where: { id } });
               revalidatePath("/clientes");
-              revalidatePath(`/clientes/${clientId}`);
-              return { success: true, data: result };
+              return { success: true };
        } catch (error: any) {
               return { success: false, error: error.message };
        }

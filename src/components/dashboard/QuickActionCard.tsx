@@ -3,40 +3,44 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { QuickActionCardProps } from "@/types/dashboard";
 import { motion } from "framer-motion";
 
-export function QuickActionCard({ title, subtitle, icon, href, color }: QuickActionCardProps) {
-       const colors = {
-              blue: "bg-blue-50 text-blue-500 border-blue-100",
-              sky: "bg-sky-50 text-sky-500 border-sky-100",
-              rose: "bg-rose-50 text-rose-500 border-rose-100",
-              emerald: "bg-emerald-50 text-emerald-500 border-emerald-100",
+export function QuickActionCard({ title, subtitle, icon, href, color = "primary" }: QuickActionCardProps) {
+       const badgeColors = {
+              primary: "bg-primary/5 text-primary border-primary/10",
+              secondary: "bg-secondary text-secondary-foreground border-border",
+              rose: "bg-danger/5 text-danger border-danger/10",
+              sky: "bg-info/5 text-info border-info/10",
+              amber: "bg-warning/5 text-warning border-warning/10",
+              slate: "bg-muted text-muted-foreground border-border",
        };
 
        return (
               <motion.div
-                     initial={{ opacity: 0, x: -10 }}
+                     initial={{ opacity: 0, x: -5 }}
                      whileInView={{ opacity: 1, x: 0 }}
                      viewport={{ once: true }}
-                     whileTap={{ scale: 0.98 }}
+                     whileTap={{ scale: 0.985 }}
                      transition={{ duration: 0.3 }}
               >
                      <Link href={href} className="group block">
-                            <div className="flex items-center gap-4 p-5 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 overflow-hidden relative">
+                            <div className="flex items-center gap-4 p-4 rounded-xl bg-white border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-200">
                                    <div className={cn(
-                                          "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border transition-colors duration-300 shadow-sm",
-                                          colors[color as keyof typeof colors]
+                                          "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border transition-all duration-300",
+                                          badgeColors[color as keyof typeof badgeColors]
                                    )}>
-                                          <div className="stroke-[2px]">{icon}</div>
+                                          <div className="scale-90">{icon}</div>
                                    </div>
-                                   <div className="flex-1 min-w-0 ml-1">
-                                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">{subtitle}</p>
-                                          <h4 className="text-lg font-bold text-foreground tracking-tight group-hover:text-primary transition-colors leading-none">{title}</h4>
+                                   <div className="flex-1 min-w-0">
+                                          <h4 className="text-sm font-bold text-foreground tracking-tight group-hover:text-primary transition-colors leading-none mb-1">{title}</h4>
+                                          {subtitle && (
+                                                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">{subtitle}</p>
+                                          )}
                                    </div>
-                                   <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                                          <ChevronRight className="w-5 h-5" />
+                                   <div className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground opacity-30 group-hover:opacity-100 group-hover:bg-primary group-hover:text-white transition-all duration-300 translate-x-1 group-hover:translate-x-0">
+                                          <ChevronRight className="w-4 h-4" />
                                    </div>
                             </div>
                      </Link>

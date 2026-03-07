@@ -4,14 +4,15 @@ export interface MetricCardProps {
        label: string;
        value: string;
        icon: ReactNode;
-       color: "blue" | "purple" | "rose" | "amber";
+       description?: string;
+       variant?: "blue" | "purple" | "rose" | "amber" | "emerald";
        href?: string;
 }
 
 export interface QuickActionCardProps {
        title: string;
-       subtitle: string;
+       subtitle?: string;
        icon: ReactNode;
        href: string;
-       color: "blue" | "sky" | "rose" | "emerald";
+       color?: "primary" | "secondary" | "rose" | "sky" | "amber" | "slate";
 }

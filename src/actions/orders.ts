@@ -3,6 +3,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { authOptions, getRequiredSession } from "@/lib/auth";
+import { createOrderSchema } from "@/schemas/order";
+import { withIdempotency } from "@/lib/idempotency";
 
 export async function getOrders(clientId?: number, status?: string) {
        try {
@@ -25,28 +28,32 @@ export async function getOrders(clientId?: number, status?: string) {
        }
 }
 
-export async function createOrder(data: {
-       clientId: number;
-       notes?: string;
-       items: { productId: number; quantity: number; unitPrice: number }[];
-}) {
+export async function createOrder(rawData: any) {
        try {
-              const order = await prisma.$transaction(async (tx) => {
+              const session: any = await getRequiredSession();
+              const userId = parseInt(session.user.id);
+
+              const validated = createOrderSchema.safeParse(rawData);
+              if (!validated.success) {
+                     return { success: false, error: validated.error.issues[0].message };
+              }
+              const { idempotencyKey, ...data } = validated.data;
+
+              const result = await withIdempotency(idempotencyKey, userId, async (tx) => {
                      // 1. Calculate total
                      let totalAmount = 0;
                      for (const item of data.items) {
                             totalAmount += item.quantity * item.unitPrice;
                      }
 
-                     // 2. Create Order (Status: CONFIRMED by default for simplicity in mobile, or DRAFT if preferred)
-                     // I'll use CONFIRMED because in this system "Draft" isn't used much if created from UI
-                     const newOrder = await tx.order.create({
+                     // 2. Create Order
+                     return await tx.order.create({
                             data: {
                                    clientId: data.clientId,
                                    notes: data.notes,
                                    totalAmount,
                                    status: "CONFIRMED",
-                                   createdBy: 1, // Default user for now
+                                   createdBy: userId,
                                    items: {
                                           create: data.items.map((item) => ({
                                                  productId: item.productId,
@@ -58,22 +65,25 @@ export async function createOrder(data: {
                             },
                             include: {
                                    items: true,
+                                   client: true
                             }
                      });
-
-                     return newOrder;
               });
 
               revalidatePath("/repartos");
               revalidatePath("/pedidos");
-              return { success: true, data: order };
+              revalidatePath("/");
+              return { success: true, data: result };
        } catch (error: any) {
+              console.error("Error creating order:", error);
               return { success: false, error: error.message };
        }
 }
 
 export async function deleteOrder(id: number) {
        try {
+              await getRequiredSession();
+
               const order = await prisma.order.findUnique({ where: { id } });
               if (order?.status === "DELIVERED") {
                      throw new Error("No se puede eliminar un pedido entregado");
@@ -94,6 +104,7 @@ export async function deleteOrder(id: number) {
 
 export async function cancelOrder(id: number) {
        try {
+              await getRequiredSession();
               const order = await prisma.order.update({
                      where: { id },
                      data: { status: "CANCELLED" },

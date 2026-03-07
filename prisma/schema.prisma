@@ -20,6 +20,8 @@ model User {
   ordersCreated   Order[]
   ledgerEntries   ClientTransaction[]
   cashMovements   CashMovement[]
+  orderHistory    OrderHistory[]
+  idempotencyKeys IdempotencyKey[]
 
   @@map("User")
 }
@@ -81,7 +83,7 @@ model Stock {
 model Order {
   id              Int      @id @default(autoincrement())
   clientId        Int
-  status          String   @default("DRAFT") // DRAFT, CONFIRMED, DELIVERED, CANCELLED
+  status          String   @default("DRAFT") // DRAFT, CONFIRMED, DELIVERED, CANCELLED, ABSENT, REJECTED
   paymentMethod   String?                     // CASH, CURRENT_ACCOUNT, TRANSFER, MIXED
   paymentStatus   String   @default("PENDING") // PENDING, PAID, ON_ACCOUNT
   paymentAmount   Float    @default(0)
@@ -99,8 +101,23 @@ model Order {
   delivery        Delivery? @relation(fields: [deliveryId], references: [id])
   items           OrderItem[]
   ledgerEntry     ClientTransaction?
+  history         OrderHistory[]
 
   @@map("Order")
+}
+
+model OrderHistory {
+  id              Int      @id @default(autoincrement())
+  orderId         Int
+  status          String
+  comment         String?
+  userId          Int?
+  createdAt       DateTime @default(now())
+  
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user            User?    @relation(fields: [userId], references: [id])
+
+  @@map("OrderHistory")
 }
 
 model OrderItem {
@@ -162,3 +179,16 @@ model CashMovement {
   @@map("CashMovement")
 }
 
+model IdempotencyKey {
+  id              String   @id @default(uuid())
+  key             String   @unique
+  response        String?  // JSON serialized response
+  status          String   @default("STARTED") // STARTED, COMPLETED, FAILED
+  userId          Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@map("IdempotencyKey")
+}

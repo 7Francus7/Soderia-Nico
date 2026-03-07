@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, X, ShoppingBag, User, Box, Search, Trash2, Loader2, Minus, ChevronRight, Check, ArrowLeft, ArrowRight, UserCheck, PackageOpen, MapPin } from "lucide-react";
+import { Plus, X, ShoppingBag, UserCheck, Box, Search, Loader2, Minus, ChevronRight, Check, ArrowRight, PackageOpen, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createOrder } from "@/actions/orders";
 import { getClients } from "@/actions/clients";
@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function NewOrderButton() {
        const [isOpen, setIsOpen] = useState(false);
        const [loading, setLoading] = useState(false);
+       const [idempotencyKey, setIdempotencyKey] = useState("");
 
        // Data for pickers
        const [clients, setClients] = useState<any[]>([]);
@@ -26,11 +27,11 @@ export default function NewOrderButton() {
        const [notes, setNotes] = useState("");
        const [search, setSearch] = useState("");
 
-       useEffect(() => {
-              if (isOpen) {
-                     loadData();
-              }
-       }, [isOpen]);
+       const openModal = () => {
+              setIsOpen(true);
+              setIdempotencyKey(`order-${Date.now()}-${Math.random().toString(36).substring(7)}`);
+              loadData();
+       };
 
        const loadData = async () => {
               const [cRes, pRes] = await Promise.all([getClients(), getProducts()]);
@@ -70,6 +71,7 @@ export default function NewOrderButton() {
               setOrderItems([]);
               setNotes("");
               setSearch("");
+              setIdempotencyKey("");
        };
 
        const handleSubmit = async () => {
@@ -79,12 +81,11 @@ export default function NewOrderButton() {
                      const result = await createOrder({
                             clientId: selectedClient.id,
                             notes,
-                            items: orderItems.map(i => ({ productId: i.productId, quantity: i.quantity, unitPrice: i.unitPrice }))
+                            items: orderItems.map(i => ({ productId: i.productId, quantity: i.quantity, unitPrice: i.unitPrice })),
+                            idempotencyKey
                      });
                      if (result.success) {
-                            toast.success("¡Pedido confirmado con éxito!", {
-                                   style: { borderRadius: '1rem', fontWeight: '800' }
-                            });
+                            toast.success("¡Pedido confirmado con éxito!");
                             setIsOpen(false);
                             reset();
                      } else {
@@ -107,7 +108,7 @@ export default function NewOrderButton() {
        return (
               <>
                      <Button
-                            onClick={() => setIsOpen(true)}
+                            onClick={openModal}
                             className="h-16 bg-primary text-white shadow-2xl shadow-primary/30 rounded-[1.8rem] px-10 flex items-center gap-3 active:scale-95 transition-all text-[11px] font-black uppercase tracking-[0.2em] w-full sm:w-auto"
                      >
                             <Plus className="w-5.5 h-5.5 stroke-[3px]" />
@@ -117,16 +118,14 @@ export default function NewOrderButton() {
                      <AnimatePresence>
                             {isOpen && (
                                    <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 lg:p-10">
-                                          {/* Backdrop Overlay */}
                                           <motion.div
                                                  initial={{ opacity: 0 }}
                                                  animate={{ opacity: 1 }}
                                                  exit={{ opacity: 0 }}
-                                                 onClick={() => setIsOpen(false)}
+                                                 onClick={() => { setIsOpen(false); reset(); }}
                                                  className="absolute inset-0 bg-black/40 backdrop-blur-[8px]"
                                           />
 
-                                          {/* iOS Style Modal Container */}
                                           <motion.div
                                                  initial={{ y: "100%" }}
                                                  animate={{ y: 0 }}
@@ -134,7 +133,6 @@ export default function NewOrderButton() {
                                                  transition={{ type: "spring", damping: 30, stiffness: 300 }}
                                                  className="relative w-full max-w-5xl h-[95vh] lg:h-full bg-white rounded-t-[3.5rem] lg:rounded-[3.5rem] shadow-[0_-25px_80px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden"
                                           >
-                                                 {/* Swipe Handle & Header */}
                                                  <div className="flex flex-col items-center pt-3 pb-8 bg-white/95 backdrop-blur-md z-30 flex-shrink-0">
                                                         <div className="w-12 h-1.5 bg-slate-100 rounded-full mb-8" />
                                                         <div className="w-full px-10 flex items-center justify-between">
@@ -159,7 +157,6 @@ export default function NewOrderButton() {
                                                  </div>
 
                                                  <div className="flex-1 overflow-y-auto px-10 pb-40 scroll-smooth scrollbar-hide">
-                                                        {/* STEP 1: CLIENT SELECTION */}
                                                         {step === 1 && (
                                                                <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-12 max-w-3xl mx-auto pt-4">
                                                                       <div className="relative group w-full">
@@ -205,10 +202,8 @@ export default function NewOrderButton() {
                                                                </motion.div>
                                                         )}
 
-                                                        {/* STEP 2: PRODUCT SELECTION & CART */}
                                                         {step === 2 && (
                                                                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-10 pt-4">
-                                                                      {/* Client Summary Ribbon */}
                                                                       <div className="flex flex-col sm:flex-row items-center justify-between p-8 bg-emerald-50/50 border-2 border-emerald-100/50 rounded-[3rem] gap-6">
                                                                              <div className="flex items-center gap-6">
                                                                                     <div className="w-20 h-20 bg-emerald-500 rounded-[2rem] flex items-center justify-center text-white shadow-xl shadow-emerald-500/20">
@@ -224,7 +219,6 @@ export default function NewOrderButton() {
                                                                       </div>
 
                                                                       <div className="grid grid-cols-1 xl:grid-cols-12 gap-12">
-                                                                             {/* Products Grid (8/12) */}
                                                                              <div className="xl:col-span-7 space-y-8">
                                                                                     <div className="flex items-center gap-3 px-2">
                                                                                            <PackageOpen className="w-5 h-5 text-primary opacity-40" />
@@ -261,7 +255,6 @@ export default function NewOrderButton() {
                                                                                     </div>
                                                                              </div>
 
-                                                                             {/* Summary Sidebar (5/12) */}
                                                                              <div className="xl:col-span-5 space-y-8">
                                                                                     <div className="flex items-center gap-3 px-2">
                                                                                            <ShoppingBag className="w-5 h-5 text-emerald-500 opacity-40" />
@@ -332,7 +325,6 @@ export default function NewOrderButton() {
                                                         )}
                                                  </div>
 
-                                                 {/* Sticky iOS Actions Bar */}
                                                  <div className="absolute bottom-0 left-0 right-0 p-10 pt-4 pb-14 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-40 flex gap-4">
                                                         <Button
                                                                variant="ghost"

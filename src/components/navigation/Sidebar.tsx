@@ -3,117 +3,103 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-       LayoutDashboard,
-       Users,
-       Truck,
-       ShoppingBag,
-       CreditCard,
-       Banknote,
-       Box,
-       ShieldCheck,
-       LogOut,
-       Settings,
-       Droplets,
-       UserCircle,
-       ChevronRight,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { signOut, useSession } from "next-auth/react";
+import {
+       LayoutDashboard, ShoppingCart, Truck, Users,
+       CreditCard, Banknote, Package, LogOut, Droplet, ChevronRight, BarChart3
+} from "lucide-react";
 import { motion } from "framer-motion";
 
-const navItems = [
+const mainNavigation = [
        { name: "Inicio", href: "/", icon: LayoutDashboard },
-       { name: "Pedidos", href: "/pedidos", icon: ShoppingBag },
+       { name: "Pedidos", href: "/pedidos", icon: ShoppingCart },
        { name: "Repartos", href: "/repartos", icon: Truck },
+];
+
+const adminNavigation = [
        { name: "Clientes", href: "/clientes", icon: Users },
        { name: "Cuentas", href: "/cuentas", icon: CreditCard },
        { name: "Caja", href: "/caja", icon: Banknote },
-       { name: "Productos", href: "/productos", icon: Box },
-       { name: "Ajustes", href: "/usuarios", icon: Settings },
+       { name: "Productos", href: "/productos", icon: Package },
 ];
 
 export default function Sidebar() {
        const pathname = usePathname();
-       const { data: session } = useSession();
+
+       const NavLink = ({ item }: { item: any }) => {
+              const isActive = pathname === item.href;
+              return (
+                     <Link
+                            href={item.href}
+                            className={cn(
+                                   "group flex items-center gap-3 px-4 py-2.5 rounded-full transition-all duration-200",
+                                   isActive
+                                          ? "bg-accent text-accent-foreground"
+                                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            )}
+                     >
+                            <item.icon className={cn("w-5 h-5", isActive ? "stroke-[2.5px]" : "stroke-[2px]")} />
+                            <span className={cn("text-sm tracking-tight", isActive ? "font-semibold" : "font-medium")}>
+                                   {item.name}
+                            </span>
+                            {isActive && (
+                                   <div className="ml-auto">
+                                          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                   </div>
+                            )}
+                     </Link>
+              );
+       };
 
        return (
-              <aside className="fixed left-0 top-0 bottom-0 w-64 bg-card border-r border-border z-[100] hidden lg:flex flex-col overflow-hidden">
-                     {/* Brand Header */}
-                     <Link href="/" className="flex items-center gap-3 px-6 py-5 border-b border-border">
-                            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-sm shrink-0">
-                                   <Droplets className="w-4 h-4" />
-                            </div>
-                            <div>
-                                   <h1 className="text-sm font-bold text-foreground leading-none">Sodería Nico</h1>
-                                   <span className="text-[10px] text-muted-foreground font-semibold">Sistema de Gestión</span>
-                            </div>
-                     </Link>
-
-                     {/* Status Badge */}
-                     <div className="px-6 py-3 border-b border-border bg-secondary/30">
-                            <div className="flex items-center gap-2">
-                                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                   <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Activo v2.5.0</span>
+              <aside className="hidden lg:flex flex-col w-64 h-screen fixed left-0 top-0 bg-white border-r border-border z-40">
+                     {/* Header */}
+                     <div className="h-20 flex items-center px-6 border-b border-border/50">
+                            <div className="flex items-center gap-3">
+                                   <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-md shadow-primary/20">
+                                          <Droplet className="text-white w-5 h-5 fill-current" />
+                                   </div>
+                                   <div className="flex flex-col">
+                                          <h2 className="text-lg font-bold tracking-tight text-foreground leading-none">Sodería Nico</h2>
+                                          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.1em] mt-1">Admin Panel</span>
+                                   </div>
                             </div>
                      </div>
 
-                     {/* Navigation List */}
-                     <nav className="flex-1 p-3 space-y-1 overflow-y-auto custom-scrollbar">
-                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-3 py-2">Módulos</p>
-                            {navItems.map((item, idx) => {
-                                   const isActive = pathname === item.href;
-                                   return (
-                                          <motion.div
-                                                 key={item.href}
-                                                 initial={{ opacity: 0, x: -10 }}
-                                                 animate={{ opacity: 1, x: 0 }}
-                                                 transition={{ delay: idx * 0.04 }}
-                                          >
-                                                 <Link
-                                                        href={item.href}
-                                                        className={cn(
-                                                               "group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium",
-                                                               isActive
-                                                                      ? "bg-primary/10 text-primary shadow-sm"
-                                                                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                                                        )}
-                                                 >
-                                                        <item.icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
-                                                        <span className="flex-1 font-bold">{item.name}</span>
-                                                        {isActive && (
-                                                               <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                                        )}
-                                                 </Link>
-                                          </motion.div>
-                                   );
-                            })}
-                     </nav>
-
-                     {/* Profile & Logout */}
-                     <div className="p-3 border-t border-border space-y-1">
-                            <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-secondary/50">
-                                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                                          <UserCircle className="w-5 h-5" />
-                                   </div>
-                                   <div className="flex-1 min-w-0">
-                                          <p className="text-sm font-bold text-foreground truncate">
-                                                 {session?.user?.name?.split(' ')[0] || "Administrador"}
-                                          </p>
-                                          <div className="flex items-center gap-1">
-                                                 <ShieldCheck className="w-3 h-3 text-emerald-500" />
-                                                 <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Admin</span>
-                                          </div>
-                                   </div>
+                     {/* Navigation */}
+                     <nav className="flex-1 p-4 space-y-8 overflow-y-auto scrollbar-hide">
+                            <div className="space-y-1">
+                                   <p className="px-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Principal</p>
+                                   {mainNavigation.map((item) => <NavLink key={item.name} item={item} />)}
                             </div>
 
-                            <button
-                                   onClick={() => signOut()}
-                                   className="group flex items-center gap-3 px-3 py-2 w-full rounded-lg text-rose-500 hover:bg-rose-50 transition-all duration-200 text-sm font-medium"
-                            >
-                                   <LogOut className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                                   <span>Cerrar Sesión</span>
-                            </button>
+                            <div className="space-y-1">
+                                   <p className="px-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Gestión</p>
+                                   {adminNavigation.map((item) => <NavLink key={item.name} item={item} />)}
+                            </div>
+                     </nav>
+
+                     {/* Footer Profile */}
+                     <div className="p-4 border-t border-border">
+                            <div className="p-4 rounded-3xl bg-secondary/50 border border-border/50">
+                                   <div className="flex items-center gap-3 mb-4">
+                                          <div className="w-10 h-10 rounded-full bg-white border border-border flex items-center justify-center text-primary font-bold shadow-sm">
+                                                 AD
+                                          </div>
+                                          <div className="flex flex-col min-w-0">
+                                                 <p className="text-xs font-bold text-foreground truncate">Administrador</p>
+                                                 <p className="text-[10px] font-medium text-muted-foreground">Admin Pro</p>
+                                          </div>
+                                   </div>
+                                   <button
+                                          title="Cerrar Sesión"
+                                          className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-danger bg-white border border-border rounded-2xl hover:bg-danger/5 hover:border-danger/20 transition-all active:scale-95"
+                                          onClick={() => {/* Logout logic */ }}
+                                   >
+                                          <LogOut className="w-4 h-4" />
+                                          Salir
+                                   </button>
+                            </div>
                      </div>
               </aside>
        );
