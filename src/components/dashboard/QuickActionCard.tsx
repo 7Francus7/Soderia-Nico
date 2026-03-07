@@ -3,50 +3,42 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { QuickActionCardProps } from "@/types/dashboard";
 import { motion } from "framer-motion";
 
 export function QuickActionCard({ title, subtitle, icon, href, color }: QuickActionCardProps) {
-       const iconColors = {
-              blue: "bg-blue-100 text-blue-600",
-              sky: "bg-sky-100 text-sky-600",
-              rose: "bg-rose-100 text-rose-600",
-              emerald: "bg-emerald-100 text-emerald-600",
-       };
-
-       const hoverBorder = {
-              blue: "hover:border-blue-200",
-              sky: "hover:border-sky-200",
-              rose: "hover:border-rose-200",
-              emerald: "hover:border-emerald-200",
+       const colors = {
+              blue: "bg-blue-50 text-blue-600 border-blue-100/50 shadow-blue-500/10",
+              sky: "bg-sky-50 text-sky-600 border-sky-100/50 shadow-sky-500/10",
+              rose: "bg-rose-50 text-rose-600 border-rose-100/50 shadow-rose-500/10",
+              emerald: "bg-emerald-50 text-emerald-600 border-emerald-100/50 shadow-emerald-500/10",
        };
 
        return (
               <motion.div
-                     whileHover={{ y: -2 }}
-                     whileTap={{ scale: 0.98 }}
-                     initial={{ opacity: 0, y: 8 }}
-                     whileInView={{ opacity: 1, y: 0 }}
+                     whileHover={{ x: 4 }}
+                     whileTap={{ scale: 0.97 }}
+                     initial={{ opacity: 0, x: -10 }}
+                     whileInView={{ opacity: 1, x: 0 }}
                      viewport={{ once: true }}
-                     transition={{ duration: 0.2 }}
+                     transition={{ duration: 0.4, type: "spring", bounce: 0.4 }}
               >
                      <Link href={href} className="group block">
-                            <div className={cn(
-                                   "flex items-center gap-3 p-4 rounded-xl border bg-white card-shadow hover:card-shadow-md transition-all duration-200",
-                                   hoverBorder[color]
-                            )}>
+                            <div className="flex items-center gap-4 p-5 rounded-[1.8rem] bg-white border border-border/40 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_25px_rgba(0,0,0,0.08)] transition-all duration-300">
                                    <div className={cn(
-                                          "w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 group-hover:scale-105",
-                                          iconColors[color]
+                                          "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 shadow-lg",
+                                          colors[color]
                                    )}>
                                           {icon}
                                    </div>
                                    <div className="flex-1 min-w-0">
-                                          <h4 className="font-semibold text-sm text-foreground">{title}</h4>
-                                          <p className="text-xs text-muted-foreground">{subtitle}</p>
+                                          <h4 className="font-bold text-[14px] text-foreground tracking-tight group-hover:text-primary transition-colors">{title}</h4>
+                                          <p className="text-[11px] font-semibold text-muted-foreground/60 uppercase tracking-widest">{subtitle}</p>
                                    </div>
-                                   <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all duration-200 shrink-0" />
+                                   <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-primary transition-all">
+                                          <ChevronRight className="w-4 h-4" />
+                                   </div>
                             </div>
                      </Link>
               </motion.div>
