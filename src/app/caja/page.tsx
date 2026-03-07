@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Banknote, ArrowUpRight, ArrowDownLeft, Wallet, Landmark, Activity, Calendar } from "lucide-react";
+import { Banknote, ArrowUpRight, ArrowDownLeft, Wallet, Landmark, Activity, Calendar, ShieldCheck, TrendingUp } from "lucide-react";
 import CashMovementList from "@/components/finance/CashMovementList";
 import NewCashMovementButton from "@/components/finance/NewCashMovementButton";
 import CierreDiario from "@/components/finance/CierreDiario";
@@ -40,62 +40,83 @@ export default async function CajaPage() {
        const currentDateLabel = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
 
        return (
-              <div className="flex flex-col min-h-screen bg-white animate-fade-in-up">
+              <div className="flex flex-col min-h-screen bg-background text-foreground animate-fade-in pb-32">
 
-                     {/* iOS HEADER AREA */}
-                     <header className="px-6 pt-10 pb-8 sm:px-10 lg:px-16 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
-                            <div className="space-y-1">
-                                   <div className="flex items-center gap-1.5 mb-1 px-1">
-                                          <Activity className="w-3.5 h-3.5 text-primary" />
-                                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Monitor Financiero</span>
+                     {/* GOOGLE PROFESSIONAL HEADER AREA */}
+                     <header className="px-6 pt-12 pb-10 sm:px-10 lg:px-16">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                                   <div className="space-y-2">
+                                          <div className="flex items-center gap-2 mb-1">
+                                                 <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary border border-primary/20 shrink-0">
+                                                        <Activity className="w-4 h-4" />
+                                                 </div>
+                                                 <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Monitor Financiero</span>
+                                          </div>
+                                          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
+                                                 Caja Diaria
+                                          </h1>
+                                          <div className="flex items-center gap-2 mt-1">
+                                                 <Calendar className="w-3.5 h-3.5 text-primary/60" />
+                                                 <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">{currentDateLabel}</span>
+                                          </div>
                                    </div>
-                                   <h1 className="text-4xl font-black tracking-tight text-foreground leading-tight px-1">
-                                          Caja Diaria
-                                   </h1>
-                                   <div className="flex items-center gap-1.5 mt-2 px-1">
-                                          <Calendar className="w-3.5 h-3.5 text-primary" />
-                                          <span className="text-[11px] font-black text-slate-500 uppercase tracking-[0.1em]">{currentDateLabel}</span>
+
+                                   <div className="w-full sm:w-auto flex items-center gap-3">
+                                          <CierreDiario totals={totals} movementsCount={movements.length} />
+                                          <NewCashMovementButton />
                                    </div>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                   <CierreDiario totals={totals} movementsCount={movements.length} />
-                                   <NewCashMovementButton />
                             </div>
                      </header>
 
-                     {/* MAIN CONTENT GRID */}
-                     <main className="px-6 sm:px-10 lg:px-16 pb-32 space-y-12">
+                     <main className="px-6 sm:px-10 lg:px-16 space-y-12">
 
-                            {/* BALANCE DESTACADO - iOS CARD STYLE */}
+                            {/* MAIN ARQUEO SECTION */}
                             <section className="space-y-6">
-                                   <div className="flex items-center gap-2 px-2">
-                                          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                                          <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.15em]">Arqueo Neto</h3>
-                                   </div>
-                                   <div className={cn(
-                                          "flex flex-col sm:flex-row items-center justify-between gap-8 p-10 sm:p-14 rounded-[3.5rem] border-2 transition-all shadow-2xl shadow-slate-200/40",
-                                          balance >= 0 ? "bg-white border-emerald-50" : "bg-white border-rose-50"
-                                   )}>
-                                          <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                                                 <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4">Balance en Tiempo Real</p>
-                                                 <div className={cn(
-                                                        "text-6xl sm:text-8xl font-black tracking-tighter tabular-nums leading-none",
-                                                        balance >= 0 ? "text-emerald-600" : "text-rose-600"
-                                                 )}>
-                                                        {balance >= 0 ? "+" : ""}${balance.toLocaleString()}
-                                                 </div>
+                                   <div className="flex items-center justify-between px-1">
+                                          <div className="flex items-center gap-2">
+                                                 <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                                 <h3 className="text-[11px] font-bold text-foreground uppercase tracking-wider">Arqueo Neto</h3>
                                           </div>
-                                          <div className="flex flex-col items-center sm:items-end gap-3">
-                                                 <div className="px-5 py-2.5 bg-slate-50 border border-slate-200 rounded-[1.2rem] flex items-center gap-2 shadow-sm">
-                                                        <Activity className="w-4 h-4 text-primary" />
-                                                        <span className="text-[11px] font-black text-slate-800 uppercase tracking-widest">{movements.length} Operaciones</span>
+                                          <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Balance de Sesión</div>
+                                   </div>
+
+                                   <div className="p-8 sm:p-12 rounded-[1.5rem] bg-card border border-border shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                                          {/* Subtle Background Decoration */}
+                                          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-primary/10 transition-colors" />
+
+                                          <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-8">
+                                                 <div className="space-y-4 text-center sm:text-left">
+                                                        <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Total en Tiempo Real</p>
+                                                        <h2 className={cn(
+                                                               "text-6xl sm:text-7xl font-bold tracking-tight tabular-nums leading-none",
+                                                               balance >= 0 ? "text-emerald-500" : "text-rose-500"
+                                                        )}>
+                                                               {balance >= 0 ? "+" : ""}${balance.toLocaleString()}
+                                                        </h2>
+                                                        <div className="flex items-center justify-center sm:justify-start gap-4">
+                                                               <div className="px-3 py-1 bg-secondary border border-border rounded-lg flex items-center gap-2 shadow-sm shrink-0">
+                                                                      <TrendingUp className="w-3.5 h-3.5 text-primary" />
+                                                                      <span className="text-[10px] font-bold text-foreground uppercase tracking-wider">{movements.length} Operaciones</span>
+                                                               </div>
+                                                               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Sincronizado</span>
+                                                        </div>
                                                  </div>
-                                                 <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Sincronizado ahora</span>
+
+                                                 <div className="hidden lg:flex flex-col items-end gap-2 p-6 rounded-2xl bg-secondary/50 border border-border">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                               <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                                                               <span className="text-[10px] font-bold text-foreground uppercase tracking-widest">Auditoría Activa</span>
+                                                        </div>
+                                                        <div className="h-2 w-32 bg-border rounded-full overflow-hidden">
+                                                               <div className="h-full bg-primary/40 w-2/3" />
+                                                        </div>
+                                                        <span className="text-[9px] font-bold text-muted-foreground uppercase">Integridad de Datos OK</span>
+                                                 </div>
                                           </div>
                                    </div>
                             </section>
 
-                            {/* FINANCIAL SUMMARY GRID */}
+                            {/* SMALL CARDS GRID */}
                             <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                                    <BalanceCard label="Ingresos" value={totals.income} icon={<ArrowUpRight className="w-5 h-5" />} color="emerald" />
                                    <BalanceCard label="Egresos" value={totals.expense} icon={<ArrowDownLeft className="w-5 h-5" />} color="rose" />
@@ -103,25 +124,37 @@ export default async function CajaPage() {
                                    <BalanceCard label="Banco Digital" value={totals.digital} icon={<Landmark className="w-5 h-5" />} color="blue" />
                             </section>
 
-                            {/* MOVEMENTS LIST SECTION */}
+                            {/* HISTORY SECTION */}
                             <section className="space-y-6">
-                                   <div className="flex items-center justify-between px-2">
-                                          <div className="flex items-center gap-2">
-                                                 <Banknote className="w-4 h-4 text-primary" />
-                                                 <h3 className="text-[12px] font-black text-foreground uppercase tracking-[0.15em]">Historial de Movimientos</h3>
+                                   <div className="flex items-center justify-between px-1">
+                                          <div className="flex items-center gap-3">
+                                                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary border border-primary/20">
+                                                        <Banknote className="w-5 h-5 stroke-[2px]" />
+                                                 </div>
+                                                 <div className="flex flex-col">
+                                                        <h3 className="text-xl font-bold text-foreground tracking-tight">Historial de Movimientos</h3>
+                                                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Flujo de Caja</p>
+                                                 </div>
                                           </div>
-                                          <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{movements.length} Registros hoy</div>
+                                          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{movements.length} REGISTROS HOY</div>
                                    </div>
-                                   <CashMovementList initialMovements={movements} />
+
+                                   <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                                          <CashMovementList initialMovements={movements} />
+                                   </div>
                             </section>
                      </main>
 
-                     {/* iOS FOOTER DECORATION */}
-                     <footer className="mt-auto px-10 py-12 flex flex-col items-center gap-4 text-[10px] font-black text-slate-400 border-t border-slate-100 uppercase tracking-[0.3em] bg-slate-50/20">
-                            <div className="w-10 h-10 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
-                                   <Banknote className="w-5 h-5 text-primary/70" />
+                     {/* REFINED FOOTER */}
+                     <footer className="mt-auto px-10 py-12 flex flex-col items-center gap-4 text-[10px] font-bold text-muted-foreground border-t border-border bg-secondary/30 relative overflow-hidden">
+                            <div className="flex items-center gap-6">
+                                   <span>Sodería Nico App</span>
+                                   <div className="w-1 h-1 rounded-full bg-border" />
+                                   <span>Financial Audit v2.5.0</span>
+                                   <div className="w-1 h-1 rounded-full bg-border" />
+                                   <span>Buenos Aires</span>
                             </div>
-                            <span>© 2026 Sodería Nico — Auditoría Avanzada</span>
+                            <p className="opacity-60">Google Professional Interface Upgrade</p>
                      </footer>
               </div>
        );

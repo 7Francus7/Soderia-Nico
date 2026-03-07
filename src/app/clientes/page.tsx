@@ -1,7 +1,5 @@
-"use strict";
-
 import { prisma } from "@/lib/prisma";
-import { Users, TrendingUp, AlertCircle, ArrowUpRight } from "lucide-react";
+import { Users, TrendingUp, AlertCircle, ArrowUpRight, Search, ShieldCheck } from "lucide-react";
 import ClientList from "@/components/clients/ClientList";
 import NewClientButton from "@/components/clients/NewClientButton";
 import { cn } from "@/lib/utils";
@@ -30,88 +28,127 @@ export default async function ClientesPage({
        const clientsWithDebt = await prisma.client.count({ where: { balance: { gt: 0 } } });
 
        return (
-              <div className="page-container space-y-10 lg:space-y-16 text-foreground selection:bg-black selection:text-white">
+              <div className="flex flex-col min-h-screen bg-background text-foreground animate-fade-in pb-32">
 
-                     {/* HEADER */}
-                     <header className="relative flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-8 border-b border-slate-100">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none opacity-30" />
-
-                            <div className="space-y-4 relative z-10 flex-1 min-w-0">
-                                   <div className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-slate-500">
-                                          <Users className="w-3 h-3 shrink-0" />
-                                          <span className="text-[9px] font-black uppercase tracking-[0.25em]">Gestión de Clientes</span>
-                                   </div>
-                                   <div>
-                                          <h1 className="text-hero font-black tracking-tighter italic uppercase leading-[0.85] text-foreground">
-                                                 Panel de<br /><span className="text-transparent" style={{ WebkitTextStroke: '1.5px hsl(var(--foreground))' }}>Clientes</span>.
+                     {/* GOOGLE PROFESSIONAL HEADER AREA */}
+                     <header className="px-6 pt-12 pb-10 sm:px-10 lg:px-16">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                                   <div className="space-y-2">
+                                          <div className="flex items-center gap-2 mb-1">
+                                                 <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary border border-primary/20 shrink-0">
+                                                        <Users className="w-4 h-4" />
+                                                 </div>
+                                                 <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Gestión de Clientes</span>
+                                          </div>
+                                          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
+                                                 Directorio de Clientes
                                           </h1>
+                                          <p className="text-sm font-medium text-muted-foreground max-w-2xl">
+                                                 Administra la base de datos de consumidores, saldos pendientes y geolocalización.
+                                          </p>
                                    </div>
-                            </div>
 
-                            <div className="relative z-10 shrink-0">
-                                   <NewClientButton />
+                                   <div className="w-full sm:w-auto">
+                                          <NewClientButton />
+                                   </div>
                             </div>
                      </header>
 
-                     {/* STATS */}
-                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                            <StatLarge
-                                   label="Total Clientes"
-                                   value={totalClients.toString()}
-                                   icon={<Users className="w-6 h-6 sm:w-7 sm:h-7" />}
-                                   color="blue"
-                                   description="Base de datos activa"
-                            />
-                            <StatLarge
-                                   label="Deuda Global"
-                                   value={`$${(totalDebt._sum.balance || 0).toLocaleString()}`}
-                                   icon={<TrendingUp className="w-6 h-6 sm:w-7 sm:h-7" />}
-                                   color="rose"
-                                   description="Total a cobrar"
-                            />
-                            <StatLarge
-                                   label="Con Deuda"
-                                   value={clientsWithDebt.toString()}
-                                   icon={<AlertCircle className="w-6 h-6 sm:w-7 sm:h-7" />}
-                                   color="amber"
-                                   description="Revisiones pendientes"
-                            />
-                     </div>
+                     <main className="px-6 sm:px-10 lg:px-16 space-y-12">
+                            {/* STATS AREA */}
+                            <section className="space-y-6">
+                                   <div className="flex items-center gap-2 px-1">
+                                          <div className="w-2 h-2 rounded-full bg-primary" />
+                                          <h3 className="text-[11px] font-bold text-foreground uppercase tracking-wider">Monitor de Cartera</h3>
+                                   </div>
+                                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                          <StatLarge
+                                                 label="Total Clientes"
+                                                 value={totalClients.toString()}
+                                                 icon={<Users className="w-6 h-6" />}
+                                                 color="blue"
+                                                 description="Fichero activo"
+                                          />
+                                          <StatLarge
+                                                 label="Deuda Global"
+                                                 value={`$${(totalDebt._sum.balance || 0).toLocaleString()}`}
+                                                 icon={<TrendingUp className="w-6 h-6" />}
+                                                 color="rose"
+                                                 description="Saldos a cobrar"
+                                          />
+                                          <StatLarge
+                                                 label="Con Deuda"
+                                                 value={clientsWithDebt.toString()}
+                                                 icon={<AlertCircle className="w-6 h-6" />}
+                                                 color="amber"
+                                                 description="Clientes morosos"
+                                          />
+                                   </div>
+                            </section>
 
-                     {/* LIST */}
-                     <section className="space-y-8">
-                            <div className="flex items-center gap-4 px-1">
-                                   <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 shrink-0">Directorio / Saldos</h3>
-                                   <div className="h-px flex-1 bg-gradient-to-r from-slate-100 to-transparent" />
+                            {/* LIST SECTION */}
+                            <section className="space-y-6">
+                                   <div className="flex items-center justify-between px-1">
+                                          <div className="flex items-center gap-3">
+                                                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary border border-primary/20">
+                                                        <Search className="w-5 h-5 stroke-[2px]" />
+                                                 </div>
+                                                 <div className="flex flex-col">
+                                                        <h3 className="text-xl font-bold text-foreground tracking-tight">Base de Datos</h3>
+                                                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Búsqueda y Filtros</p>
+                                                 </div>
+                                          </div>
+                                          <div className="px-4 py-1.5 bg-secondary border border-border rounded-full flex items-center gap-2 shadow-sm">
+                                                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{totalClients} CLIENTES</span>
+                                          </div>
+                                   </div>
+
+                                   <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                                          <ClientList initialClients={clients} />
+                                   </div>
+                            </section>
+                     </main>
+
+                     {/* REFINED FOOTER */}
+                     <footer className="mt-auto px-10 py-12 flex flex-col items-center gap-4 text-[10px] font-bold text-muted-foreground border-t border-border bg-secondary/30 relative overflow-hidden">
+                            <div className="flex items-center gap-6">
+                                   <span>Sodería Nico App</span>
+                                   <div className="w-1 h-1 rounded-full bg-border" />
+                                   <span>Customer Relations v2.5.0</span>
+                                   <div className="w-1 h-1 rounded-full bg-border" />
+                                   <span>Buenos Aires</span>
                             </div>
-                            <ClientList initialClients={clients} />
-                     </section>
+                            <p className="opacity-60">Google Professional Interface Upgrade</p>
+                     </footer>
               </div>
        );
 }
 
 function StatLarge({ label, value, icon, color, description }: any) {
        const colors: any = {
-              blue: "border-blue-100 bg-blue-50/30 text-blue-600",
-              rose: "border-rose-100 bg-rose-50/30 text-rose-600",
-              amber: "border-amber-100 bg-amber-50/30 text-amber-600",
+              blue: "text-blue-500 bg-blue-50 border-blue-100",
+              rose: "text-rose-500 bg-rose-50 border-rose-100",
+              amber: "text-amber-500 bg-amber-50 border-amber-100",
        }
 
        return (
-              <div className={cn(
-                     "relative overflow-hidden p-6 sm:p-8 rounded-[2rem] sm:rounded-[3rem] border transition-all duration-500 group bg-white shadow-2xl shadow-slate-200/40",
-                     colors[color] || colors.blue
-              )}>
-                     <div className="flex justify-between items-start mb-6 sm:mb-10">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-[1.25rem] sm:rounded-[1.5rem] bg-white border border-slate-100 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg text-inherit">
-                                   {icon}
+              <div className="relative p-5 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col gap-4 overflow-hidden">
+                     <div className="flex justify-between items-start">
+                            <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border transition-colors duration-300 shadow-sm", colors[color])}>
+                                   <div className="stroke-[2px]">{icon}</div>
                             </div>
-                            <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0" />
+                            <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                   <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
+                            </div>
                      </div>
-                     <div>
-                            <p className="text-[9px] font-black uppercase tracking-[0.35em] text-slate-500 mb-1 truncate">{label}</p>
-                            <h4 className="text-4xl sm:text-5xl font-black tracking-tighter tabular-nums mb-2 text-foreground">{value}</h4>
-                            <p className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">{description}</p>
+
+                     <div className="relative z-10 px-0.5">
+                            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1">{label}</p>
+                            <h4 className="text-4xl font-bold tracking-tight text-foreground tabular-nums leading-none">{value}</h4>
+                            <div className="flex items-center gap-1.5 mt-3">
+                                   <div className={cn("w-1 h-1 rounded-full bg-primary/40")} />
+                                   <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">{description}</span>
+                            </div>
                      </div>
               </div>
        )
