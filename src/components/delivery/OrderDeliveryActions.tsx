@@ -26,8 +26,9 @@ export default function OrderDeliveryActions({ order }: { order: any }) {
        const handleDeliver = async (method: string) => {
               setLoading(true);
               try {
-                     const result = await deliverOrder(order.id, {
-                            paymentMethod: method,
+                     const result = await deliverOrder({
+                            orderId: order.id,
+                            paymentMethod: method as any,
                             returnedBottles,
                      });
 
