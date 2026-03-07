@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 import QuickPaymentModal from "./QuickPaymentModal";
 
 export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] }) {
@@ -78,10 +79,22 @@ export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] 
                      {/* Summary Modal */}
                      <AnimatePresence>
                             {summaryClient && (
-                                   <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
-                                          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setSummaryClient(null)} />
-                                          <div className="relative bg-white w-full max-w-sm rounded-t-2xl sm:rounded-2xl border-t sm:border border-border shadow-2xl overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300">
-                                                 <div className="px-5 py-4 flex justify-between items-center border-b border-border bg-slate-50">
+                                   <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden">
+                                          <motion.div
+                                                 initial={{ opacity: 0 }}
+                                                 animate={{ opacity: 1 }}
+                                                 exit={{ opacity: 0 }}
+                                                 className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+                                                 onClick={() => setSummaryClient(null)}
+                                          />
+                                          <motion.div
+                                                 initial={{ y: "100%" }}
+                                                 animate={{ y: 0 }}
+                                                 exit={{ y: "100%" }}
+                                                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                                                 className="relative bg-white w-full max-w-sm rounded-t-2xl sm:rounded-2xl border-t sm:border border-border shadow-2xl overflow-hidden flex flex-col"
+                                          >
+                                                 <div className="px-5 py-4 flex justify-between items-center border-b border-border bg-white sticky top-0 z-10">
                                                         <div className="flex items-center gap-3">
                                                                <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center text-primary border border-primary/20">
                                                                       <Eye className="w-4.5 h-4.5" />
@@ -124,7 +137,7 @@ export default function DebtorsList({ initialDebtors }: { initialDebtors: any[] 
                                                                </Button>
                                                         </div>
                                                  </div>
-                                          </div>
+                                          </motion.div>
                                    </div>
                             )}
                      </AnimatePresence>
