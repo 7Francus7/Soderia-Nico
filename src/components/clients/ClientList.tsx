@@ -18,10 +18,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ClientTagBadge } from "@/components/clients/ClientTagSelector";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ClientList({ initialClients }: { initialClients: any[] }) {
        const router = useRouter();
